@@ -2,4 +2,5 @@
 
 * 1 major enhancement:
   * Initial release
+* hello history is awesome
   * Added

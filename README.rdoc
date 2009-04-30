@@ -1,7 +1,6 @@
 = codometer
 
-
-* FIX (url)
+http://www.codometer.com
 
 == DESCRIPTION:
 

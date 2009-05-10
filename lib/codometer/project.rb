@@ -4,16 +4,16 @@ module Codometer
     base_uri 'http://www.codometer.com'
     format :xml
     attr_accessor :public_key, :private_key
-    
-    def initialize     
+
+    def initialize
     end
-    
+
     def current_version
     end
-    
+
     def add_version version
     end
-    
+
     def create
       response = self.class.post('/projects')
       case response.code
@@ -25,6 +25,5 @@ module Codometer
           false
         end
     end
-    
   end
 end

@@ -1,7 +1,7 @@
 module Codometer
   class Project
     include HTTParty
-    base_uri 'http://www.codometer.com'
+    base_uri 'http://www.codometer.net/api/v1/xml'
     format :xml
     attr_accessor :public_key, :private_key
 
@@ -14,8 +14,9 @@ module Codometer
     def add_version version
     end
 
-    def create
+    def save
       response = self.class.post('/projects')
+
       case response.code
         when 201
           self.public_key = response['project']['public_key']

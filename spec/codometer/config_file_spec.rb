@@ -30,18 +30,40 @@ describe "ConfigFile" do
 
         it "adds the supplied project's public key as a new entry under 'projects'" do
           ConfigFile.save_project(@project)
-          updated_config = ConfigFile.serialized
-          updated_config[:projects].should include(@project.to_config)
+          ConfigFile.serialized[:projects].should include(@project.to_config)
         end
       end
 
       context "when passed an existing project" do
-        it "does not create a duplicate entry in the list of projects"
-        it "updates the private_key of the existing entry"
+        before(:each) do
+          ConfigFile.save_project(@project)
+          @updated_project = Project.new(:public_key => @project.public_key, :private_key => "updated_private_key")
+        end
+
+        it "does not create a duplicate entry in the list of projects" do
+          ConfigFile.serialized[:projects].should include(@project.to_config)
+          ConfigFile.serialized[:projects].count.should == 1
+          ConfigFile.save_project(@updated_project)
+          ConfigFile.serialized[:projects].should include(@updated_project.to_config)
+          ConfigFile.serialized.count.should == 1
+        end
       end
 
       context "when several projects exist" do
-        it "does not modify data pertaining to other projects"
+        before(:each) do
+          @project1 = Project.new(:public_key => "abcd", :private_key => "p1_private_key")
+          @project2 = Project.new(:public_key => "efgh", :private_key => "p2_private_key")
+          @project3 = Project.new(:public_key => "ijkl", :private_key => "p3_private_key")
+          ConfigFile.save_project(@project1)
+          ConfigFile.save_project(@project2)
+          ConfigFile.save_project(@project3)
+        end
+
+        it "does not modify data pertaining to other projects" do
+          ConfigFile.serialized[:projects].should include(@project1.to_config)
+          ConfigFile.serialized[:projects].should include(@project2.to_config)
+          ConfigFile.serialized[:projects].should include(@project3.to_config)
+        end
       end
     end
   end

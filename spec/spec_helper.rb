@@ -14,3 +14,4 @@ $:.unshift(File.dirname(__FILE__) + '/../lib')
 require 'codometer'
 require 'fakeweb'
 
+include Codometer

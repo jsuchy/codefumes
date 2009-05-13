@@ -5,7 +5,9 @@ module Codometer
     format :xml
     attr_accessor :public_key, :private_key
 
-    def initialize
+    def initialize(options = {})
+      self.public_key = options[:public_key]
+      self.private_key = options[:private_key]
     end
 
     def current_version
@@ -25,6 +27,10 @@ module Codometer
         else
           false
         end
+    end
+
+    def to_config
+      {public_key.to_sym => [{:private_key => private_key}]}
     end
   end
 end

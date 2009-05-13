@@ -4,6 +4,7 @@ describe "Project" do
   after(:all) do
     FakeWeb.clean_registry
   end
+
   context "creating a new project" do 
     context "successfully" do
       before(:each) do
@@ -37,6 +38,22 @@ describe "Project" do
         project.save.should be_false
         project.public_key.should be_nil
         project.private_key.should be_nil
+      end
+    end
+  end
+
+  describe "to_config" do
+    before(:each) do
+      @project = Project.new(:public_key => 'jKly', :private_key => '1234567890')
+    end
+
+    it "returns an object keyed by the project's public_key as a symbol" do
+      @project.to_config.should include(:jKly)
+    end
+
+    context "the content under the project's public_key element" do
+      it "includes a key-value pair of ':private_key => [project's private key]'" do
+        @project.to_config[@project.public_key.to_sym].should include(:private_key => @project.private_key)
       end
     end
   end

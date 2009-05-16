@@ -5,10 +5,6 @@ describe "Project" do
     FakeWeb.clean_registry
   end
 
-  after(:each) do
-    FakeWeb.clean_registry
-  end
-
   context "creating a new project" do 
     context "successfully" do
       before(:each) do
@@ -38,11 +34,12 @@ describe "Project" do
                                 :status => ["422", "Unprocessable Entity"])
       end
 
-      it "doesn't set the public key" do
-        project = Codometer::Project.new
-        project.save.should be_false
-        project.public_key.should be_nil
-        project.private_key.should be_nil
+      [:private_key, :id].each do |method_name|
+        it "does not set the '#{method_name.to_s}'" do
+          project = Codometer::Project.new
+          project.save.should be_false
+          project.send(method_name).should be_nil
+        end
       end
     end
   end
@@ -73,6 +70,33 @@ describe "Project" do
     context "the content under the project's public_key element" do
       it "includes a key-value pair of ':private_key => [project's private key]'" do
         @project.to_config[@project.public_key.to_sym].should include(:private_key => @project.private_key)
+      end
+    end
+  end
+
+  describe "protected attributes" do
+    [:id, :private_key, :api_uri, :community_uri, :short_uri].each do |attribute_name|
+      it "values passed in during initiazation for '#{attribute_name.to_s}' are silently ignored" do
+        p = Project.new(attribute_name => Time.now.to_s)
+        p.send(attribute_name).should be_nil
+      end
+
+      it "calling '#{attribute_name.to_s}= [value]' is not supported" do
+        p = Project.new
+        lambda {p.send("#{attribute_name}=", "my_value")}.should raise_error
+      end
+    end
+  end
+
+  describe "accessible attributes" do
+    before(:each) do
+      @value = 'my_value'
+    end
+
+    [:public_key, :name].each do |attribute_name|
+      it "values for '#{attribute_name.to_s}' are allowed to be modified by the client" do
+        p = Project.new(attribute_name => @value )
+        p.send(attribute_name).should ==  @value
       end
     end
   end

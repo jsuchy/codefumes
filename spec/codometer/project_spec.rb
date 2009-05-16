@@ -21,7 +21,8 @@ describe "Project" do
         :private_key,
         :short_uri,
         :community_uri,
-        :api_uri].each do |method_name|
+        :api_uri,
+        :id].each do |method_name|
           it "sets the '#{method_name.to_s}'" do
             project = Codometer::Project.new
             project.send(method_name).should be_nil
@@ -43,6 +44,20 @@ describe "Project" do
         project.public_key.should be_nil
         project.private_key.should be_nil
       end
+    end
+  end
+
+  context "deleting a project" do
+    before(:each) do
+      @project = Project.new(:public_key => 'jKly', :private_key => '1234567890')
+      @project.stub!(:id).and_return(1)
+      FakeWeb.register_uri( :delete, "http://www.codometer.net/api/v1/xml/projects/1",
+                            :status => ["200", "Successful"],
+                            :string =>  "")
+    end
+
+    it "returns true" do
+      @project.delete.should be_true
     end
   end
 

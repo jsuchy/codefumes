@@ -88,7 +88,13 @@ describe "ConfigFile" do
     end
 
     context "when the project entry does not exist in the file" do
-      it "does not raise an error"
+      before(:each) do
+        @project = Project.new(:public_key => "p1_pub_nonexist_value", :private_key => "p1_private_key")
+      end
+
+      it "does not raise an error" do
+        lambda {ConfigFile.delete_project(@project)}.should_not raise_error
+      end
     end
   end
 end

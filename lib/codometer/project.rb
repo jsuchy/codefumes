@@ -68,5 +68,25 @@ module Codometer
         false
       end
     end
+
+    def self.find(public_key)
+      response = get("/projects/#{public_key}")
+      case response.code
+      when 200
+        p = Project.new
+        p.reinitialize!(response)
+      else
+        nil
+      end
+    end
+
+    def reinitialize!(options = {})
+      @public_key    = options['project']['public_key']
+      @private_key   = options['project']['private_key']
+      @short_uri     = options['project']['short_uri']
+      @community_uri = options['project']['community_uri']
+      @api_uri       = options['project']['api_uri']
+      self
+    end
   end
 end

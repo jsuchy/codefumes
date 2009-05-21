@@ -6,7 +6,17 @@ def register_create_uri
                         :string =>  "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<project>\n  <access-secret nil=\"true\"></access-secret>\n  <created-at type=\"datetime\">2009-04-29T23:18:03Z</created-at>\n  <public-key>foofoolerue</public-key>\n <private-key>foobarbaz</private-key>\n  <updated-at type=\"datetime\">2009-04-29T23:18:03Z</updated-at>\n</project>\n <short_uri>http://www.codometer.net/p/foofoolerue</short_uri>\n <community_uri>http://www.codometer.net/community/projects/1</community_uri>\n <api-uri>http://www.codometer.net/api/v1/xml/projects/1.xml</api-uri>\n")
 end
 
-def register_update_uri
+def register_update_uri(public_key = "public_key_value", project_name = "The Project Name(tm)")
+  FakeWeb.register_uri(:put, "http://www.codometer.net/api/v1/xml/projects/existing_public_key?project[name]=#{project_name}",
+                       :status => ["200", "Ok"],
+                         :string =>  "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<project>\n  <access-secret nil=\"true\"></access-secret>\n  <created-at type=\"datetime\">2009-04-29T23:18:03Z</created-at>\n  <public-key>existing_public_key</public-key>\n <private-key>private_key_value</private-key>\n  <updated-at type=\"datetime\">2009-04-29T23:18:03Z</updated-at>\n</project>\n <short_uri>http://www.codometer.net/p/#{public_key}</short_uri>\n <community_uri>http://www.codometer.net/community/projects/#{public_key}</community_uri>\n <api-uri>http://www.codometer.net/api/v1/xml/projects/#{public_key}.xml</api-uri>\n <name>#{project_name}</name>\n")
+end
+
+def register_show_uri(public_key = "public_key_value", project_name = "The Project Name(tm)", status_code = ["200", "Ok"])
+  FakeWeb.register_uri(:get, "http://www.codometer.net/api/v1/xml/projects/#{public_key}",
+                       :status => status_code,
+                       :string =>  "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<project>\n  <access-secret nil=\"true\"></access-secret>\n  <created-at type=\"datetime\">2009-04-29T23:18:03Z</created-at>\n  <public-key>#{public_key}</public-key>\n <private-key>private_key_value</private-key>\n  <updated-at type=\"datetime\">2009-04-29T23:18:03Z</updated-at>\n</project>\n <short_uri>http://www.codometer.net/p/#{public_key}</short_uri>\n <community_uri>http://www.codometer.net/community/projects/#{public_key}</community_uri>\n <api-uri>http://www.codometer.net/api/v1/xml/projects/#{public_key}.xml</api-uri>\n <name>original_name</name>\n")
+
 end
 
 describe "Project" do
@@ -40,14 +50,8 @@ describe "Project" do
         before(:each) do
           @updated_name = "different_name"
           @project = Codometer::Project.new(:public_key => "existing_public_key", :name => @updated_name)
-          FakeWeb.register_uri(:get, "http://www.codometer.net/api/v1/xml/projects/existing_public_key",
-                               :status => ["200", "Ok"],
-                               :string =>  "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<project>\n  <access-secret nil=\"true\"></access-secret>\n  <created-at type=\"datetime\">2009-04-29T23:18:03Z</created-at>\n  <public-key>foofoolerue</public-key>\n <private-key>foobarbaz</private-key>\n  <updated-at type=\"datetime\">2009-04-29T23:18:03Z</updated-at>\n</project>\n <short_uri>http://www.codometer.net/p/foofoolerue</short_uri>\n <community_uri>http://www.codometer.net/community/projects/1</community_uri>\n <api-uri>http://www.codometer.net/api/v1/xml/projects/1.xml</api-uri>\n <name>original_name</name>\n")
-
-          FakeWeb.register_uri(:put, "http://www.codometer.net/api/v1/xml/projects/existing_public_key?project[name]=#{@updated_name}",
-                               :status => ["200", "Ok"],
-                               :string =>  "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<project>\n  <access-secret nil=\"true\"></access-secret>\n  <created-at type=\"datetime\">2009-04-29T23:18:03Z</created-at>\n  <public-key>existing_public_key</public-key>\n <private-key>foobarbaz</private-key>\n  <updated-at type=\"datetime\">2009-04-29T23:18:03Z</updated-at>\n</project>\n <short_uri>http://www.codometer.net/p/foofoolerue</short_uri>\n <community_uri>http://www.codometer.net/community/projects/1</community_uri>\n <api-uri>http://www.codometer.net/api/v1/xml/projects/1.xml</api-uri>\n <name>#{@updated_name}</name>\n")
-
+          register_show_uri(@project.public_key, @updated_name)
+          register_update_uri(@project.public_key, @updated_name)
           @project.stub!(:exists?).and_return(true)
           @project.save.should be_true
         end
@@ -183,6 +187,36 @@ describe "Project" do
       it "values for '#{attribute_name.to_s}' are allowed to be modified by the client" do
         p = Project.new(attribute_name => @value )
         p.send(attribute_name).should ==  @value
+      end
+    end
+  end
+
+  describe "calling the class method" do
+    describe "'find'" do
+      context "and specifying a public_key which is already associated to a project on the site" do
+        before(:each) do
+          @public_key = "an_existing_public_key"
+          register_show_uri(@public_key)
+        end
+
+        it "returns an initialized instance of the Project class" do
+          expected_config =  {:an_existing_public_key=> [{:private_key=>"private_key_value"},
+                                                         {:api_uri=>"http://www.codometer.net/api/v1/xml/projects/an_existing_public_key.xml"},
+                                                         {:short_uri=>"http://www.codometer.net/p/an_existing_public_key"}
+                                                        ]}
+          Project.find(@public_key).to_config.should == expected_config
+        end
+      end
+
+      context "and specifying a public_key which is not associated to any project on the site yet" do
+        before(:each) do
+          @public_key = "non_existant_public_key"
+          register_show_uri(@public_key, "Some Name", ["404", "Not Found"])
+        end
+
+        it "returns nil" do
+          Project.find(@public_key).should == nil
+        end
       end
     end
   end

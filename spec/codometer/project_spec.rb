@@ -89,7 +89,7 @@ describe "Project" do
     end
   end
 
-  context "deleting a project" do
+  context "delete" do
     before(:each) do
       @project = Project.new(:public_key => 'public_key_value')
       FakeWeb.register_uri( :delete, "http://www.codometer.net/api/v1/xml/projects/#{@project.public_key}",

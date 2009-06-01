@@ -12,6 +12,7 @@ require 'httparty'
 
 require 'project'
 require 'config_file'
+require 'payload'
 
 module Codometer
   VERSION = '0.0.1'

@@ -1,5 +1,7 @@
 require File.dirname(__FILE__) + '/../spec_helper.rb'
 
+include ConfigFile
+
 describe "ConfigFile" do
   before(:each) do
     File.delete(ConfigFile.path) if File.exist?(ConfigFile.path)

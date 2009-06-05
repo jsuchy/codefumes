@@ -1,12 +1,5 @@
 require File.dirname(__FILE__) + '/../spec_helper.rb'
 
-def register_create_uri
-  FakeWeb.register_uri( :post, "http://www.codometer.net:80/api/v1/xml/projects/apk/payloads?payload=data_to_send_up",
-                        :status => ["201", "Created"],
-                        :string =>  "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<payload>\n <created_at>Creation Date</created_at>\n  </payload>\n")
-end
-
-
 describe "Payload" do
   after(:all) do
     FakeWeb.allow_net_connect = false
@@ -20,7 +13,9 @@ describe "Payload" do
 
     context "with valid parameters" do
       before(:each) do
-        register_create_uri
+        FakeWeb.register_uri( :post, "http://www.codometer.net:80/api/v1/xml/projects/apk/payloads?payload=data_to_send_up",
+                             :status => ["201", "Created"],
+                             :string =>  "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<payload>\n <created_at>Creation Date</created_at>\n  </payload>\n")
       end
 
       [:created_at].each do |method_name|

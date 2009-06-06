@@ -26,6 +26,22 @@ describe "Payload" do
           payload.send(method_name).should_not == nil
         end
       end
+
+    end
+
+    context "when the payload does not have any content" do
+      before(:each) do
+        @payload = Payload.new(:public_key => @project.public_key, :scm_payload => "")
+      end
+
+      it "returns true without attempting to save to the site" do
+        @payload.save.should == true
+      end
+
+      it "does not set the value of created_at" do
+        @payload.save
+        @payload.created_at.should == nil
+      end
     end
 
     context "with invalid parameters" do

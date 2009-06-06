@@ -11,7 +11,8 @@ module Codometer
     end
 
     def save
-      response = self.class.post("/projects/#{@project_public_key}/payloads", :query => {:payload => construct_payload})
+      return true if payload.empty?
+      response = self.class.post("/projects/#{@project_public_key}/payloads", :query => {:payload => payload})
 
       case response.code
       when 201
@@ -23,8 +24,8 @@ module Codometer
     end
 
     private
-      def construct_payload
-        @content = @scm_payload
+      def payload
+        @scm_payload
       end
   end
 end

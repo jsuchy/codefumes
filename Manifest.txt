@@ -5,13 +5,17 @@ README.rdoc
 Rakefile
 config/website.yml.sample
 lib/codometer.rb
+lib/codometer/commit.rb
 lib/codometer/config_file.rb
+lib/codometer/payload.rb
 lib/codometer/project.rb
 script/console
 script/destroy
 script/generate
 script/txt2html
+spec/codometer/commit_spec.rb
 spec/codometer/config_file_spec.rb
+spec/codometer/payload_spec.rb
 spec/codometer/project_spec.rb
 spec/spec.opts
 spec/spec_helper.rb

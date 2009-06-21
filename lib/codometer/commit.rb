@@ -5,7 +5,7 @@ module Codometer
     format :xml
     attr_reader :identifier, :author_name, :author_email, :committer_name,
                 :committer_email, :short_message, :message,:committed_at,
-                :authored_at, :uploaded_at, :api_uri
+                :authored_at, :uploaded_at, :api_uri, :parent_identifiers
 
     def initialize(options)
       @identifier      = options["identifier"]
@@ -19,6 +19,7 @@ module Codometer
       @authored_at     = options["authored_at"]
       @uploaded_at     = options["uploaded_at"]
       @api_uri         = options["api_uri"]
+      @parent_identifiers = options["parent_identifiers"]
     end
 
     def author

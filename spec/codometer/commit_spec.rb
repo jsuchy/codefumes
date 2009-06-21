@@ -13,6 +13,7 @@ def single_commit
     Made command-line option for 'name' actually work
     - Commentd out hard-coded 'require' line used for testing
   </message>
+  <parent_identifiers>9ddj48423jdsjds5176f0471261731e1b92ce957,3ewdjok23jdsjds5176f0471261731e1b92ce957,284djsksjfjsjds5176f0471261731e1b92ce957</parent_identifiers>
   <committed_at>Wed May 20 09:09:06 -0500 2009</committed_at>
   <authored_at>Wed May 20 09:09:06 -0500 2009</authored_at>
   <uploaded_at>2009-06-04 02:43:20 UTC</uploaded_at>
@@ -58,7 +59,8 @@ describe "Commit" do
        :committed_at,
        :authored_at,
        :uploaded_at,
-       :api_uri
+       :api_uri,
+       :parent_identifiers
       ].each do |method_name|
         it "sets the '#{method_name.to_s}'" do
           @commit.send(method_name).should_not == nil

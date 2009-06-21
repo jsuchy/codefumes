@@ -8,17 +8,17 @@ module Codometer
                 :authored_at, :uploaded_at, :api_uri, :parent_identifiers
 
     def initialize(options)
-      @identifier      = options["identifier"]
-      @author_email    = options["author_email"]
-      @author_name     = options["author_name"]
-      @committer_email = options["committer_email"]
-      @committer_name  = options["committer_name"]
-      @short_message   = options["short_message"]
-      @message         = options["message"]
-      @committed_at    = options["committed_at"]
-      @authored_at     = options["authored_at"]
-      @uploaded_at     = options["uploaded_at"]
-      @api_uri         = options["api_uri"]
+      @identifier         = options["identifier"]
+      @author_email       = options["author_email"]
+      @author_name        = options["author_name"]
+      @committer_email    = options["committer_email"]
+      @committer_name     = options["committer_name"]
+      @short_message      = options["short_message"]
+      @message            = options["message"]
+      @committed_at       = options["committed_at"]
+      @authored_at        = options["authored_at"]
+      @uploaded_at        = options["uploaded_at"]
+      @api_uri            = options["api_uri"]
       @parent_identifiers = options["parent_identifiers"]
     end
 

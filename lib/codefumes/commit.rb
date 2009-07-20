@@ -8,7 +8,7 @@ module CodeFumes
                 :committer_email, :short_message, :message,:committed_at,
                 :authored_at, :uploaded_at, :api_uri, :parent_identifiers,
                 :line_additions, :line_deletions, :line_total,
-                :modified_file_count
+                :affected_file_count
 
     def initialize(options)
       @identifier         = options["identifier"]
@@ -26,7 +26,7 @@ module CodeFumes
       @line_additions     = options["line_additions"]
       @line_deletions     = options["line_deletions"]
       @line_total         = options["line_total"]
-      @modified_file_count= options["modified_file_count"]
+      @affected_file_count= options["affected_file_count"]
     end
 
     def author

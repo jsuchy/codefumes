@@ -21,7 +21,7 @@ def single_commit
   <line_additions>20</line_additions>
   <line_deletions>10</line_deletions>
   <line_total>30</line_total>
-  <modified_file_count>2</modified_file_count>
+  <affected_file_count>2</affected_file_count>
 </commit>
 END_OF_COMMIT
 end
@@ -68,7 +68,7 @@ describe "Commit" do
        :line_additions,
        :line_deletions,
        :line_total,
-       :modified_file_count,
+       :affected_file_count,
       ].each do |method_name|
         it "sets the '#{method_name.to_s}'" do
           @commit.send(method_name).should_not == nil

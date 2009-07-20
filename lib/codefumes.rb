@@ -4,7 +4,7 @@ def add_dir_to_load_path(dir_path)
 end
 
 add_dir_to_load_path(File.dirname(__FILE__))
-add_dir_to_load_path(File.dirname(__FILE__) + '/codometer')
+add_dir_to_load_path(File.dirname(__FILE__) + '/codefumes')
 
 require 'rubygems'
 gem 'httparty', '>= 0.4.3'
@@ -15,6 +15,6 @@ require 'config_file'
 require 'payload'
 require 'commit'
 
-module Codometer
+module CodeFumes
   VERSION = '0.0.1'
 end

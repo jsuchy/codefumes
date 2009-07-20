@@ -1,6 +1,6 @@
-= codometer
+= codefumes
 
-http://www.codometer.com
+http://www.codefumes.com
 
 == DESCRIPTION:
 

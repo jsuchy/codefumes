@@ -1,12 +1,13 @@
-module Codometer
+module CodeFumes
   class Payload
     PAYLOAD_CHARACTER_LIMIT = 5000
     include HTTParty
-    base_uri 'http://www.codometer.net/api/v1/xml'
+    base_uri 'http://www.codefumes.com/api/v1/xml'
+    #base_uri 'http://localhost:3000/api/v1/xml'
     format :xml
-    attr_reader :project_public_key, :content, :created_at
+    attr_reader :project_public_key, :created_at
 
-    def initialize(options = {:content => nil})
+    def initialize(options = {})
       @project_public_key = options[:public_key]
       @scm_payload = options[:scm_payload]
     end

@@ -1,21 +1,21 @@
 require File.dirname(__FILE__) + '/../spec_helper.rb'
 
 def register_create_uri
-  FakeWeb.register_uri( :post, "http://www.codometer.net:80/api/v1/xml/projects?project[name]=&project[public_key]=",
+  FakeWeb.register_uri( :post, "http://www.codefumes.com:80/api/v1/xml/projects?project[name]=&project[public_key]=",
                         :status => ["201", "Created"],
-                        :string =>  "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<project>\n  <access-secret nil=\"true\"></access-secret>\n  <created-at type=\"datetime\">2009-04-29T23:18:03Z</created-at>\n  <public-key>foofoolerue</public-key>\n <private-key>foobarbaz</private-key>\n  <updated-at type=\"datetime\">2009-04-29T23:18:03Z</updated-at>\n <short_uri>http://www.codometer.net/p/foofoolerue</short_uri>\n <community_uri>http://www.codometer.net/community/projects/1</community_uri>\n <api-uri>http://www.codometer.net/api/v1/xml/projects/1.xml</api-uri>\n</project>")
+                        :string =>  "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<project>\n  <access-secret nil=\"true\"></access-secret>\n  <created-at type=\"datetime\">2009-04-29T23:18:03Z</created-at>\n  <public-key>foofoolerue</public-key>\n <private-key>foobarbaz</private-key>\n  <updated-at type=\"datetime\">2009-04-29T23:18:03Z</updated-at>\n <short_uri>http://www.codefumes.com/p/foofoolerue</short_uri>\n <community_uri>http://www.codefumes.com/community/projects/1</community_uri>\n <api-uri>http://www.codefumes.com/api/v1/xml/projects/1.xml</api-uri>\n</project>")
 end
 
 def register_update_uri(public_key = "public_key_value", project_name = "The Project Name(tm)")
-  FakeWeb.register_uri(:put, "http://www.codometer.net/api/v1/xml/projects/existing_public_key?project[name]=#{project_name}",
+  FakeWeb.register_uri(:put, "http://www.codefumes.com/api/v1/xml/projects/existing_public_key?project[name]=#{project_name}",
                        :status => ["200", "Ok"],
-                         :string =>  "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<project>\n  <access-secret nil=\"true\"></access-secret>\n  <created-at type=\"datetime\">2009-04-29T23:18:03Z</created-at>\n  <public-key>existing_public_key</public-key>\n <private-key>private_key_value</private-key>\n  <updated-at type=\"datetime\">2009-04-29T23:18:03Z</updated-at>\n <short_uri>http://www.codometer.net/p/#{public_key}</short_uri>\n <community_uri>http://www.codometer.net/community/projects/#{public_key}</community_uri>\n <api-uri>http://www.codometer.net/api/v1/xml/projects/#{public_key}.xml</api-uri>\n <name>#{project_name}</name>\n</project>\n")
+                         :string =>  "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<project>\n  <access-secret nil=\"true\"></access-secret>\n  <created-at type=\"datetime\">2009-04-29T23:18:03Z</created-at>\n  <public-key>existing_public_key</public-key>\n <private-key>private_key_value</private-key>\n  <updated-at type=\"datetime\">2009-04-29T23:18:03Z</updated-at>\n <short_uri>http://www.codefumes.com/p/#{public_key}</short_uri>\n <community_uri>http://www.codefumes.com/community/projects/#{public_key}</community_uri>\n <api-uri>http://www.codefumes.com/api/v1/xml/projects/#{public_key}.xml</api-uri>\n <name>#{project_name}</name>\n</project>\n")
 end
 
 def register_show_uri(public_key = "public_key_value", project_name = "The Project Name(tm)", status_code = ["200", "Ok"])
-  FakeWeb.register_uri(:get, "http://www.codometer.net/api/v1/xml/projects/#{public_key}",
+  FakeWeb.register_uri(:get, "http://www.codefumes.com/api/v1/xml/projects/#{public_key}",
                        :status => status_code,
-                       :string =>  "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<project>\n  <access-secret nil=\"true\"></access-secret>\n  <created-at type=\"datetime\">2009-04-29T23:18:03Z</created-at>\n  <public-key>#{public_key}</public-key>\n <private-key>private_key_value</private-key>\n  <updated-at type=\"datetime\">2009-04-29T23:18:03Z</updated-at>\n <short_uri>http://www.codometer.net/p/#{public_key}</short_uri>\n <community_uri>http://www.codometer.net/community/projects/#{public_key}</community_uri>\n <api-uri>http://www.codometer.net/api/v1/xml/projects/#{public_key}.xml</api-uri>\n <name>original_name</name>\n</project>\n")
+                       :string =>  "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<project>\n  <access-secret nil=\"true\"></access-secret>\n  <created-at type=\"datetime\">2009-04-29T23:18:03Z</created-at>\n  <public-key>#{public_key}</public-key>\n <private-key>private_key_value</private-key>\n  <updated-at type=\"datetime\">2009-04-29T23:18:03Z</updated-at>\n <short_uri>http://www.codefumes.com/p/#{public_key}</short_uri>\n <community_uri>http://www.codefumes.com/community/projects/#{public_key}</community_uri>\n <api-uri>http://www.codefumes.com/api/v1/xml/projects/#{public_key}.xml</api-uri>\n <name>original_name</name>\n</project>\n")
 
 end
 
@@ -38,7 +38,7 @@ describe "Project" do
           :community_uri,
           :api_uri].each do |method_name|
             it "sets the '#{method_name.to_s}'" do
-              project = Codometer::Project.new
+              project = CodeFumes::Project.new
               project.send(method_name).should be_nil
               #project.save
               #project.send(method_name).should_not be_nil
@@ -49,7 +49,7 @@ describe "Project" do
       context "when the public key has already been taken" do
         before(:each) do
           @updated_name = "different_name"
-          @project = Codometer::Project.new(:public_key => "existing_public_key", :name => @updated_name)
+          @project = CodeFumes::Project.new(:public_key => "existing_public_key", :name => @updated_name)
           register_show_uri(@project.public_key, @updated_name)
           register_update_uri(@project.public_key, @updated_name)
           @project.stub!(:exists?).and_return(true)
@@ -75,13 +75,13 @@ describe "Project" do
 
     context "with invalid parameters" do
       before(:each) do
-          FakeWeb.register_uri( :post, "http://www.codometer.net/api/v1/xml/projects?project[public_key]=&project[name]=",
+          FakeWeb.register_uri( :post, "http://www.codefumes.com/api/v1/xml/projects?project[public_key]=&project[name]=",
                                 :status => ["422", "Unprocessable Entity"])
       end
 
       [:private_key].each do |method_name|
         it "does not set the '#{method_name.to_s}'" do
-          project = Codometer::Project.new
+          project = CodeFumes::Project.new
           project.save.should be_false
           project.send(method_name).should be_nil
         end
@@ -92,7 +92,7 @@ describe "Project" do
   context "delete" do
     before(:each) do
       @project = Project.new(:public_key => 'public_key_value')
-      FakeWeb.register_uri( :delete, "http://www.codometer.net/api/v1/xml/projects/#{@project.public_key}",
+      FakeWeb.register_uri( :delete, "http://www.codefumes.com/api/v1/xml/projects/#{@project.public_key}",
                             :status => ["200", "Successful"],
                             :string =>  "")
     end
@@ -109,9 +109,9 @@ describe "Project" do
 
     context "when the specified public_key has been reserved already" do
       before(:each) do
-        FakeWeb.register_uri(:get, "http://www.codometer.net/api/v1/xml/projects/#{@public_key}",
+        FakeWeb.register_uri(:get, "http://www.codefumes.com/api/v1/xml/projects/#{@public_key}",
                              :status => ["200", "Ok"],
-                             :string =>  "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<project>\n  <access-secret nil=\"true\"></access-secret>\n  <created-at type=\"datetime\">2009-04-29T23:18:03Z</created-at>\n  <public-key>foofoolerue</public-key>\n <private-key>foobarbaz</private-key>\n  <updated-at type=\"datetime\">2009-04-29T23:18:03Z</updated-at>\n <short_uri>http://www.codometer.net/p/foofoolerue</short_uri>\n <community_uri>http://www.codometer.net/community/projects/1</community_uri>\n <api-uri>http://www.codometer.net/api/v1/xml/projects/1.xml</api-uri>\n <name>original_name</name>\n")
+                             :string =>  "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<project>\n  <access-secret nil=\"true\"></access-secret>\n  <created-at type=\"datetime\">2009-04-29T23:18:03Z</created-at>\n  <public-key>foofoolerue</public-key>\n <private-key>foobarbaz</private-key>\n  <updated-at type=\"datetime\">2009-04-29T23:18:03Z</updated-at>\n <short_uri>http://www.codefumes.com/p/foofoolerue</short_uri>\n <community_uri>http://www.codefumes.com/community/projects/1</community_uri>\n <api-uri>http://www.codefumes.com/api/v1/xml/projects/1.xml</api-uri>\n <name>original_name</name>\n")
       end
 
       it "returns true" do
@@ -131,7 +131,7 @@ describe "Project" do
 
     context "when the specified public_key is available" do
       before(:each) do
-        FakeWeb.register_uri(:get, "http://www.codometer.net/api/v1/xml/projects/#{@public_key}",
+        FakeWeb.register_uri(:get, "http://www.codefumes.com/api/v1/xml/projects/#{@public_key}",
                              :status => ["404", "Not Found"],
                              :string =>  "")
 
@@ -146,9 +146,9 @@ describe "Project" do
   describe "to_config" do
     before(:each) do
       register_create_uri
-  FakeWeb.register_uri( :post, "http://www.codometer.net:80/api/v1/xml/projects?project[name]=&project[public_key]=",
+  FakeWeb.register_uri( :post, "http://www.codefumes.com:80/api/v1/xml/projects?project[name]=&project[public_key]=",
                         :status => ["201", "Created"],
-                        :string =>  "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<project>\n  <access-secret nil=\"true\"></access-secret>\n  <created-at type=\"datetime\">2009-04-29T23:18:03Z</created-at>\n  <public-key>foofoolerue</public-key>\n <private-key>foobarbaz</private-key>\n  <updated-at type=\"datetime\">2009-04-29T23:18:03Z</updated-at>\n <short_uri>http://www.codometer.net/p/foofoolerue</short_uri>\n <community_uri>http://www.codometer.net/community/projects/1</community_uri>\n <api-uri>http://www.codometer.net/api/v1/xml/projects/1.xml</api-uri>\n</project>")
+                        :string =>  "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<project>\n  <access-secret nil=\"true\"></access-secret>\n  <created-at type=\"datetime\">2009-04-29T23:18:03Z</created-at>\n  <public-key>foofoolerue</public-key>\n <private-key>foobarbaz</private-key>\n  <updated-at type=\"datetime\">2009-04-29T23:18:03Z</updated-at>\n <short_uri>http://www.codefumes.com/p/foofoolerue</short_uri>\n <community_uri>http://www.codefumes.com/community/projects/1</community_uri>\n <api-uri>http://www.codefumes.com/api/v1/xml/projects/1.xml</api-uri>\n</project>")
       @project = Project.new
       @project.save
     end
@@ -204,8 +204,8 @@ describe "Project" do
 
         it "returns an initialized instance of the Project class" do
           expected_config =  {:an_existing_public_key=> [{:private_key=>"private_key_value"},
-                                                         {:api_uri=>"http://www.codometer.net/api/v1/xml/projects/an_existing_public_key.xml"},
-                                                         {:short_uri=>"http://www.codometer.net/p/an_existing_public_key"}
+                                                         {:api_uri=>"http://www.codefumes.com/api/v1/xml/projects/an_existing_public_key.xml"},
+                                                         {:short_uri=>"http://www.codefumes.com/p/an_existing_public_key"}
                                                         ]}
           Project.find(@public_key).to_config.should == expected_config
         end

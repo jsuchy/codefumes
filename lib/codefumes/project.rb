@@ -1,7 +1,8 @@
-module Codometer
+module CodeFumes
   class Project
     include HTTParty
-    base_uri 'http://www.codometer.net/api/v1/xml'
+    base_uri 'http://www.codefumes.com/api/v1/xml'
+    #base_uri 'http://localhost:3000/api/v1/xml'
     format :xml
     attr_reader :private_key, :short_uri, :community_uri, :api_uri
     attr_accessor :name, :public_key

@@ -1,11 +1,14 @@
-module Codometer
+module CodeFumes
   class Commit
     include HTTParty
-    base_uri "http://www.codometer.net/api/v1/xml"
+    base_uri "http://www.codefumes.com/api/v1/xml"
+    #base_uri "http://localhost:3000/api/v1/xml"
     format :xml
     attr_reader :identifier, :author_name, :author_email, :committer_name,
                 :committer_email, :short_message, :message,:committed_at,
-                :authored_at, :uploaded_at, :api_uri, :parent_identifiers
+                :authored_at, :uploaded_at, :api_uri, :parent_identifiers,
+                :line_additions, :line_deletions, :line_total,
+                :modified_file_count
 
     def initialize(options)
       @identifier         = options["identifier"]
@@ -20,6 +23,10 @@ module Codometer
       @uploaded_at        = options["uploaded_at"]
       @api_uri            = options["api_uri"]
       @parent_identifiers = options["parent_identifiers"]
+      @line_additions     = options["line_additions"]
+      @line_deletions     = options["line_deletions"]
+      @line_total         = options["line_total"]
+      @modified_file_count= options["modified_file_count"]
     end
 
     def author

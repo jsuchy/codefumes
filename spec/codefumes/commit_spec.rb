@@ -18,13 +18,17 @@ def single_commit
   <authored_at>Wed May 20 09:09:06 -0500 2009</authored_at>
   <uploaded_at>2009-06-04 02:43:20 UTC</uploaded_at>
   <api_uri>http://localhost:3000/api/v1/commits/f3badd5624dfbcf5176f0471261731e1b92ce957.xml</api_uri>
+  <line_additions>20</line_additions>
+  <line_deletions>10</line_deletions>
+  <line_total>30</line_total>
+  <modified_file_count>2</modified_file_count>
 </commit>
 END_OF_COMMIT
 end
 
 def register_index_uri
   FakeWeb.register_uri(
-    :get, "http://www.codometer.net:80/api/v1/xml/projects/apk/commits",
+    :get, "http://www.codefumes.com:80/api/v1/xml/projects/apk/commits",
     :status => ["200", "Ok"],
     :string =>  "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<commits>\n#{single_commit}\n#{single_commit}\n#{single_commit}\n</commits>\n")
 end
@@ -43,7 +47,7 @@ describe "Commit" do
     context "with a valid commit identifier" do
       before(:each) do
         FakeWeb.register_uri(
-          :get, "http://www.codometer.net:80/api/v1/xml/commits/f3badd5624dfbcf5176f0471261731e1b92ce957",
+          :get, "http://www.codefumes.com:80/api/v1/xml/commits/f3badd5624dfbcf5176f0471261731e1b92ce957",
           :status => ["200", "Ok"],
           :string =>  "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n#{single_commit}")
         @commit = Commit.find(@identifier)
@@ -60,7 +64,11 @@ describe "Commit" do
        :authored_at,
        :uploaded_at,
        :api_uri,
-       :parent_identifiers
+       :parent_identifiers,
+       :line_additions,
+       :line_deletions,
+       :line_total,
+       :modified_file_count,
       ].each do |method_name|
         it "sets the '#{method_name.to_s}'" do
           @commit.send(method_name).should_not == nil
@@ -71,7 +79,7 @@ describe "Commit" do
     context "with a non-existant commit identifier" do
       before(:each) do
         @identifier = "non_existant_commit_identifier"
-        FakeWeb.register_uri( :get, "http://www.codometer.net:80/api/v1/xml/commits/#{@identifier}",
+        FakeWeb.register_uri( :get, "http://www.codefumes.com:80/api/v1/xml/commits/#{@identifier}",
                               :status => ["404", "Not Found"])
       end
 
@@ -89,7 +97,7 @@ describe "Commit" do
     context "with valid parameters" do
       before(:each) do
         FakeWeb.register_uri(
-          :get, "http://www.codometer.net:80/api/v1/xml/projects/#{@project_public_key}/commits/latest",
+          :get, "http://www.codefumes.com:80/api/v1/xml/projects/#{@project_public_key}/commits/latest",
           :status => ["200", "Ok"],
           :string =>  "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n#{single_commit}")
       end
@@ -102,7 +110,7 @@ describe "Commit" do
     context "with invalid parameters" do
       before(:each) do
         FakeWeb.register_uri(
-          :get, "http://www.codometer.net:80/api/v1/xml/projects/#{@project_public_key}/commits/latest",
+          :get, "http://www.codefumes.com:80/api/v1/xml/projects/#{@project_public_key}/commits/latest",
           :status => ["404", "Not Found"],
           :string =>  "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n#{single_commit}")
       end
@@ -122,7 +130,7 @@ describe "Commit" do
       context "when the specified project has commits stored" do
         before(:each) do
           FakeWeb.register_uri(
-            :get, "http://www.codometer.net:80/api/v1/xml/projects/#{@project_public_key}/commits/latest",
+            :get, "http://www.codefumes.com:80/api/v1/xml/projects/#{@project_public_key}/commits/latest",
             :status => ["200", "Ok"],
             :string =>  "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n#{single_commit}")
         end
@@ -135,7 +143,7 @@ describe "Commit" do
       context "when the specified project does not have any commits stored" do
         before(:each) do
           FakeWeb.register_uri(
-            :get, "http://www.codometer.net:80/api/v1/xml/projects/#{@project_public_key}/commits/latest",
+            :get, "http://www.codefumes.com:80/api/v1/xml/projects/#{@project_public_key}/commits/latest",
             :status => ["404", "Not Found"],
             :string =>  "")
         end
@@ -149,7 +157,7 @@ describe "Commit" do
     context "with invalid parameters" do
       before(:each) do
         FakeWeb.register_uri(
-          :get, "http://www.codometer.net:80/api/v1/xml/projects/#{@project_public_key}/commits/latest",
+          :get, "http://www.codefumes.com:80/api/v1/xml/projects/#{@project_public_key}/commits/latest",
           :status => ["404", "Not Found"],
           :string =>  "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n#{single_commit}")
       end
@@ -175,7 +183,7 @@ describe "Commit" do
     context "with invalid parameters" do
       before(:each) do
         FakeWeb.register_uri(
-          :get, "http://www.codometer.net:80/api/v1/xml/projects/apk/commits",
+          :get, "http://www.codefumes.com:80/api/v1/xml/projects/apk/commits",
           :status => ["404", "Not Found"],
           :string =>  "")
       end
@@ -191,7 +199,7 @@ describe "Commit" do
       @email = "jdoe@example.com"
       @name  = "John Doe"
       FakeWeb.register_uri(
-        :get, "http://www.codometer.net:80/api/v1/xml/commits/f3badd5624dfbcf5176f0471261731e1b92ce957",
+        :get, "http://www.codefumes.com:80/api/v1/xml/commits/f3badd5624dfbcf5176f0471261731e1b92ce957",
         :status => ["200", "Ok"],
         :string =>  "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n#{single_commit}")
       @commit = Commit.find(@identifier)

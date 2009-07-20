@@ -1,8 +1,8 @@
-module Codometer
+module CodeFumes
   module ConfigFile
     extend self
     DEFAULT_FILE_STRUCTURE = {}.dup
-    DEFAULT_PATH = File.expand_path('~/.codometer_config')
+    DEFAULT_PATH = File.expand_path('~/.codefumes_config')
 
     def path
       DEFAULT_PATH

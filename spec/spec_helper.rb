@@ -11,7 +11,7 @@ gem 'ruby-debug'
 require 'ruby-debug'
 
 $:.unshift(File.dirname(__FILE__) + '/../lib')
-require 'codometer'
+require 'codefumes'
 require 'fakeweb'
 
-include Codometer
+include CodeFumes

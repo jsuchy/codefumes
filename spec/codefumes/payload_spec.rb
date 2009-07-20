@@ -13,7 +13,7 @@ describe "Payload" do
 
     context "with valid parameters" do
       before(:each) do
-        FakeWeb.register_uri( :post, "http://www.codometer.net:80/api/v1/xml/projects/apk/payloads?payload[commits]=data_to_send_up",
+        FakeWeb.register_uri( :post, "http://www.codefumes.com:80/api/v1/xml/projects/apk/payloads?payload[commits]=data_to_send_up",
                              :status => ["201", "Created"],
                              :string =>  "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<payload>\n <created_at>Creation Date</created_at>\n  </payload>\n")
       end
@@ -46,7 +46,7 @@ describe "Payload" do
 
     context "with invalid parameters" do
       before(:each) do
-        FakeWeb.register_uri( :post, "http://www.codometer.net:80/api/v1/xml/projects/apk/payloads?payload[commits]=invalid_data",
+        FakeWeb.register_uri( :post, "http://www.codefumes.com:80/api/v1/xml/projects/apk/payloads?payload[commits]=invalid_data",
                               :status => ["422", "Unprocessable Entity"])
       end
 

@@ -9,8 +9,8 @@ describe "ConfigFile" do
   end
 
   describe "calling 'path'" do
-    it "returns a the full path to a dotfile named '.codometer_config' in the user's home directory" do
-     ConfigFile.path.should == File.expand_path('~/.codometer_config')
+    it "returns a the full path to a dotfile named '.codefumes_config' in the user's home directory" do
+     ConfigFile.path.should == File.expand_path('~/.codefumes_config')
     end
 
     context "when the file does not exist" do

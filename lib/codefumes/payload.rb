@@ -1,6 +1,6 @@
 module CodeFumes
   class Payload
-    PAYLOAD_CHARACTER_LIMIT = 5000
+    PAYLOAD_CHARACTER_LIMIT = 4000
     include HTTParty
     base_uri 'http://www.codefumes.com/api/v1/xml'
     #base_uri 'http://localhost:3000/api/v1/xml'

@@ -96,9 +96,9 @@ describe "Payload" do
           @prepared = Payload.prepare({:public_key => 'fjsk', :scm_payload => {:commits => commits}})
         end
 
-        it "returns an Array with a single payload element" do
+        it "returns an Array with a two payload element" do
           @prepared.should be_instance_of(Array)
-          @prepared.size.should == 1
+          @prepared.size.should == 2
           @prepared.first.should be_instance_of(Payload)
         end
       end
@@ -114,9 +114,9 @@ describe "Payload" do
           @prepared = Payload.prepare(raw_payload)
         end
 
-        it "returns an Array with a three payload elements" do
+        it "returns an Array with a four payload elements" do
           @prepared.should be_instance_of(Array)
-          @prepared.size.should == 3
+          @prepared.size.should == 4
           all_are_payloads = @prepared.all? {|chunk| chunk.instance_of?(Payload)}
           all_are_payloads.should == true
         end

@@ -20,7 +20,7 @@ describe "Payload" do
 
       [:created_at].each do |method_name|
         it "sets the '#{method_name.to_s}'" do
-          payload = Payload.new(:public_key => @project.public_key, :scm_payload => {:commits => "data_to_send_up"})
+          payload = Payload.new(:public_key => @project.public_key, :content => {:commits => "data_to_send_up"})
           payload.send(method_name).should == nil
           payload.save.should == true
           payload.send(method_name).should_not == nil
@@ -31,7 +31,7 @@ describe "Payload" do
 
     context "when the payload does not have any content" do
       before(:each) do
-        @payload = Payload.new(:public_key => @project.public_key, :scm_payload => {:commits => ""})
+        @payload = Payload.new(:public_key => @project.public_key, :content => {:commits => ""})
       end
 
       it "returns true without attempting to save to the site" do
@@ -52,7 +52,7 @@ describe "Payload" do
 
       [:created_at].each do |method_name|
         it "does not set a value for '#{method_name.to_s}'" do
-          payload = Payload.new(:public_key => @project.public_key, :scm_payload => {:commits => "invalid_data"})
+          payload = Payload.new(:public_key => @project.public_key, :content => {:commits => "invalid_data"})
           payload.save.should == false
           payload.send(method_name).should == nil
         end
@@ -93,7 +93,7 @@ describe "Payload" do
           commits = commit_count.times.map do |index|
             {:identifier => "92dd08477f0ca144ee0f12ba083760dd810760a2_#{index}"}
           end
-          @prepared = Payload.prepare({:public_key => 'fjsk', :scm_payload => {:commits => commits}})
+          @prepared = Payload.prepare({:public_key => 'fjsk', :content => {:commits => commits}})
         end
 
         it "returns an Array with a two payload element" do
@@ -110,7 +110,7 @@ describe "Payload" do
           commits = commit_count.times.map do |index|
             {:identifier => "92dd08477f0ca144ee0f12ba083760dd810760a2_#{index}"}
           end
-          raw_payload = {:public_key => 'fjsk', :scm_payload => {:commits => commits}}
+          raw_payload = {:public_key => 'fjsk', :content => {:commits => commits}}
           @prepared = Payload.prepare(raw_payload)
         end
 

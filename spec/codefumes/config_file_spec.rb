@@ -99,4 +99,29 @@ describe "ConfigFile" do
       end
     end
   end
+
+  describe 'setting a custom path' do
+    after(:each) do
+      ENV['CODEFUMES_CONFIG_FILE'] = nil
+    end
+
+    context "via an environment variable" do
+      it "updates the value returned from 'path'" do
+        new_path = File.expand_path('./tmp/new_config_via_env_var')
+        ConfigFile.path.should == File.expand_path('~/.codefumes_config')
+        ENV['CODEFUMES_CONFIG_FILE'] = new_path
+        ConfigFile.path.should == new_path
+      end
+    end
+
+    context "via path=" do
+      it "updates the value returned from 'path'" do
+        new_path = File.expand_path('./tmp/new_config')
+        ConfigFile.path.should == File.expand_path('~/.codefumes_config')
+        ConfigFile.path = new_path
+        ConfigFile.path.should == new_path
+      end
+    end
+  end
+
 end

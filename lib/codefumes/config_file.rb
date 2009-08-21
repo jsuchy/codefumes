@@ -1,11 +1,15 @@
 module CodeFumes
   module ConfigFile
     extend self
-    DEFAULT_FILE_STRUCTURE = {}.dup
+    DEFAULT_FILE_STRUCTURE = {}
     DEFAULT_PATH = File.expand_path('~/.codefumes_config')
 
     def path
-      DEFAULT_PATH
+      @path || ENV['CODEFUMES_CONFIG_FILE'] || DEFAULT_PATH
+    end
+
+    def path=(custom_path)
+      @path = File.expand_path(custom_path)
     end
 
     def save_project(project)

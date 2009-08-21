@@ -1,30 +1,42 @@
 require File.dirname(__FILE__) + '/../spec_helper.rb'
 
-def single_commit
-<<-END_OF_COMMIT
-<commit>
-  <identifier>f3badd5624dfbcf5176f0471261731e1b92ce957</identifier>
-  <author_name>John Doe</author_name>
-  <author_email>jdoe@example.com</author_email>
-  <committer_name>John Doe</committer_name>
-  <committer_email>jdoe@example.com</committer_email>
-  <short_message>Made command-line option for 'name' actually work</short_message>
-  <message>
-    Made command-line option for 'name' actually work
-    - Commentd out hard-coded 'require' line used for testing
-  </message>
-  <parent_identifiers>9ddj48423jdsjds5176f0471261731e1b92ce957,3ewdjok23jdsjds5176f0471261731e1b92ce957,284djsksjfjsjds5176f0471261731e1b92ce957</parent_identifiers>
-  <committed_at>Wed May 20 09:09:06 -0500 2009</committed_at>
-  <authored_at>Wed May 20 09:09:06 -0500 2009</authored_at>
-  <uploaded_at>2009-06-04 02:43:20 UTC</uploaded_at>
-  <api_uri>http://localhost:3000/api/v1/commits/f3badd5624dfbcf5176f0471261731e1b92ce957.xml</api_uri>
-  <line_additions>20</line_additions>
-  <line_deletions>10</line_deletions>
-  <line_total>30</line_total>
-  <affected_file_count>2</affected_file_count>
-</commit>
-END_OF_COMMIT
+def single_commit(options = {})
+  commit_xml = <<-END_OF_COMMIT
+  <commit>
+    <identifier>f3badd5624dfbcf5176f0471261731e1b92ce957</identifier>
+    <author_name>John Doe</author_name>
+    <author_email>jdoe@example.com</author_email>
+    <committer_name>John Doe</committer_name>
+    <committer_email>jdoe@example.com</committer_email>
+    <short_message>Made command-line option for 'name' actually work</short_message>
+    <message>
+      Made command-line option for 'name' actually work
+      - Commentd out hard-coded 'require' line used for testing
+    </message>
+    <parent_identifiers>9ddj48423jdsjds5176f0471261731e1b92ce957,3ewdjok23jdsjds5176f0471261731e1b92ce957,284djsksjfjsjds5176f0471261731e1b92ce957</parent_identifiers>
+    <committed_at>Wed May 20 09:09:06 -0500 2009</committed_at>
+    <authored_at>Wed May 20 09:09:06 -0500 2009</authored_at>
+    <uploaded_at>2009-06-04 02:43:20 UTC</uploaded_at>
+    <api_uri>http://localhost:3000/api/v1/commits/f3badd5624dfbcf5176f0471261731e1b92ce957.xml</api_uri>
+    <line_additions>20</line_additions>
+    <line_deletions>10</line_deletions>
+    <line_total>30</line_total>
+    <affected_file_count>2</affected_file_count>
+  END_OF_COMMIT
+
+  if options[:include_custom_attributes]
+    commit_xml <<
+    <<-END_OF_COMMIT
+      <custom_attributes>
+        <coverage>83</coverage>
+        <random_attribute>1</random_attribute>
+      </custom_attributes>
+    END_OF_COMMIT
+  end
+
+  commit_xml << "\n</commit>"
 end
+
 
 def register_index_uri
   FakeWeb.register_uri(
@@ -216,6 +228,42 @@ describe "Commit" do
       it "returns a concatenated string containing the author's name & email" do
         @commit.committer.should =~ /#{@name}/
         @commit.committer.should =~ /#{@email}/
+      end
+    end
+  end
+
+  describe "accessing custom metrics" do
+    before(:each) do
+      @project_public_key = "apk"
+    end
+
+    context "when the commit does not have any custom attributes" do
+      before(:each) do
+        FakeWeb.register_uri(
+          :get, "http://www.codefumes.com:80/api/v1/xml/projects/#{@project_public_key}/commits/latest",
+          :status => ["200", "Ok"],
+          :string =>  "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n#{single_commit}")
+      end
+
+      it "returns an empty Hash" do
+        Commit.latest(@project_public_key).custom_attributes.should == {}
+      end
+    end
+
+    context "when the commit does not have any custom attributes" do
+      before(:each) do
+        commit_content = single_commit(:include_custom_attributes => true)
+        FakeWeb.register_uri(
+          :get, "http://www.codefumes.com:80/api/v1/xml/projects/#{@project_public_key}/commits/latest",
+          :status => ["200", "Ok"],
+          :string =>  "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n#{commit_content}")
+      end
+
+      it "returns a Hash of key-value pairs (attribute_name -> attribute_value)" do
+        Commit.latest(@project_public_key).custom_attributes.should be_instance_of(Hash)
+        Commit.latest(@project_public_key).custom_attributes[:coverage].should == "83"
+        Commit.latest(@project_public_key).custom_attributes[:random_attribute].should == "1"
+        Commit.latest(@project_public_key).custom_attributes.size.should == 2
       end
     end
   end

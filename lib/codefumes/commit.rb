@@ -8,25 +8,27 @@ module CodeFumes
                 :committer_email, :short_message, :message,:committed_at,
                 :authored_at, :uploaded_at, :api_uri, :parent_identifiers,
                 :line_additions, :line_deletions, :line_total,
-                :affected_file_count
+                :affected_file_count, :custom_attributes
 
     def initialize(options)
-      @identifier         = options["identifier"]
-      @author_email       = options["author_email"]
-      @author_name        = options["author_name"]
-      @committer_email    = options["committer_email"]
-      @committer_name     = options["committer_name"]
-      @short_message      = options["short_message"]
-      @message            = options["message"]
-      @committed_at       = options["committed_at"]
-      @authored_at        = options["authored_at"]
-      @uploaded_at        = options["uploaded_at"]
-      @api_uri            = options["api_uri"]
-      @parent_identifiers = options["parent_identifiers"]
-      @line_additions     = options["line_additions"]
-      @line_deletions     = options["line_deletions"]
-      @line_total         = options["line_total"]
-      @affected_file_count= options["affected_file_count"]
+      @identifier          = options["identifier"]
+      @author_email        = options["author_email"]
+      @author_name         = options["author_name"]
+      @committer_email     = options["committer_email"]
+      @committer_name      = options["committer_name"]
+      @short_message       = options["short_message"]
+      @message             = options["message"]
+      @committed_at        = options["committed_at"]
+      @authored_at         = options["authored_at"]
+      @uploaded_at         = options["uploaded_at"]
+      @api_uri             = options["api_uri"]
+      @parent_identifiers  = options["parent_identifiers"]
+      @line_additions      = options["line_additions"]
+      @line_deletions      = options["line_deletions"]
+      @line_total          = options["line_total"]
+      @affected_file_count = options["affected_file_count"]
+      @custom_attributes   = options["custom_attributes"] || {}
+      convert_custom_attributes_keys_to_symbols
     end
 
     def author
@@ -76,4 +78,11 @@ module CodeFumes
       latest_commit.nil? ? nil : latest_commit.identifier
     end
   end
+
+  private
+    def convert_custom_attributes_keys_to_symbols
+      @custom_attributes = @custom_attributes.inject({}) do |results, key_and_value|
+        results.merge! key_and_value.first.to_sym => key_and_value.last
+      end
+    end
 end

@@ -86,19 +86,19 @@ describe "Payload" do
         end
       end
 
-      context "when supplying a hash with less than 5,000 characters" do
+      context "when supplying a hash with less than 4,000 characters" do
         before(:each) do
           single_commit_ex =  {:identifier => "92dd08477f0ca144ee0f12ba083760dd810760a2_000"}
-          commit_count = 5000 / single_commit_ex.to_s.length
+          commit_count = 4000 / single_commit_ex.to_s.length
           commits = commit_count.times.map do |index|
             {:identifier => "92dd08477f0ca144ee0f12ba083760dd810760a2_#{index}"}
           end
           @prepared = Payload.prepare({:public_key => 'fjsk', :content => {:commits => commits}})
         end
 
-        it "returns an Array with a two payload element" do
+        it "returns an Array with a single payload element" do
           @prepared.should be_instance_of(Array)
-          @prepared.size.should == 2
+          @prepared.size.should == 1
           @prepared.first.should be_instance_of(Payload)
         end
       end
@@ -120,9 +120,6 @@ describe "Payload" do
           all_are_payloads = @prepared.all? {|chunk| chunk.instance_of?(Payload)}
           all_are_payloads.should == true
         end
-
-        it "the first payload contains approximately 10,000 characters"
-        it "the second payload contains approximately 5,000 characters"
       end
     end
   end

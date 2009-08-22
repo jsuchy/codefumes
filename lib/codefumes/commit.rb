@@ -77,12 +77,12 @@ module CodeFumes
       latest_commit = latest(project_public_key)
       latest_commit.nil? ? nil : latest_commit.identifier
     end
-  end
 
-  private
-    def convert_custom_attributes_keys_to_symbols
-      @custom_attributes = @custom_attributes.inject({}) do |results, key_and_value|
-        results.merge! key_and_value.first.to_sym => key_and_value.last
+    private
+      def convert_custom_attributes_keys_to_symbols
+        @custom_attributes = @custom_attributes.inject({}) do |results, key_and_value|
+          results.merge! key_and_value.first.to_sym => key_and_value.last
+        end
       end
-    end
+  end
 end

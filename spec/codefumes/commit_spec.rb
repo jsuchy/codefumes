@@ -250,7 +250,7 @@ describe "Commit" do
       end
     end
 
-    context "when the commit does not have any custom attributes" do
+    context "when the commit has defined custom attributes" do
       before(:each) do
         commit_content = single_commit(:include_custom_attributes => true)
         FakeWeb.register_uri(

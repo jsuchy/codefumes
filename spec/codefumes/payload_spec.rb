@@ -109,13 +109,18 @@ describe "Payload" do
           commits = commit_count.times.map do |index|
             {:identifier => "92dd08477f0ca144ee0f12ba083760dd810760a2_#{index}"}
           end
-          @prepared = Payload.prepare({:public_key => 'fjsk', :content => {:commits => commits}})
+          @prepared = Payload.prepare({:public_key => 'fjsk', :private_key => 'something_super_secret', :content => {:commits => commits}})
         end
 
         it "returns an Array with a single payload element" do
           @prepared.should be_instance_of(Array)
           @prepared.size.should == 1
           @prepared.first.should be_instance_of(Payload)
+        end
+        it "sets the private_key on all payloads" do
+          @prepared.each do |payload|
+            payload.project_private_key.should == 'something_super_secret'
+          end
         end
       end
 
@@ -126,7 +131,7 @@ describe "Payload" do
           commits = commit_count.times.map do |index|
             {:identifier => "92dd08477f0ca144ee0f12ba083760dd810760a2_#{index}"}
           end
-          raw_payload = {:public_key => 'fjsk', :content => {:commits => commits}}
+          raw_payload = {:public_key => 'fjsk', :private_key => 'something_super_secret', :content => {:commits => commits}}
           @prepared = Payload.prepare(raw_payload)
         end
 
@@ -136,6 +141,15 @@ describe "Payload" do
           all_are_payloads = @prepared.all? {|chunk| chunk.instance_of?(Payload)}
           all_are_payloads.should == true
         end
+        
+        it "sets the private_key on all payloads" do
+          @prepared.each do |payload|
+            payload.project_private_key.should == 'something_super_secret'
+          end
+        end
+
+        it "the first payload contains approximately 10,000 characters"
+        it "the second payload contains approximately 5,000 characters"
       end
     end
   end

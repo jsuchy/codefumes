@@ -2,7 +2,7 @@ module CodeFumes
   class Payload < CodeFumes::API
     PAYLOAD_CHARACTER_LIMIT = 4000
     
-    attr_reader :project_public_key, :created_at
+    attr_reader :project_public_key, :project_private_key, :created_at
 
     def initialize(options = {})
       @project_public_key = options[:public_key]
@@ -31,6 +31,8 @@ module CodeFumes
 
       public_key = raw_payload.delete(:public_key)
       raise ArgumentError, "No public key provided" if public_key.nil?
+      
+      private_key = raw_payload.delete(:private_key)
 
       if raw_payload[:content].nil? || raw_payload[:content][:commits].nil?
         raise ArgumentError, "No commits key provided"
@@ -55,7 +57,7 @@ module CodeFumes
       end
 
       chunked[:prepared].map do |raw_content|
-        Payload.new(:public_key => public_key, :content => {:commits => raw_content})
+        Payload.new(:public_key => public_key, :private_key => private_key, :content => {:commits => raw_content})
       end
     end
 

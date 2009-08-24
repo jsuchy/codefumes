@@ -10,6 +10,8 @@ require 'rubygems'
 gem 'httparty', '>= 0.4.3'
 require 'httparty'
 
+require 'api'
+
 require 'project'
 require 'config_file'
 require 'payload'

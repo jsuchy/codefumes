@@ -8,22 +8,38 @@ describe "Payload" do
 
   describe "save" do
     before(:each) do
-      @project = Project.new(:public_key => "apk")
+      @project = Project.new(:public_key => "apk", :private_key => 'private_key_value')
     end
 
     context "with valid parameters" do
       before(:each) do
-        FakeWeb.register_uri( :post, "http://www.codefumes.com:80/api/v1/xml/projects/apk/payloads?payload[commits]=data_to_send_up",
+        FakeWeb.register_uri( :post, "http://www.codefumes.com:80/api/v1/xml/projects/apk/payloads?private_key=private_key_value&payload[commits]=data_to_send_up",
                              :status => ["201", "Created"],
                              :string =>  "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<payload>\n <created_at>Creation Date</created_at>\n  </payload>\n")
+        FakeWeb.register_uri( :post, "http://www.codefumes.com:80/api/v1/xml/projects/apk/payloads?private_key=&payload[commits]=data_to_send_up",
+                            :status => ["401", "Unauthorized"])
       end
-
-      [:created_at].each do |method_name|
-        it "sets the '#{method_name.to_s}'" do
-          payload = Payload.new(:public_key => @project.public_key, :content => {:commits => "data_to_send_up"})
-          payload.send(method_name).should == nil
-          payload.save.should == true
-          payload.send(method_name).should_not == nil
+      context "with valid private_key" do
+        [:created_at].each do |method_name|
+          it "sets the '#{method_name.to_s}'" do
+            payload = Payload.new(:public_key => @project.public_key, :private_key => @project.private_key, :content => {:commits => "data_to_send_up"})
+            payload.send(method_name).should == nil
+            payload.save.should == true
+            payload.send(method_name).should_not == nil
+          end
+        end
+      end
+      context "with invalid private_key" do
+        before(:each) do
+          @project = Project.new(:public_key => "apk")
+        end
+        [:created_at].each do |method_name|
+          it "sets the '#{method_name.to_s}'" do
+            payload = Payload.new(:public_key => @project.public_key, :private_key => @project.private_key, :content => {:commits => "data_to_send_up"})
+            payload.send(method_name).should == nil
+            payload.save.should == false
+            payload.send(method_name).should == nil
+          end
         end
       end
 
@@ -46,13 +62,13 @@ describe "Payload" do
 
     context "with invalid parameters" do
       before(:each) do
-        FakeWeb.register_uri( :post, "http://www.codefumes.com:80/api/v1/xml/projects/apk/payloads?payload[commits]=invalid_data",
+        FakeWeb.register_uri( :post, "http://www.codefumes.com:80/api/v1/xml/projects/apk/payloads?private_key=#{@project.private_key}&payload[commits]=invalid_data",
                               :status => ["422", "Unprocessable Entity"])
       end
 
       [:created_at].each do |method_name|
         it "does not set a value for '#{method_name.to_s}'" do
-          payload = Payload.new(:public_key => @project.public_key, :content => {:commits => "invalid_data"})
+          payload = Payload.new(:public_key => @project.public_key, :private_key => @project.private_key, :content => {:commits => "invalid_data"})
           payload.save.should == false
           payload.send(method_name).should == nil
         end

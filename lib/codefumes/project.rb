@@ -1,14 +1,12 @@
 module CodeFumes
-  class Project
-    include HTTParty
-    base_uri 'http://www.codefumes.com/api/v1/xml'
-    #base_uri 'http://localhost:3000/api/v1/xml'
-    format :xml
+  class Project < CodeFumes::API
+
     attr_reader :private_key, :short_uri, :community_uri, :api_uri
     attr_accessor :name, :public_key
 
     def initialize(options = {})
       @public_key = options[:public_key]
+      @private_key = options[:private_key]
       @name = options[:name]
     end
 
@@ -69,7 +67,7 @@ module CodeFumes
 
     private
       def update
-        self.class.put("/projects/#{@public_key}", :query => {:project => {:name => @name}})
+        self.class.put("/projects/#{@public_key}", :query => {:project => {:name => @name}, :private_key => @private_key})
       end
 
       def create
@@ -77,7 +75,7 @@ module CodeFumes
       end
 
       def destroy!
-        self.class.delete("/projects/#{@public_key}")
+        self.class.delete("/projects/#{@public_key}", :query => {:private_key => @private_key})
       end
   end
 end

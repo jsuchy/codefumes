@@ -1,20 +1,18 @@
 module CodeFumes
-  class Payload
+  class Payload < CodeFumes::API
     PAYLOAD_CHARACTER_LIMIT = 4000
-    include HTTParty
-    base_uri 'http://www.codefumes.com/api/v1/xml'
-    #base_uri 'http://localhost:3000/api/v1/xml'
-    format :xml
+    
     attr_reader :project_public_key, :created_at
 
     def initialize(options = {})
       @project_public_key = options[:public_key]
+      @project_private_key = options[:private_key]
       @content = options[:content]
     end
 
     def save
       return true if empty_payload?
-      response = self.class.post("/projects/#{@project_public_key}/payloads", :query => {:payload => @content})
+      response = self.class.post("/projects/#{@project_public_key}/payloads", :query => {:payload => @content, :private_key => @project_private_key})
 
       case response.code
       when 201

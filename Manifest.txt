@@ -5,6 +5,7 @@ README.rdoc
 Rakefile
 config/website.yml.sample
 lib/codefumes.rb
+lib/codefumes/api.rb
 lib/codefumes/commit.rb
 lib/codefumes/config_file.rb
 lib/codefumes/payload.rb

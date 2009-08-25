@@ -31,6 +31,11 @@ module CodeFumes
     def serialized
       empty? ? DEFAULT_FILE_STRUCTURE : loaded
     end
+    
+    def options_for_project(public_key)
+      config = serialized
+      config[:projects] && config[:projects][public_key.to_sym] || {}
+    end
 
     private
       def write(serializable_object)

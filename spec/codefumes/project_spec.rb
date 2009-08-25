@@ -237,10 +237,14 @@ describe "Project" do
         end
 
         it "returns an initialized instance of the Project class" do
-          expected_config =  {:an_existing_public_key=> [{:private_key=>"private_key_value"},
-                                                         {:api_uri=>"http://www.codefumes.com/api/v1/xml/projects/an_existing_public_key.xml"},
-                                                         {:short_uri=>"http://www.codefumes.com/p/an_existing_public_key"}
-                                                        ]}
+          expected_config = {
+                              :an_existing_public_key => 
+                                {
+                                  :private_key=>"private_key_value",
+                                  :api_uri=>"http://www.codefumes.com/api/v1/xml/projects/an_existing_public_key.xml",
+                                  :short_uri=>"http://www.codefumes.com/p/an_existing_public_key"
+                                }
+                            }
           Project.find(@public_key).to_config.should == expected_config
         end
       end

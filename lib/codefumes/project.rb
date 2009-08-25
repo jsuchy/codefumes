@@ -33,10 +33,10 @@ module CodeFumes
 
     def to_config
       {@public_key.to_sym =>
-        [ {:private_key => @private_key},
-          {:api_uri => @api_uri},
-          {:short_uri => @short_uri},
-        ]
+        { :private_key => @private_key,
+          :api_uri => @api_uri,
+          :short_uri => @short_uri
+        }
       }
     end
 

@@ -1,3 +1,0 @@
-
-For more information on codefumes, see http://codefumes.rubyforge.org
-

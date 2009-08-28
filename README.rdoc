@@ -4,29 +4,79 @@ http://www.codefumes.com
 
 == DESCRIPTION:
 
-FIX (describe your package)
+CodeFumes.com[http://codefumes.com] is a service intended to help people
+involved with software projects who are interested in tracking, sharing,
+and reviewing metrics/information about a project in relation to the
+commits of said project's repository.  The site supports a small set of
+'standard' metrics, but also provides a simple method of supplying
+and retrieving custom metrics, allowing users to gather any metric they
+are interested in tracking.
+
+The 'codefumes' gem is an implementation of the
+CodeFumes.com[http://codefumes.com] RESTful API. The intention of the
+gem is to simplify integration with CodeFumes.com for developers of
+other libraries & and applications.
+
+For an example of another library using the current features of this
+gem, you can refer to the
+'cf-harvester[http://cf-harvester.rubyforge.org/]'  gem.
 
 == FEATURES/PROBLEMS:
 
-* FIX (list of features or problems)
+=== Features
+* Saving, finding, marshalling, and destroying CodeFumes
+  projects
+* Associating and retrieving a repository's history of commits for a
+  CodeFumes 'project'
+* Simple interface for accessing both CodeFumes's 'standard' commit
+  metrics, as well as custom commit attributes; simplifying
+  integration with other tools & libraries users may be interested in
+  using.
+* Interfaces with the CodeFumes config file (used to track projects a
+  user has created on the site)
+
+=== Problems
+
+* no issues to note at this time
 
 == SYNOPSIS:
 
-  FIX (code sample of usage)
+  require 'codefumes'
+
+  # Creating & finding a CodeFumes project
+  p = Project.save  # optionally providing a custom public key: :public_key => 'Abc3'
+  found_p = Project.find(p.public_key)
+  p.pulic_key # => 'Abc3'
+  p.api_uri   # => 'http://codefumes.com/api/v1/xml/Abc3'
+
+  # Commits
+  c = Commit.find(<commit identifier>)
+  c.identifier    # => git commit SHA (svn support coming soon)
+  c.short_message # => commit message
+
+  # Payloads, used to break up large HTTP requests
+  content = Payload.prepare(payload_content)
+  Payload.each {|chunk| chunk.save}
 
 == REQUIREMENTS:
 
-* FIX (list of requirements)
+* httparty (0.4.3)
 
 == INSTALL:
 
-* FIX (sudo gem install, anything else)
+From RubyForge:
+
+  sudo gem install codefumes
+
+Or, from Github:
+
+  sudo gem install cosyn-codefumes
 
 == LICENSE:
 
 (The MIT License)
 
-Copyright (c) 2009 full name
+Copyright (c) 2009 Cosyn Technologies, Inc.
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the

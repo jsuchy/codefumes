@@ -1,15 +1,27 @@
 module CodeFumes
+  # A Project encapsulates the concept of a project on the CodeFumes.com
+  # website.  Each project has a public key, private key, and can have a
+  # name defined.  Projects are also associated with a collection of
+  # commits from a repository.
   class Project < CodeFumes::API
-
     attr_reader :private_key, :short_uri, :community_uri, :api_uri
-    attr_accessor :name, :public_key
+    attr_accessor :name,:public_key
 
+    # Accepts Hash containing the following keys:
+    # * :public_key
+    # * :private_key
+    # * :name
     def initialize(options = {})
       @public_key = options[:public_key]
       @private_key = options[:private_key]
       @name = options[:name]
     end
 
+    # Deletes project from the website.
+    #
+    # Returns +true+ when the request is successful.
+    #
+    # Returns +false+ otherwise
     def delete
       response = destroy!
       case response.code
@@ -20,6 +32,14 @@ module CodeFumes
       end
     end
 
+    # Saves project +:public_key+ to the website. If the public key
+    # of the project has not been reserved yet, it will attempt to do
+    # so. If the public key of the project is already in use, it will
+    # attempt to update it with the current values.
+    #
+    # Returns +true+ if the operation was successful.
+    #
+    # Returns +false+ otherwise.
     def save
       response = exists? ? update : create
       case response.code
@@ -31,6 +51,8 @@ module CodeFumes
       end
     end
 
+    # Serializes a Project instance to a format compatible with the
+    # CodeFumes config file.
     def to_config
       {@public_key.to_sym =>
         { :private_key => @private_key,
@@ -40,11 +62,23 @@ module CodeFumes
       }
     end
 
+    # Verifies existence of Project on website.
+    #
+    # Returns +true+ if the public key of Project is available.
+    #
+    # Returns +false+ otherwise.
     def exists?
       return false if @public_key.nil? || @public_key.empty?
       !self.class.find(@public_key).nil?
     end
 
+
+    # Searches website for project with the supplied public key.
+    #
+    # Returns a Project instance if the project exists and is available,
+    # to the user making the request.
+    #
+    # Returns +nil+ otherwise.
     def self.find(public_key)
       response = get("/projects/#{public_key}")
       case response.code
@@ -56,7 +90,8 @@ module CodeFumes
       end
     end
 
-    def reinitialize!(options = {})
+    # TODO: Make this a private method
+    def reinitialize!(options = {}) #:nodoc:
       @public_key    = options['project']['public_key']
       @private_key   = options['project']['private_key']
       @short_uri     = options['project']['short_uri']

@@ -1,17 +1,38 @@
 module CodeFumes
+  # CodeFumes uses a global (per-user) config file to store relevant
+  # information around a user's use of the service.  Doing so addresses
+  # the following goals:
+  # * A defined location for all tools to utilize which contains URI's
+  #   and and keys for all projects a user has set up on
+  #   CodeFumes.com[http://codefumes.com], simplifying integration.
+  # * Associating (or disassociating) a project to (or from) a CodeFumes
+  #   project does not require any modifications to said project's
+  #   repository.
+  # * Simplified the implementation of 'user-less' projects on the
+  #   website.
+  #
+  # This class wraps up reading and writing this config file so other
+  # developers should not have to concern themselves with how to
+  # serialize & write the data of a project into the appropriate format,
+  # output file, et cetera.
   module ConfigFile
     extend self
     DEFAULT_FILE_STRUCTURE = {}
     DEFAULT_PATH = File.expand_path('~/.codefumes_config')
 
+    # Returns the path to the CodeFumes global (per-user) config file.
+    # The default path is '~/.codefumes_config'.
     def path
-      @path || ENV['CODEFUMES_CONFIG_FILE'] || DEFAULT_PATH
+      @path || ENV['CODEFUMES_CONFIG_FILE'] || DEFAULT_PATH.dup
     end
 
+    # Sets the path which should be used for storing the configuration
+    # CodeFumes.com data.
     def path=(custom_path)
       @path = File.expand_path(custom_path)
     end
 
+    # Store the supplied project into the CodeFumes config file.
     def save_project(project)
       config = serialized
       if config[:projects]
@@ -22,16 +43,20 @@ module CodeFumes
       write(config)
     end
 
+    # Remove the supplied project into the CodeFumes config file.
     def delete_project(project)
       config = serialized
       config[:projects].delete(project.public_key.to_sym)
       write(config)
     end
 
+    # Returns a Hash representation of the CodeFumes config file
     def serialized
-      empty? ? DEFAULT_FILE_STRUCTURE : loaded
+      empty? ? DEFAULT_FILE_STRUCTURE.dup : loaded
     end
-    
+
+    # Returns a Hash representation of a specific project contained in
+    # the CodeFumes config file.
     def options_for_project(public_key)
       config = serialized
       config[:projects] && config[:projects][public_key.to_sym] || {}

@@ -9,10 +9,6 @@ lib/codefumes/commit.rb
 lib/codefumes/config_file.rb
 lib/codefumes/payload.rb
 lib/codefumes/project.rb
-script/console
-script/destroy
-script/generate
-script/txt2html
 spec/codefumes/commit_spec.rb
 spec/codefumes/config_file_spec.rb
 spec/codefumes/payload_spec.rb

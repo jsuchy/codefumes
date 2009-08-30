@@ -43,7 +43,7 @@ module CodeFumes
         write(config)
       end
 
-      # Remove the supplied project into the CodeFumes config file.
+      # Remove the supplied project from the CodeFumes config file.
       def delete_project(project)
         config = serialized
         config[:projects] && config[:projects].delete(project.public_key.to_sym)

@@ -1,9 +1,12 @@
 %w[hoe rubygems rake rake/clean fileutils newgem rubigen].each { |f| require f }
-gem 'rdoc'
-require 'rdoc/rdoc'
-require 'hanna/rdoctask'
 
 require File.dirname(__FILE__) + '/lib/codefumes'
+
+begin
+  require "hanna/rdoctask"
+rescue LoadError
+  require 'rake/rdoctask'
+end
 
 $hoe = Hoe.new('codefumes', CodeFumes::VERSION) do |p|
   p.developer('Cosyn Technologies', 'devs@codefumes.com')
@@ -15,7 +18,6 @@ $hoe = Hoe.new('codefumes', CodeFumes::VERSION) do |p|
   ]
   p.extra_dev_deps = [
     ['newgem', ">= #{::Newgem::VERSION}"],
-    ['hanna','>= 0.1.8']
   ]
   
   p.clean_globs |= %w[**/.DS_Store tmp *.log]

@@ -1,7 +1,7 @@
 require 'rubygems'
 
 begin
-  require 'spec'
+  require 'spec/autorun'
 rescue LoadError
   gem 'rspec'
   require 'spec'

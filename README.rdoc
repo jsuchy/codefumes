@@ -13,7 +13,7 @@ and retrieving custom metrics, allowing users to gather any metric they
 are interested in tracking.
 
 The 'codefumes' gem is an implementation of the
-CodeFumes.com[http://codefumes.com] RESTful API. The intention of the
+CodeFumes.com[http://codefumes.com] API. The intention of the
 gem is to simplify integration with CodeFumes.com for developers of
 other libraries & and applications.
 
@@ -35,9 +35,9 @@ gem, you can refer to the
 * Interfaces with the CodeFumes config file (used to track projects a
   user has created on the site)
 
-=== Problems
+=== Problems / Things to Note
 
-* no issues to note at this time
+* CodeFumes 'projects' are repository-specific, not branch-specific.
 
 == SYNOPSIS:
 
@@ -54,9 +54,13 @@ gem, you can refer to the
   c.identifier    # => git commit SHA (svn support coming soon)
   c.short_message # => commit message
 
+  # Custom attributes associated with a commit
+  c.custom_attributes[:coverage] # => "80"
+
+
   # Payloads, used to break up large HTTP requests
   content = Payload.prepare(payload_content)
-  Payload.each {|chunk| chunk.save}
+  content.each {|chunk| chunk.save}
 
 == REQUIREMENTS:
 

@@ -15,70 +15,71 @@ module CodeFumes
   # developers should not have to concern themselves with how to
   # serialize & write the data of a project into the appropriate format,
   # output file, et cetera.
-  module ConfigFile
-    extend self
+  class ConfigFile
     DEFAULT_FILE_STRUCTURE = {}
     DEFAULT_PATH = File.expand_path('~/.codefumes_config')
 
-    # Returns the path to the CodeFumes global (per-user) config file.
-    # The default path is '~/.codefumes_config'.
-    def path
-      @path || ENV['CODEFUMES_CONFIG_FILE'] || DEFAULT_PATH.dup
-    end
-
-    # Sets the path which should be used for storing the configuration
-    # CodeFumes.com data.
-    def path=(custom_path)
-      @path = File.expand_path(custom_path)
-    end
-
-    # Store the supplied project into the CodeFumes config file.
-    def save_project(project)
-      config = serialized
-      if config[:projects]
-        config[:projects].merge!(project.to_config)
-      else
-        config[:projects] = project.to_config
+    class << self
+      # Returns the path to the CodeFumes global (per-user) config file.
+      # The default path is '~/.codefumes_config'.
+      def path
+        @path || ENV['CODEFUMES_CONFIG_FILE'] || DEFAULT_PATH.dup
       end
-      write(config)
-    end
 
-    # Remove the supplied project into the CodeFumes config file.
-    def delete_project(project)
-      config = serialized
-      config[:projects].delete(project.public_key.to_sym)
-      write(config)
-    end
+      # Sets the path which should be used for storing the configuration
+      # CodeFumes.com data.
+      def path=(custom_path)
+        @path = custom_path.nil? ? path : File.expand_path(custom_path)
+      end
 
-    # Returns a Hash representation of the CodeFumes config file
-    def serialized
-      empty? ? DEFAULT_FILE_STRUCTURE.dup : loaded
-    end
-
-    # Returns a Hash representation of a specific project contained in
-    # the CodeFumes config file.
-    def options_for_project(public_key)
-      config = serialized
-      config[:projects] && config[:projects][public_key.to_sym] || {}
-    end
-
-    private
-      def write(serializable_object)
-        File.open(path, 'w') do |f|
-          f.puts YAML::dump(serializable_object)
+      # Store the supplied project into the CodeFumes config file.
+      def save_project(project)
+        config = serialized
+        if config[:projects]
+          config[:projects].merge!(project.to_config)
+        else
+          config[:projects] = project.to_config
         end
+        write(config)
       end
 
-      def exists?
-        File.exists?(path)
+      # Remove the supplied project into the CodeFumes config file.
+      def delete_project(project)
+        config = serialized
+        config[:projects] && config[:projects].delete(project.public_key.to_sym)
+        write(config)
       end
 
-      def empty?
-        !(exists? && loaded)
+      # Returns a Hash representation of the CodeFumes config file
+      def serialized
+        empty? ? DEFAULT_FILE_STRUCTURE.dup : loaded
       end
 
-      def loaded
-        YAML::load_file(path)
+      # Returns a Hash representation of a specific project contained in
+      # the CodeFumes config file.
+      def options_for_project(public_key)
+        config = serialized
+        config[:projects] && config[:projects][public_key.to_sym] || {}
       end
+
+      private
+        def write(serializable_object)
+          File.open(path, 'w') do |f|
+            f.puts YAML::dump(serializable_object)
+          end
+        end
+
+        def exists?
+          File.exists?(path)
+        end
+
+        def empty?
+          !(exists? && loaded)
+        end
+
+        def loaded
+          YAML::load_file(path)
+        end
+    end
   end
 end

@@ -15,3 +15,5 @@ require 'codefumes'
 require 'fakeweb'
 
 include CodeFumes
+
+ENV['CODEFUMES_CONFIG_FILE'] = File.expand_path(File.dirname(__FILE__) + '/sample_codefumes_config.tmp')

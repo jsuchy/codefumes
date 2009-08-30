@@ -1,26 +1,36 @@
 require File.dirname(__FILE__) + '/../spec_helper.rb'
 
-include ConfigFile
-
 describe "ConfigFile" do
   before(:each) do
-    File.delete(ConfigFile.path) if File.exist?(ConfigFile.path)
     @project = Project.new(:public_key => 'public_key_value', :private_key => 'private_key_value')
   end
 
+  after(:all) do
+    unless ConfigFile.path == File.expand_path('~/.codefumes_config')
+      File.delete(ConfigFile.path) if File.exist?(ConfigFile.path)
+    end
+  end
+
   describe "calling 'path'" do
-    it "returns a the full path to a dotfile named '.codefumes_config' in the user's home directory" do
-     ConfigFile.path.should == File.expand_path('~/.codefumes_config')
+    before(:each) do
+      @original_path = ENV['CODEFUMES_CONFIG_FILE']
     end
 
-    context "when the file does not exist" do
-      before(:each) do
-        @file_path = ConfigFile.path
-      end
+    after(:all) do
+      ENV['CODEFUMES_CONFIG_FILE'] = @original_path
+    end
+
+    it "returns a default value of the full path to a dotfile named '.codefumes_config' in the user's home directory" do
+      ENV['CODEFUMES_CONFIG_FILE'] = nil
+      ConfigFile.path.should == File.expand_path('~/.codefumes_config')
     end
   end
 
   describe "calling 'save_project'" do
+    after(:all) do
+      File.delete(ConfigFile.path) if File.exist?(ConfigFile.path)
+    end
+
     context "when passed a new project" do
       it "creates the config file if it did not exist already" do
         File.exist?(ConfigFile.path).should be_false
@@ -101,8 +111,13 @@ describe "ConfigFile" do
   end
 
   describe 'setting a custom path' do
-    after(:each) do
+    before(:each) do
+      @original_path = ENV['CODEFUMES_CONFIG_FILE']
       ENV['CODEFUMES_CONFIG_FILE'] = nil
+    end
+
+    after(:all) do
+      ENV['CODEFUMES_CONFIG_FILE'] = @original_path
     end
 
     context "via an environment variable" do

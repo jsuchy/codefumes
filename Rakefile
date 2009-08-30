@@ -1,4 +1,4 @@
-%w[hoe rubygems rake rake/clean fileutils newgem rubigen metric_fu].each { |f| require f }
+%w[hoe rubygems rake rake/clean fileutils newgem rubigen metric_fu codefumes_harvester].each { |f| require f }
 
 require File.dirname(__FILE__) + '/lib/codefumes'
 
@@ -18,6 +18,8 @@ $hoe = Hoe.new('codefumes', CodeFumes::VERSION) do |p|
   ]
   p.extra_dev_deps = [
     ['newgem', ">= #{::Newgem::VERSION}"],
+    ['metric_fu', ">= 1.1.5"],
+    ['codefumes_harvester', ">= 0.0.1"]
   ]
   
   p.clean_globs |= %w[**/.DS_Store tmp *.log]
@@ -29,4 +31,5 @@ end
 require 'newgem/tasks'
 Dir['tasks/**/*.rake'].each { |t| load t}
 
-task :default => [:spec, :features]
+
+task :default => [:spec]

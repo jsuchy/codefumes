@@ -9,6 +9,7 @@ lib/codefumes/commit.rb
 lib/codefumes/config_file.rb
 lib/codefumes/payload.rb
 lib/codefumes/project.rb
+spec/codefumes/api_spec.rb
 spec/codefumes/commit_spec.rb
 spec/codefumes/config_file_spec.rb
 spec/codefumes/payload_spec.rb

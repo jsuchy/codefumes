@@ -9,8 +9,8 @@ $hoe = Hoe.new('codefumes', CodeFumes::VERSION) do |p|
   p.developer('Cosyn Technologies', 'devs@codefumes.com')
   p.summary = "API gem for the CodeFumes website"
   p.changes         = p.paragraphs_of("History.txt", 0..1).join("\n\n")
-  p.rubyforge_name  = p.name # TODO this is default value
-   p.extra_deps     = [
+  p.rubyforge_name  = p.name
+  p.extra_deps      = [
      ['httparty','>= 0.4.3']
   ]
   p.extra_dev_deps = [
@@ -24,7 +24,7 @@ $hoe = Hoe.new('codefumes', CodeFumes::VERSION) do |p|
   p.rsync_args = '-av --delete --ignore-errors'
 end
 
-require 'newgem/tasks' # load /tasks/*.rake
+require 'newgem/tasks'
 Dir['tasks/**/*.rake'].each { |t| load t}
 
 task :default => [:spec, :features]

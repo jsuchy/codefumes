@@ -59,7 +59,7 @@ module CodeFumes
       # the CodeFumes config file.
       def options_for_project(public_key)
         config = serialized
-        config[:projects] && config[:projects][public_key.to_sym] || {}
+        public_key && config[:projects] && config[:projects][public_key.to_sym] || {}
       end
 
       private

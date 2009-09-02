@@ -1,21 +1,10 @@
-def add_dir_to_load_path(dir_path)
-  $:.unshift(dir_path) unless
-    $:.include?(dir_path) || $:.include?(File.expand_path(dir_path))
-end
-
-add_dir_to_load_path(File.dirname(__FILE__))
-add_dir_to_load_path(File.dirname(__FILE__) + '/codefumes')
-
-require 'rubygems'
-gem 'httparty', '>= 0.4.3'
 require 'httparty'
 
-require 'api'
-
-require 'project'
-require 'config_file'
-require 'payload'
-require 'commit'
+require 'codefumes/api'
+require 'codefumes/project'
+require 'codefumes/config_file'
+require 'codefumes/payload'
+require 'codefumes/commit'
 
 module CodeFumes
   VERSION = '0.1.0'

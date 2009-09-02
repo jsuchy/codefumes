@@ -6,13 +6,9 @@ def register_create_uri
                         :string =>  "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<project>\n  <access-secret nil=\"true\"></access-secret>\n  <created-at type=\"datetime\">2009-04-29T23:18:03Z</created-at>\n  <public-key>foofoolerue</public-key>\n <private-key>foobarbaz</private-key>\n  <updated-at type=\"datetime\">2009-04-29T23:18:03Z</updated-at>\n <short_uri>http://www.codefumes.com/p/foofoolerue</short_uri>\n <community_uri>http://www.codefumes.com/community/projects/1</community_uri>\n <api-uri>http://www.codefumes.com/api/v1/xml/projects/1.xml</api-uri>\n</project>")
 end
 
-def register_update_uri(public_key = "public_key_value", project_name = "The Project Name(tm)", private_key="private_key_value")
-  if (private_key == "private_key_value") 
-    response = {:status => ["200", "Ok"], :string =>  "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<project>\n  <access-secret nil=\"true\"></access-secret>\n  <created-at type=\"datetime\">2009-04-29T23:18:03Z</created-at>\n  <public-key>existing_public_key</public-key>\n <private-key>private_key_value</private-key>\n  <updated-at type=\"datetime\">2009-04-29T23:18:03Z</updated-at>\n <short_uri>http://www.codefumes.com/p/#{public_key}</short_uri>\n <community_uri>http://www.codefumes.com/community/projects/#{public_key}</community_uri>\n <api-uri>http://www.codefumes.com/api/v1/xml/projects/#{public_key}.xml</api-uri>\n <name>#{project_name}</name>\n</project>\n"}
-  else
-    response = {:status => ["401", "Unauthorized"]}
-  end
-  FakeWeb.register_uri(:put, "http://www.codefumes.com/api/v1/xml/projects/existing_public_key?private_key=#{private_key}&project[name]=#{project_name}",
+def register_update_uri(public_key = "public_key_value", project_name = "The Project Name(tm)")
+  response = {:status => ["200", "Ok"], :string =>  "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<project>\n  <access-secret nil=\"true\"></access-secret>\n  <created-at type=\"datetime\">2009-04-29T23:18:03Z</created-at>\n  <public-key>existing_public_key</public-key>\n <private-key>private_key_value</private-key>\n  <updated-at type=\"datetime\">2009-04-29T23:18:03Z</updated-at>\n <short_uri>http://www.codefumes.com/p/#{public_key}</short_uri>\n <community_uri>http://www.codefumes.com/community/projects/#{public_key}</community_uri>\n <api-uri>http://www.codefumes.com/api/v1/xml/projects/#{public_key}.xml</api-uri>\n <name>#{project_name}</name>\n</project>\n"}
+  FakeWeb.register_uri(:put, "http://www.codefumes.com/api/v1/xml/projects/existing_public_key?project[name]=#{project_name}",
                        response)
 end
 
@@ -55,7 +51,7 @@ describe "Project" do
 
       context "when the public key has already been taken" do
 
-        context "when the correct private key is supplied" do
+        context "when response is success" do
           before(:each) do
             @updated_name = "different_name"
             @project = CodeFumes::Project.new(:public_key => "existing_public_key", :private_key => 'private_key_value', :name => @updated_name)
@@ -63,6 +59,11 @@ describe "Project" do
             register_update_uri(@project.public_key, @updated_name)
             @project.stub!(:exists?).and_return(true)
             @project.save.should be_true
+          end
+          
+          it "sets basic auth with the public and private key" do
+            Project.should_receive(:put).with("/projects/#{@project.public_key}", :query => {:project => {:name => @updated_name}}, :basic_auth => {:username => @project.public_key, :password => @project.private_key}).and_return(mock("response", :code => 401))
+            @project.save
           end
           
           it "updates the value of 'name' for the project associated with the supplied public key" do
@@ -80,11 +81,12 @@ describe "Project" do
               end
           end
         end
-        context "when an incorrect private key is supplied" do
+        context "respons is Unauthorized" do
           before(:each) do
             @updated_name = "different_name"
             @project = CodeFumes::Project.new(:public_key => "existing_public_key", :private_key => 'bad_key', :name => @updated_name)
-            register_update_uri(@project.public_key, @updated_name, "bad_key")
+            FakeWeb.register_uri(:put, "http://www.codefumes.com/api/v1/xml/projects/existing_public_key?project[name]=#{@project.name}",
+                                 :status => ["401", "Unauthorized"])
             @project.stub!(:exists?).and_return(true)
           end
           it "returns false" do
@@ -113,24 +115,27 @@ describe "Project" do
   context "delete" do
     before(:each) do
       @project = Project.new(:public_key => 'public_key_value', :private_key => 'private_key_value')
-      FakeWeb.register_uri( :delete, "http://www.codefumes.com/api/v1/xml/projects/#{@project.public_key}?private_key=private_key_value",
+      FakeWeb.register_uri( :delete, "http://www.codefumes.com/api/v1/xml/projects/#{@project.public_key}",
                             :status => ["200", "Successful"],
                             :string =>  "")
-      FakeWeb.register_uri( :delete, "http://www.codefumes.com/api/v1/xml/projects/#{@project.public_key}?private_key=",
-                            :status => ["401", "Unauthorized"],
-                            :string =>  "")
-
     end
-    context "with valid private_key" do
+    it "sets basic auth with the public and private key" do
+      Project.should_receive(:delete).with("/projects/#{@project.public_key}", :basic_auth => {:username => @project.public_key, :password => @project.private_key}).and_return(mock("response", :code => 401))
+      @project.delete
+    end
+    context "with Sucessful response" do
       it "returns true" do
         @project.delete.should be_true
       end
     end
-    context "with invalid private_key" do
+    context "with Unauthorized response" do
       before(:each) do 
         @project = Project.new(:public_key => 'public_key_value')
+        FakeWeb.register_uri( :delete, "http://www.codefumes.com/api/v1/xml/projects/#{@project.public_key}",
+                              :status => ["401", "Unauthorized"],
+                              :string =>  "")
       end
-      it "returns false when invalid private_key is given" do
+      it "returns false when invalid Unauthorized response is received" do
         @project.delete.should be_false
       end
     end

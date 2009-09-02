@@ -13,29 +13,34 @@ describe "Payload" do
 
     context "with valid parameters" do
       before(:each) do
-        FakeWeb.register_uri( :post, "http://www.codefumes.com:80/api/v1/xml/projects/apk/payloads?private_key=private_key_value&payload[commits]=data_to_send_up",
+        FakeWeb.register_uri( :post, "http://www.codefumes.com:80/api/v1/xml/projects/apk/payloads?payload[commits]=data_to_send_up",
                              :status => ["201", "Created"],
                              :string =>  "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<payload>\n <created_at>Creation Date</created_at>\n  </payload>\n")
-        FakeWeb.register_uri( :post, "http://www.codefumes.com:80/api/v1/xml/projects/apk/payloads?private_key=&payload[commits]=data_to_send_up",
-                            :status => ["401", "Unauthorized"])
       end
-      context "with valid private_key" do
+      it "sets basic auth with the public and private key" do
+        payload = Payload.new(:public_key => @project.public_key, :private_key => @project.private_key, :content => {:commits => "data_to_send_up"})
+        Payload.should_receive(:post).with("/projects/#{@project.public_key}/payloads", :query => {:payload => {:commits => "data_to_send_up"}}, :basic_auth => {:username => @project.public_key, :password => @project.private_key}).and_return(mock("response", :code => 401))
+        payload.save
+      end
+      context "with Created response" do
         [:created_at].each do |method_name|
           it "sets the '#{method_name.to_s}'" do
-            payload = Payload.new(:public_key => @project.public_key, :private_key => @project.private_key, :content => {:commits => "data_to_send_up"})
+            payload = Payload.new(:public_key => @project.public_key, :content => {:commits => "data_to_send_up"})
             payload.send(method_name).should == nil
             payload.save.should == true
             payload.send(method_name).should_not == nil
           end
         end
       end
-      context "with invalid private_key" do
+      context "with Unauthorized response" do
         before(:each) do
           @project = Project.new(:public_key => "apk")
+          FakeWeb.register_uri( :post, "http://www.codefumes.com:80/api/v1/xml/projects/apk/payloads?payload[commits]=data_to_send_up",
+                              :status => ["401", "Unauthorized"])
         end
         [:created_at].each do |method_name|
           it "sets the '#{method_name.to_s}'" do
-            payload = Payload.new(:public_key => @project.public_key, :private_key => @project.private_key, :content => {:commits => "data_to_send_up"})
+            payload = Payload.new(:public_key => @project.public_key, :content => {:commits => "data_to_send_up"})
             payload.send(method_name).should == nil
             payload.save.should == false
             payload.send(method_name).should == nil
@@ -62,13 +67,13 @@ describe "Payload" do
 
     context "with invalid parameters" do
       before(:each) do
-        FakeWeb.register_uri( :post, "http://www.codefumes.com:80/api/v1/xml/projects/apk/payloads?private_key=#{@project.private_key}&payload[commits]=invalid_data",
+        FakeWeb.register_uri( :post, "http://www.codefumes.com:80/api/v1/xml/projects/apk/payloads?payload[commits]=invalid_data",
                               :status => ["422", "Unprocessable Entity"])
       end
 
       [:created_at].each do |method_name|
         it "does not set a value for '#{method_name.to_s}'" do
-          payload = Payload.new(:public_key => @project.public_key, :private_key => @project.private_key, :content => {:commits => "invalid_data"})
+          payload = Payload.new(:public_key => @project.public_key, :content => {:commits => "invalid_data"})
           payload.save.should == false
           payload.send(method_name).should == nil
         end

@@ -102,7 +102,7 @@ module CodeFumes
 
     private
       def update
-        self.class.put("/projects/#{@public_key}", :query => {:project => {:name => @name}, :private_key => @private_key})
+        self.class.put("/projects/#{@public_key}", :query => {:project => {:name => @name}}, :basic_auth => {:username => @public_key, :password => @private_key})
       end
 
       def create
@@ -110,7 +110,7 @@ module CodeFumes
       end
 
       def destroy!
-        self.class.delete("/projects/#{@public_key}", :query => {:private_key => @private_key})
+        self.class.delete("/projects/#{@public_key}", :basic_auth => {:username => @public_key, :password => @private_key})
       end
   end
 end

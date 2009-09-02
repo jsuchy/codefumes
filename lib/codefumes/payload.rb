@@ -33,7 +33,7 @@ module CodeFumes
     # Returns +false+ if the request failed.
     def save
       return true if empty_payload?
-      response = self.class.post("/projects/#{@project_public_key}/payloads", :query => {:payload => @content, :private_key => @project_private_key})
+      response = self.class.post("/projects/#{@project_public_key}/payloads", :query => {:payload => @content}, :basic_auth => {:username => @project_public_key, :password => @project_private_key})
 
       case response.code
       when 201

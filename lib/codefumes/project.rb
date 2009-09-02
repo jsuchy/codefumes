@@ -19,9 +19,9 @@ module CodeFumes
 
     # Deletes project from the website.
     #
-    # Returns +true+ when the request is successful.
+    # Returns +true+ if the request succeeded.
     #
-    # Returns +false+ otherwise
+    # Returns +false+ if the request failed.
     def delete
       response = destroy!
       case response.code
@@ -37,9 +37,9 @@ module CodeFumes
     # so. If the public key of the project is already in use, it will
     # attempt to update it with the current values.
     #
-    # Returns +true+ if the operation was successful.
+    # Returns +true+ if the request succeeded.
     #
-    # Returns +false+ otherwise.
+    # Returns +false+ if the request failed.
     def save
       response = exists? ? update : create
       case response.code
@@ -66,7 +66,7 @@ module CodeFumes
     #
     # Returns +true+ if the public key of Project is available.
     #
-    # Returns +false+ otherwise.
+    # Returns +false+ if the public key of the Project is not available.
     def exists?
       return false if @public_key.nil? || @public_key.empty?
       !self.class.find(@public_key).nil?
@@ -78,7 +78,7 @@ module CodeFumes
     # Returns a Project instance if the project exists and is available,
     # to the user making the request.
     #
-    # Returns +nil+ otherwise.
+    # Returns +nil+ in all other cases.
     def self.find(public_key)
       response = get("/projects/#{public_key}")
       case response.code

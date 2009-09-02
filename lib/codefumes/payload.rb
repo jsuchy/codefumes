@@ -30,7 +30,7 @@ module CodeFumes
     # Returns +true+ if the Payload does not contain any content to be
     # saved or the request was successful.
     #
-    # Returns +false+ otherwise.
+    # Returns +false+ if the request failed.
     def save
       return true if empty_payload?
       response = self.class.post("/projects/#{@project_public_key}/payloads", :query => {:payload => @content, :private_key => @project_private_key})

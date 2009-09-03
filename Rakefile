@@ -1,4 +1,4 @@
-%w[hoe rake rake/clean fileutils newgem rubigen metric_fu].each { |f| require f }
+%w[hoe rake rake/clean fileutils newgem rubigen].each { |f| require f }
 
 require File.dirname(__FILE__) + '/lib/codefumes'
 

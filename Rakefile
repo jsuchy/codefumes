@@ -1,4 +1,4 @@
-%w[hoe rake rake/clean fileutils newgem rubigen metric_fu].each { |f| require f }
+%w[hoe rake rake/clean fileutils newgem rubigen].each { |f| require f }
 
 require File.dirname(__FILE__) + '/lib/codefumes'
 
@@ -6,6 +6,13 @@ begin
   require "hanna/rdoctask"
 rescue LoadError
   require 'rake/rdoctask'
+end
+
+# Load in the harvester ane metric_fu gems if available so we can collect metrics
+begin
+  require "metric_fu"
+  require "codefumes_harvester"
+rescue LoadError
 end
 
 $hoe = Hoe.new('codefumes', CodeFumes::VERSION) do |p|

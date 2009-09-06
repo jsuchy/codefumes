@@ -25,7 +25,7 @@ $hoe = Hoe.new('codefumes', CodeFumes::VERSION) do |p|
   ]
   p.extra_dev_deps = [
     ['newgem', ">= #{::Newgem::VERSION}"],
-    ['metric_fu', ">= 1.1.5"],
+    ['jscruggs-metric_fu', ">= 1.1.5"],
   ]
 
   p.clean_globs |= %w[**/.DS_Store tmp *.log]

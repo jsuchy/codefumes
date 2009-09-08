@@ -54,12 +54,9 @@ module CodeFumes
     # Serializes a Project instance to a format compatible with the
     # CodeFumes config file.
     def to_config
-      {@public_key.to_sym =>
-        { :private_key => @private_key,
-          :api_uri => @api_uri,
-          :short_uri => @short_uri
-        }
-      }
+      project_attributes = {:api_uri => @api_uri, :short_uri => @short_uri}
+      project_attributes[:private_key] = @private_key if @private_key
+      {@public_key.to_sym => project_attributes}
     end
 
     # Verifies existence of Project on website.

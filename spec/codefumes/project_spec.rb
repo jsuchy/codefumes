@@ -185,9 +185,9 @@ describe "Project" do
   describe "to_config" do
     before(:each) do
       register_create_uri
-  FakeWeb.register_uri( :post, "http://www.codefumes.com:80/api/v1/xml/projects?project[name]=&project[public_key]=",
-                        :status => ["201", "Created"],
-                        :string =>  "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<project>\n  <access-secret nil=\"true\"></access-secret>\n  <created-at type=\"datetime\">2009-04-29T23:18:03Z</created-at>\n  <public-key>foofoolerue</public-key>\n <private-key>foobarbaz</private-key>\n  <updated-at type=\"datetime\">2009-04-29T23:18:03Z</updated-at>\n <short_uri>http://www.codefumes.com/p/foofoolerue</short_uri>\n <community_uri>http://www.codefumes.com/community/projects/1</community_uri>\n <api-uri>http://www.codefumes.com/api/v1/xml/projects/1.xml</api-uri>\n</project>")
+      FakeWeb.register_uri( :post, "http://www.codefumes.com:80/api/v1/xml/projects?project[name]=&project[public_key]=",
+                            :status => ["201", "Created"],
+                            :string =>  "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<project>\n  <access-secret nil=\"true\"></access-secret>\n  <created-at type=\"datetime\">2009-04-29T23:18:03Z</created-at>\n  <public-key>foofoolerue</public-key>\n <private-key>foobarbaz</private-key>\n  <updated-at type=\"datetime\">2009-04-29T23:18:03Z</updated-at>\n <short_uri>http://www.codefumes.com/p/foofoolerue</short_uri>\n <community_uri>http://www.codefumes.com/community/projects/1</community_uri>\n <api-uri>http://www.codefumes.com/api/v1/xml/projects/1.xml</api-uri>\n</project>")
       @project = Project.new
       @project.save
     end
@@ -203,6 +203,11 @@ describe "Project" do
           @project.to_config[@project.public_key.to_sym].should include(project_attribute => value)
         end
       end
+    end
+    
+    it "doesn't include the private_key in the hash if it is nil" do
+      public_key = "key_to_happiness"
+      Project.new(:public_key => public_key).to_config[public_key.to_sym].should_not have_key(:private_key)
     end
   end
 

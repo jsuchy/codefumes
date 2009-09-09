@@ -19,7 +19,7 @@ other libraries & and applications.
 
 For an example of another library using the current features of this
 gem, you can refer to the
-'cf-harvester[http://cf-harvester.rubyforge.org/]'  gem.
+'codefumes_harvester[http://codefumes.rubyforge.org/codefumes_harvester]'  gem.
 
 == FEATURES/PROBLEMS:
 

@@ -15,15 +15,12 @@ begin
 rescue LoadError
 end
 
-$hoe = Hoe.spec('codefumes') do |p|
-  p.developer('Cosyn Technologies', 'devs@codefumes.com')
-  p.summary = "API gem for the CodeFumes website"
-  p.extra_deps      = [
-     ['httparty','>= 0.4.3']
-  ]
-  p.extra_dev_deps = [
-    ['jscruggs-metric_fu', ">= 1.1.5"],
-  ]
+$hoe = Hoe.spec('codefumes') do
+  self.summary = "A client-side implementation of the CodeFumes.com API."
+  extra_dev_deps = [['jscruggs-metric_fu', ">= 1.1.5"]]
+  extra_deps     = [['httparty','>= 0.4.3']]
+  developer('Tom Kersten', 'tom.kersten@cosyntech.com')
+  developer('Joe Banks', 'freemarmoset@gmail.com')
 end
 
 Dir['tasks/**/*.rake'].each { |t| load t}

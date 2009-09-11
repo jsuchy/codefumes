@@ -2,7 +2,6 @@ History.txt
 Manifest.txt
 README.txt
 Rakefile
-config/website.yml.sample
 lib/codefumes.rb
 lib/codefumes/api.rb
 lib/codefumes/commit.rb

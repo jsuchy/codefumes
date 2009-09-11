@@ -7,5 +7,5 @@ require 'codefumes/payload'
 require 'codefumes/commit'
 
 module CodeFumes
-  VERSION = '0.1.1'
+  VERSION = '0.1.2'
 end

@@ -17,8 +17,8 @@ end
 
 $hoe = Hoe.spec('codefumes') do
   self.summary = "A client-side implementation of the CodeFumes.com API."
-  extra_dev_deps = [['jscruggs-metric_fu', ">= 1.1.5"]]
-  extra_deps     = [['httparty','>= 0.4.3']]
+  self.extra_dev_deps = [['jscruggs-metric_fu', ">= 1.1.5"]]
+  self.extra_deps     = [['httparty','>= 0.4.3']]
   developer('Tom Kersten', 'tom.kersten@cosyntech.com')
   developer('Joe Banks', 'freemarmoset@gmail.com')
 end

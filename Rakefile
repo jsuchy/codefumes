@@ -15,6 +15,8 @@ begin
 rescue LoadError
 end
 
+Hoe.plugin :website
+
 $hoe = Hoe.spec('codefumes') do
   self.summary = "A client-side implementation of the CodeFumes.com API."
   self.extra_dev_deps = [['jscruggs-metric_fu', ">= 1.1.5"]]

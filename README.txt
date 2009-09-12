@@ -1,6 +1,9 @@
 = codefumes
 
-http://www.codefumes.com
+http://codefumes.rubyforge.org/codefumes
+Wiki: http://cosyn.github.com/codefumes
+Official CodeFumes gems: http://codefumes.rubyforge.org/
+Website: http://www.codefumes.com
 
 == DESCRIPTION:
 
@@ -46,8 +49,8 @@ gem, you can refer to the
   # Creating & finding a CodeFumes project
   p = Project.save  # optionally providing a custom public key: :public_key => 'Abc3'
   found_p = Project.find(p.public_key)
-  p.pulic_key # => 'Abc3'
-  p.api_uri   # => 'http://codefumes.com/api/v1/xml/Abc3'
+  p.public_key # => 'Abc3'
+  p.api_uri    # => 'http://codefumes.com/api/v1/xml/Abc3'
 
   # Commits
   c = Commit.find(<commit identifier>)

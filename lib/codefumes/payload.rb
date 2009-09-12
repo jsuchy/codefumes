@@ -16,7 +16,7 @@ module CodeFumes
     #
     #   {:public_key => "abC3", :private_key => "some-private-key",
     #   :content => {:commits => [{:identifier => "commit_identifer",
-    #   :files_affected => 3, :any_metric_you_want => "value"}]}}
+    #   :files_affected => 3, :custom_attributes => {:any_metric_you_want => "value"}}]}}
     def initialize(options = {})
       @project_public_key = options[:public_key]
       @project_private_key = options[:private_key]

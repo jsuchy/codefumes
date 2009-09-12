@@ -1,8 +1,9 @@
 = codefumes
 
 http://codefumes.rubyforge.org/codefumes
-Wiki: http://cosyn.github.com/codefumes
-Official CodeFumes gems: http://codefumes.rubyforge.org/
+Wiki: https://github.com/cosyn/codefumes/wikis
+Repository: https://github.com/cosyn/codefumes
+Official CodeFumes.com gems: http://codefumes.rubyforge.org/
 Website: http://www.codefumes.com
 
 == DESCRIPTION:

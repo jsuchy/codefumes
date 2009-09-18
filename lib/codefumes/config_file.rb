@@ -34,26 +34,28 @@ module CodeFumes
 
       # Store the supplied project into the CodeFumes config file.
       def save_project(project)
-        config = serialized
-        if config[:projects]
-          config[:projects].merge!(project.to_config)
-        else
-          config[:projects] = project.to_config
+        update_config_file do |config|
+          if config[:projects]
+            config[:projects].merge!(project.to_config)
+          else
+            config[:projects] = project.to_config
+          end
         end
-        write(config)
       end
       
-      def save_credentials(username,api_key)
-        new_config = serialized.merge(:credentials => {:username => username, :api_key => api_key})
-        write(new_config)
-      end
-
       # Remove the supplied project from the CodeFumes config file.
       def delete_project(project)
-        config = serialized
-        config[:projects] && config[:projects].delete(project.public_key.to_sym)
-        write(config)
+        update_config_file do |config|
+          config[:projects] && config[:projects].delete(project.public_key.to_sym)
+        end
       end
+
+      def save_credentials(username,api_key)
+        update_config_file do |config|
+          config.merge!(:credentials => {:username => username, :api_key => api_key})
+        end
+      end
+
 
       # Returns a Hash representation of the CodeFumes config file
       def serialized
@@ -84,6 +86,12 @@ module CodeFumes
 
         def loaded
           YAML::load_file(path)
+        end
+        
+        def update_config_file(&block)
+          config = serialized
+          yield config
+          write(config)
         end
     end
   end

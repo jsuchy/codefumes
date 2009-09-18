@@ -42,6 +42,11 @@ module CodeFumes
         end
         write(config)
       end
+      
+      def save_credentials(username,api_key)
+        new_config = serialized.merge(:credentials => {:username => username, :api_key => api_key})
+        write(new_config)
+      end
 
       # Remove the supplied project from the CodeFumes config file.
       def delete_project(project)

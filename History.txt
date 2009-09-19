@@ -1,8 +1,11 @@
 == 0.1.3 / TBD
 
 * Added ConfigFile#save_credentials
+* Added ConfigFile#credentials
+* Added store_codefumes_credentials executable
 
 == 0.1.2 2009-09-10
+
 * Documentation updated
 * Fixed dependency definitions in Rakefile
 

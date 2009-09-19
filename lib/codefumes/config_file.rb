@@ -50,9 +50,9 @@ module CodeFumes
         end
       end
 
-      def save_credentials(username,api_key)
+      def save_credentials(api_key)
         update_config_file do |config|
-          config.merge!(:credentials => {:username => username, :api_key => api_key})
+          config.merge!(:credentials => {:api_key => api_key})
         end
       end
 

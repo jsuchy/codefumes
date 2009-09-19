@@ -147,57 +147,46 @@ describe "ConfigFile" do
   
   describe "calling 'save_credentials'" do
     before(:each) do
-      @username = "USERNAME"
       @api_key  = "API_KEY"
     end
-    
+
     context "when no credentials exist" do
       before(:each) do
         raise_if_users_config_file
         File.delete(ConfigFile.path) if File.exist?(ConfigFile.path)
       end
-      
+
       it "adds a :credentials key" do
-        ConfigFile.save_credentials(@username, @api_key)
+        ConfigFile.save_credentials(@api_key)
         ConfigFile.serialized.keys.should include(:credentials)
       end
-      
-      it "adds the supplied username under the credentials key" do
-        ConfigFile.save_credentials(@username, @api_key)
-        ConfigFile.serialized[:credentials][:username].should == @username
-      end
-      
+
       it "adds the supplied api_key under the credentials key" do
-        ConfigFile.save_credentials(@username, @api_key)
+        ConfigFile.save_credentials(@api_key)
         ConfigFile.serialized[:credentials][:api_key].should == @api_key
       end
     end
-    
+
     context "when credentials already exist" do
       before(:each) do
-        @existing_username = "EXISTING_USERNAME"
         @existing_api_key  = "EXISTING_API_KEY"
-        ConfigFile.save_credentials(@existing_username, @existing_api_key)
+        ConfigFile.save_credentials(@existing_api_key)
       end
-      
-      it "replaces the existing credentials with the supplied username and api_key" do
+
+      it "replaces the existing credentials with the supplied api_key" do
         # sanity check
-        ConfigFile.serialized[:credentials][:username].should == @existing_username
         ConfigFile.serialized[:credentials][:api_key].should == @existing_api_key
-        ConfigFile.save_credentials(@username, @api_key)
-        ConfigFile.serialized[:credentials][:username].should == @username
+        ConfigFile.save_credentials(@api_key)
         ConfigFile.serialized[:credentials][:api_key].should == @api_key
       end
-    end  
-    
+    end
+
     it "does not affect existing project content" do
       public_key = "pub_value"
       project = Project.new(:public_key => public_key, :private_key => "private_key")
       ConfigFile.save_project(project)
-      ConfigFile.save_credentials(@username, @api_key)
+      ConfigFile.save_credentials(@api_key)
       ConfigFile.serialized[:projects][public_key.to_sym].should_not be_nil
     end
-    
   end
-
 end

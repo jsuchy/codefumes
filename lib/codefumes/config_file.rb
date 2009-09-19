@@ -56,6 +56,9 @@ module CodeFumes
         end
       end
 
+      def credentials
+        serialized[:credentials] || {}
+      end
 
       # Returns a Hash representation of the CodeFumes config file
       def serialized

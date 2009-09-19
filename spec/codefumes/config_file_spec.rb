@@ -189,4 +189,20 @@ describe "ConfigFile" do
       ConfigFile.serialized[:projects][public_key.to_sym].should_not be_nil
     end
   end
+
+  describe "calling 'credentials'" do
+    context "when credentials exist in the file" do
+      it "returns a Hash containing the credentials section of the config file" do
+        api_key_value  = "API_KEY"
+        ConfigFile.save_credentials(api_key_value)
+        ConfigFile.credentials.should == {:api_key => api_key_value}
+      end
+    end
+
+    context "when no credentials exist in the file" do
+      it "returns an empty Hash" do
+        ConfigFile.credentials.should == {}
+      end
+    end
+  end
 end

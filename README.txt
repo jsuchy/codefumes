@@ -1,10 +1,10 @@
 = codefumes
 
-http://codefumes.rubyforge.org/codefumes
-Wiki: https://github.com/cosyn/codefumes/wikis
-Repository: https://github.com/cosyn/codefumes
-Official CodeFumes.com gems: http://codefumes.rubyforge.org/
-Website: http://www.codefumes.com
+* http://codefumes.rubyforge.org/codefumes
+* Wiki: https://github.com/cosyn/codefumes/wikis
+* Repository: https://github.com/cosyn/codefumes
+* Official CodeFumes.com gems: http://codefumes.rubyforge.org/
+* Website: http://www.codefumes.com
 
 == DESCRIPTION:
 

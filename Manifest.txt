@@ -2,12 +2,14 @@ History.txt
 Manifest.txt
 README.txt
 Rakefile
+bin/store_codefumes_credentials
 lib/codefumes.rb
 lib/codefumes/api.rb
 lib/codefumes/commit.rb
 lib/codefumes/config_file.rb
 lib/codefumes/payload.rb
 lib/codefumes/project.rb
+lib/store_codefumes_credentials/cli.rb
 spec/codefumes/api_spec.rb
 spec/codefumes/commit_spec.rb
 spec/codefumes/config_file_spec.rb
@@ -15,6 +17,7 @@ spec/codefumes/payload_spec.rb
 spec/codefumes/project_spec.rb
 spec/spec.opts
 spec/spec_helper.rb
+spec/store_codefumes_credentials_cli_spec.rb
 tasks/rspec.rake
 website/index.html
 website/stylesheets/screen.css

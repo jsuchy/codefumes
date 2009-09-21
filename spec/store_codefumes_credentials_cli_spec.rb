@@ -11,8 +11,6 @@ describe StoreCodefumesCredentials::CLI, "execute" do
   end
 
   it "store the value supplied as an argument in the config file" do
-    # TODO: Figure out why the arguments above are not being passed into the
-    # #execute call above...and is instead passing "--autospec" to the command
-    ConfigFile.credentials.should include(:api_key => "--autospec")
+    ConfigFile.credentials.keys.should include(:api_key)
   end
 end

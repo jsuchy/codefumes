@@ -2,6 +2,12 @@ require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 require 'store_codefumes_credentials/cli'
 
 describe StoreCodefumesCredentials::CLI, "execute" do
+  after(:all) do
+    unless ConfigFile.path == File.expand_path('~/.codefumes_config')
+      File.delete(ConfigFile.path) if File.exist?(ConfigFile.path)
+    end
+  end
+
   before(:each) do
     @api_key_value = "API_KEY"
     @stdout_io = StringIO.new

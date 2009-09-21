@@ -25,10 +25,10 @@ module CodeFumes
     def delete
       response = destroy!
       case response.code
-      when 200
-        return true
-      else
-        return false
+        when 200
+          return true
+        else
+          return false
       end
     end
 
@@ -43,11 +43,11 @@ module CodeFumes
     def save
       response = exists? ? update : create
       case response.code
-      when 201, 200
-        reinitialize!(response)
-        true
-      else
-        false
+        when 201, 200
+          reinitialize!(response)
+          true
+        else
+          false
       end
     end
 
@@ -79,11 +79,11 @@ module CodeFumes
     def self.find(public_key)
       response = get("/projects/#{public_key}")
       case response.code
-      when 200
-        project = Project.new
-        project.reinitialize!(response)
-      else
-        nil
+        when 200
+          project = Project.new
+          project.reinitialize!(response)
+        else
+          nil
       end
     end
 

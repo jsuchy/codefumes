@@ -36,11 +36,11 @@ module CodeFumes
       response = self.class.post("/projects/#{@project_public_key}/payloads", :query => {:payload => @content}, :basic_auth => {:username => @project_public_key, :password => @project_private_key})
 
       case response.code
-      when 201
-        @created_at = response['payload']['created_at']
-        true
-      else
-        false
+        when 201
+          @created_at = response['payload']['created_at']
+          true
+        else
+          false
       end
     end
 
@@ -65,7 +65,7 @@ module CodeFumes
 
       public_key = raw_payload.delete(:public_key)
       raise ArgumentError, "No public key provided" if public_key.nil?
-      
+
       private_key = raw_payload.delete(:private_key)
 
       if raw_payload[:content].nil? || raw_payload[:content][:commits].nil?

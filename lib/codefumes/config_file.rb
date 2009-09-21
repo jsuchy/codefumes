@@ -42,7 +42,7 @@ module CodeFumes
           end
         end
       end
-      
+
       # Remove the supplied project from the CodeFumes config file.
       def delete_project(project)
         update_config_file do |config|
@@ -90,7 +90,7 @@ module CodeFumes
         def loaded
           YAML::load_file(path)
         end
-        
+
         def update_config_file(&block)
           config = serialized
           yield config

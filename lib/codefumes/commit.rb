@@ -92,11 +92,11 @@ module CodeFumes
     def self.find(identifier)
       response = get("/commits/#{identifier}")
       case response.code
-      when 200
-        return nil if response["commit"].empty?
-        new(response["commit"])
-      else
-        nil
+        when 200
+          return nil if response["commit"].empty?
+          new(response["commit"])
+        else
+          nil
       end
     end
 
@@ -105,13 +105,13 @@ module CodeFumes
     def self.all(project_public_key)
       response = get("/projects/#{project_public_key}/commits")
       case response.code
-      when 200
-        return [] if response["commits"].empty? || response["commits"]["commit"].nil?
-        response["commits"]["commit"].map do |commit_data|
-          new(commit_data)
-        end
-      else
-        nil
+        when 200
+          return [] if response["commits"].empty? || response["commits"]["commit"].nil?
+          response["commits"]["commit"].map do |commit_data|
+            new(commit_data)
+          end
+        else
+          nil
       end
     end
 
@@ -120,10 +120,10 @@ module CodeFumes
     def self.latest(project_public_key)
       response = get("/projects/#{project_public_key}/commits/latest")
       case response.code
-      when 200
-        new(response["commit"])
-      else
-        nil
+        when 200
+          new(response["commit"])
+        else
+          nil
       end
     end
 

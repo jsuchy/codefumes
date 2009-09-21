@@ -97,6 +97,10 @@ module CodeFumes
       self
     end
 
+    def claim
+      Claim.create(self, ConfigFile.credentials[:api_key])
+    end
+
     private
       def update
         self.class.put("/projects/#{@public_key}", :query => {:project => {:name => @name}}, :basic_auth => {:username => @public_key, :password => @private_key})

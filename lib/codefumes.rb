@@ -1,10 +1,11 @@
 require 'httparty'
 
 require 'codefumes/api'
-require 'codefumes/project'
+require 'codefumes/claim'
+require 'codefumes/commit'
 require 'codefumes/config_file'
 require 'codefumes/payload'
-require 'codefumes/commit'
+require 'codefumes/project'
 
 module CodeFumes
   VERSION = '0.1.2'

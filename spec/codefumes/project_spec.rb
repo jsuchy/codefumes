@@ -19,6 +19,7 @@ def register_show_uri(public_key = "public_key_value", project_name = "The Proje
 
 end
 
+
 describe "Project" do
   before(:each) do
   end
@@ -119,15 +120,18 @@ describe "Project" do
                             :status => ["200", "Successful"],
                             :string =>  "")
     end
+
     it "sets basic auth with the public and private key" do
       Project.should_receive(:delete).with("/projects/#{@project.public_key}", :basic_auth => {:username => @project.public_key, :password => @project.private_key}).and_return(mock("response", :code => 401))
       @project.delete
     end
+
     context "with Sucessful response" do
       it "returns true" do
         @project.delete.should be_true
       end
     end
+
     context "with Unauthorized response" do
       before(:each) do 
         @project = Project.new(:public_key => 'public_key_value')
@@ -135,6 +139,7 @@ describe "Project" do
                               :status => ["401", "Unauthorized"],
                               :string =>  "")
       end
+
       it "returns false when invalid Unauthorized response is received" do
         @project.delete.should be_false
       end
@@ -208,6 +213,19 @@ describe "Project" do
     it "doesn't include the private_key in the hash if it is nil" do
       public_key = "key_to_happiness"
       Project.new(:public_key => public_key).to_config[public_key.to_sym].should_not have_key(:private_key)
+    end
+  end
+
+  describe "claim" do
+    before(:each) do
+      @project = Project.new(:public_key => 'public_key_value', :private_key => 'private_key_value')
+      @api_key = "USERS_API_KEY"
+      ConfigFile.stub!(:credentials).and_return({:api_key => @api_key})
+    end
+
+    it "delegates the request to the Claim class" do
+      Claim.should_receive(:create).with(@project, @api_key)
+      @project.claim
     end
   end
 

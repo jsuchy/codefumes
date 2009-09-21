@@ -1,6 +1,8 @@
 %w[hoe rake rake/clean fileutils rubigen hoe].each { |f| require f }
 
+$: << 'lib'
 require File.dirname(__FILE__) + '/lib/codefumes'
+
 
 begin
   require "hanna/rdoctask"

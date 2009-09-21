@@ -1,5 +1,5 @@
-require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
-require 'store_codefumes_credentials/cli'
+require 'spec/spec_helper'
+require 'lib/store_codefumes_credentials/cli'
 
 describe StoreCodefumesCredentials::CLI, "execute" do
   after(:all) do

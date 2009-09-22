@@ -2,7 +2,9 @@ History.txt
 Manifest.txt
 README.txt
 Rakefile
+bin/cf_claim_project
 bin/store_codefumes_credentials
+lib/cf_claim_project/cli.rb
 lib/codefumes.rb
 lib/codefumes/api.rb
 lib/codefumes/claim.rb
@@ -11,6 +13,7 @@ lib/codefumes/config_file.rb
 lib/codefumes/payload.rb
 lib/codefumes/project.rb
 lib/store_codefumes_credentials/cli.rb
+spec/cf_claim_project/cli_spec.rb
 spec/codefumes/api_spec.rb
 spec/codefumes/claim_spec.rb
 spec/codefumes/commit_spec.rb

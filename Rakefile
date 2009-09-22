@@ -1,8 +1,7 @@
 %w[hoe rake rake/clean fileutils rubigen hoe].each { |f| require f }
 
-$: << 'lib'
-require File.dirname(__FILE__) + '/lib/codefumes'
-
+$LOAD_PATH.unshift('lib') unless $LOAD_PATH.include?('lib')
+require 'lib/codefumes'
 
 begin
   require "hanna/rdoctask"

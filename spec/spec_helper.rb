@@ -1,4 +1,3 @@
-require 'rubygems'
 require 'ruby-debug'
 require 'fakeweb'
 
@@ -8,7 +7,6 @@ rescue LoadError
   require 'spec'
 end
 
-$:.unshift(File.dirname(__FILE__) + '/../lib')
 require 'codefumes'
 
 # CodeFumes service 'fixtures'

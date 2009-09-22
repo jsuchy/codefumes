@@ -72,6 +72,11 @@ module CodeFumes
         public_key && config[:projects] && config[:projects][public_key.to_sym] || {}
       end
 
+      def public_keys
+        serialized_projects = serialized[:projects]
+        serialized_projects.nil? ? [] : serialized_projects.keys
+      end
+
       private
         def write(serializable_object)
           File.open(path, 'w') do |f|

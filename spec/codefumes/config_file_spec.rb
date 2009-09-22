@@ -6,15 +6,19 @@ def raise_if_users_config_file
   end
 end
 
+def delete_config_file
+  unless ConfigFile.path == File.expand_path('~/.codefumes_config')
+    File.delete(ConfigFile.path) if File.exist?(ConfigFile.path)
+  end
+end
+
 describe "ConfigFile" do
   before(:each) do
     @project = Project.new(:public_key => 'public_key_value', :private_key => 'private_key_value')
   end
 
   after(:all) do
-    unless ConfigFile.path == File.expand_path('~/.codefumes_config')
-      File.delete(ConfigFile.path) if File.exist?(ConfigFile.path)
-    end
+    delete_config_file
   end
 
   describe "calling 'path'" do
@@ -33,10 +37,6 @@ describe "ConfigFile" do
   end
 
   describe "calling 'save_project'" do
-    after(:all) do
-      File.delete(ConfigFile.path) if File.exist?(ConfigFile.path)
-    end
-
     context "when passed a new project" do
       it "creates the config file if it did not exist already" do
         File.exist?(ConfigFile.path).should be_false
@@ -153,7 +153,6 @@ describe "ConfigFile" do
     context "when no credentials exist" do
       before(:each) do
         raise_if_users_config_file
-        File.delete(ConfigFile.path) if File.exist?(ConfigFile.path)
       end
 
       it "adds a :credentials key" do
@@ -202,6 +201,28 @@ describe "ConfigFile" do
     context "when no credentials exist in the file" do
       it "returns an empty Hash" do
         ConfigFile.credentials.should == {}
+      end
+    end
+  end
+
+  describe "calling 'public_keys'" do
+    context "when no projects exist in the file" do
+      it "returns an empty array" do
+        delete_config_file
+        ConfigFile.public_keys.should == []
+      end
+    end
+
+    context "when projects exist in the file" do
+      before(:each) do
+        create_uniq_project = lambda {|index| Project.new(:public_key => "pub_key_#{index}", :private_key => 'pk')}
+        @projects = 5.times.map {|i| create_uniq_project.call(i)}
+        @projects.each {|project| ConfigFile.save_project(project)}
+      end
+
+      it "returns an array of the keys" do
+        stringified_keys = ConfigFile.public_keys.map {|key| key.to_s}
+        stringified_keys.sort.should == @projects.map {|p| p.public_key}.sort
       end
     end
   end

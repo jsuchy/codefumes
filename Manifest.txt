@@ -20,7 +20,7 @@ spec/codefumes/project_spec.rb
 spec/codefumes_service_stubs.rb
 spec/spec.opts
 spec/spec_helper.rb
-spec/store_codefumes_credentials_cli_spec.rb
+spec/store_codefumes_credentials/cli_spec.rb
 tasks/rspec.rake
 website/index.html
 website/stylesheets/screen.css

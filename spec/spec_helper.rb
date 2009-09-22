@@ -1,18 +1,14 @@
 require 'rubygems'
+require 'ruby-debug'
+require 'fakeweb'
 
 begin
   require 'spec/autorun'
 rescue LoadError
-  gem 'rspec'
   require 'spec'
 end
 
-gem 'ruby-debug'
-require 'ruby-debug'
-
-$:.unshift(File.dirname(__FILE__) + '/../lib')
-require 'codefumes'
-require 'fakeweb'
+require 'lib/codefumes'
 
 # CodeFumes service 'fixtures'
 require 'spec/codefumes_service_stubs'

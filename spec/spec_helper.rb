@@ -8,7 +8,8 @@ rescue LoadError
   require 'spec'
 end
 
-require 'lib/codefumes'
+$:.unshift(File.dirname(__FILE__) + '/../lib')
+require 'codefumes'
 
 # CodeFumes service 'fixtures'
 require 'spec/codefumes_service_stubs'

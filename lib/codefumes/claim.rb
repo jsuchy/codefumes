@@ -2,6 +2,14 @@ module CodeFumes
   class Claim < CodeFumes::API
     attr_accessor :created_at
 
+    # Attempts to claim the specified Project instance using the
+    # supplied API key.
+    #
+    # Similar to Project#claim, but more explicit.
+    #
+    # Returns true if the request is successful.
+    #
+    # Returns +false+ in all other cases.
     def self.create(project, api_key)
       auth_args = {:username => project.public_key, :password => project.private_key}
 

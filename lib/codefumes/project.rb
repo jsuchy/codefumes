@@ -97,6 +97,16 @@ module CodeFumes
       self
     end
 
+    # Attempts to claim "ownership" of the project using the API key
+    # defined in the "credentials" section of your CodeFumes config
+    # file.
+    #
+    # If you need to claim a project for a key that is not defined in
+    # your config file, refer to Claim#create.
+    #
+    # Returns true if the request is successful.
+    #
+    # Returns +false+ in all other cases.
     def claim
       Claim.create(self, ConfigFile.credentials[:api_key])
     end

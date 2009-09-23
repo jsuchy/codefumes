@@ -1,8 +1,12 @@
-== 0.1.3 / TBD
+== 0.1.3 2009-09-22
 
 * Added ConfigFile#save_credentials
 * Added ConfigFile#credentials
 * Added store_codefumes_credentials executable
+* Added support for claiming projects (Project#claim, Claim#create)
+* Added cf_claim_project executable
+* Added :local mode for API
+* Removed (almost) all "require 'rubygems'" statements
 
 == 0.1.2 2009-09-10
 

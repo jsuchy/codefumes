@@ -8,5 +8,5 @@ require 'codefumes/payload'
 require 'codefumes/project'
 
 module CodeFumes
-  VERSION = '0.1.3'
+  VERSION = '0.1.4'
 end

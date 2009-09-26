@@ -3,26 +3,27 @@ require 'optparse'
 module StoreCodefumesCredentials
   class CLI
     def self.execute(stdout, arguments=[])
-      parse_command_line_options!(stdout, arguments)
+      @stdout = stdout
+      parse_command_line_options!(arguments)
+      api_key = arguments.first
 
-      api_key = ARGV[0]
       if CodeFumes::ConfigFile.credentials.empty? || @force_overwrite == true
         CodeFumes::ConfigFile.save_credentials(api_key)
-        stdout.puts "Saved credentials to codefumes config file.\n\nExiting."
+        @stdout.puts "Saved credentials to codefumes config file.\n\nExiting."
       else
         if CodeFumes::ConfigFile.credentials == api_key
-          stdout.puts "Credentials already stored in config file!\n"
+          @stdout.puts "Credentials already stored in config file!\n"
         else
-          stdout.puts "You have already stored CodeFumes credentials.\n\n"
-          stdout.puts "The current value you have stored is: #{CodeFumes::ConfigFile.credentials[:api_key]}\n\n"
-          stdout.puts "If you would like to replace this value, execute:\n\n"
-          stdout.puts "\t#{File.basename($0)} --force #{api_key}\n\n"
+          @stdout.puts "You have already stored CodeFumes credentials.\n\n"
+          @stdout.puts "The current value you have stored is: #{CodeFumes::ConfigFile.credentials[:api_key]}\n\n"
+          @stdout.puts "If you would like to replace this value, execute:\n\n"
+          @stdout.puts "\t#{File.basename($0)} --force #{api_key}\n\n"
         end
       end
     end
 
     private
-      def self.parse_command_line_options!(stdout, arguments = [])
+      def self.parse_command_line_options!(arguments)
         @force_overwrite = false
 
         parser = OptionParser.new do |opts|
@@ -35,13 +36,13 @@ module StoreCodefumesCredentials
           BANNER
           opts.separator ""
           opts.on("-h", "--help",
-                  "Show this help message.") { stdout.puts opts; exit }
+                  "Show this help message.") { @stdout.puts opts; exit }
           opts.on("-f", "--force",
                   "Force overwrite of existing API key in config file.") { @force_overwrite = true }
           opts.parse!(arguments)
 
-          if ARGV[0].nil?
-            stdout.puts opts; exit
+          if arguments.size != 1
+            @stdout.puts opts; exit
           end
         end
       end

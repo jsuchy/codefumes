@@ -3,13 +3,15 @@ require 'lib/cf_claim_project/cli'
 
 describe CfClaimProject::CLI, "execute" do
   before(:each) do
+    @project = Project.new(:public_key => "pub", :private_key => "prv_key")
+    Project.stub!(:find).and_return(@project)
     ConfigFile.save_credentials("sample_credentials")
-    Project.stub!(:find).and_return(mock(Project))
+    ConfigFile.save_project(@project)
     @stdout_io = StringIO.new
   end
 
   it "calls Claim#create" do
     Claim.should_receive(:create)
-    CfClaimProject::CLI.execute(@stdout_io, [])
+    CfClaimProject::CLI.execute(@stdout_io, [@project.public_key])
   end
 end

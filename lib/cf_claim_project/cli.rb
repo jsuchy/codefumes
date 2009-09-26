@@ -47,7 +47,7 @@ module CfClaimProject
           opts.parse!(arguments)
         end
 
-        @public_keys = claim_all_projects_flag_set? ? ConfigFile.public_keys : [ARGV[0]].compact
+        @public_keys = claim_all_projects_flag_set? ? ConfigFile.public_keys : arguments.compact
         if @public_keys.empty?
           print_missing_arguments_message
           exit

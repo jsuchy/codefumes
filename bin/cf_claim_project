@@ -3,7 +3,7 @@
 #  Created on 2009-9-21.
 #  Copyright (c) 2009. All rights reserved.
 
-require 'lib/codefumes'
-require "lib/cf_claim_project/cli"
+require File.expand_path(File.dirname(__FILE__) + "/../lib/codefumes")
+require File.expand_path(File.dirname(__FILE__) + "/../lib/cf_claim_project/cli")
 
 CfClaimProject::CLI.execute(STDOUT, ARGV)

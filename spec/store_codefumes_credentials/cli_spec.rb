@@ -9,14 +9,15 @@ describe StoreCodefumesCredentials::CLI, "execute" do
   end
 
   before(:each) do
-    @api_key_value = "API_KEY"
+    @api_key_value = "API_KEY#{rand(100)}"
     @stdout_io = StringIO.new
     StoreCodefumesCredentials::CLI.execute(@stdout_io, [@api_key_value])
     @stdout_io.rewind
     @stdout = @stdout_io.read
   end
 
-  it "store the value supplied as an argument in the config file" do
+  it "stores the value supplied in the config file under the key ':api_key'" do
     ConfigFile.credentials.keys.should include(:api_key)
+    ConfigFile.credentials[:api_key].should == @api_key_value
   end
 end

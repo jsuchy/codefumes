@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+  <access-secret nil="true"></access-secret>
+  <created-at type="datetime">2009-04-29T23:18:03Z</created-at>
+  <public-key>public_key_value</public-key>
+  <private-key>private_key_value</private-key>
+  <name>The Project Name(tm) updated</name>
+  <updated-at type="datetime">2009-04-29T23:18:03Z</updated-at>
+  <short_uri>http://codefumes.com/p/public_key_value</short_uri>
+  <community_uri>http://codefumes.com/community/projects/public_key_value</community_uri>
+  <api-uri>http://codefumes.com/api/v1/xml/projects/public_key_value.xml</api-uri>
+</project>

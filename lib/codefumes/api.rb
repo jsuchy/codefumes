@@ -5,7 +5,7 @@ module CodeFumes
     format :xml
 
     BASE_URIS = {
-      :production => 'http://www.codefumes.com/api/v1/xml',
+      :production => 'http://codefumes.com/api/v1/xml',
       :test       => 'http://test.codefumes.com/api/v1/xml',
       :local      => 'http://localhost:3000/api/v1/xml'
     }

@@ -9,7 +9,7 @@ describe "API" do
   end
 
   it "defaults the base uri to the production site" do
-    APIClass.base_uri.should == 'http://www.codefumes.com/api/v1/xml'
+    APIClass.base_uri.should == 'http://codefumes.com/api/v1/xml'
   end
 
   context "switching modes" do
@@ -23,7 +23,7 @@ describe "API" do
 
     it "changes the base uri to the production site when switched to production mode" do
       CodeFumes::API.mode(:production)
-      APIClass.base_uri.should == 'http://www.codefumes.com/api/v1/xml'
+      APIClass.base_uri.should == 'http://codefumes.com/api/v1/xml'
     end
 
     it "ignores unrecognized modes" do

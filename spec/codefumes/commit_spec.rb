@@ -1,11 +1,23 @@
 require File.dirname(__FILE__) + '/../spec_helper.rb'
 
-include CodeFumesServiceStubs
-
 describe "Commit" do
+  include CodeFumesServiceHelpers::Commit
+
   before(:all) do
-    @identifier = "f3badd5624dfbcf5176f0471261731e1b92ce957"
     FakeWeb.allow_net_connect = false
+
+    @project_name = "Project_Name(tm)"
+    @pub_key = 'public_key_value'
+    @priv_key = 'private_key_value'
+    @anonymous_base_uri = "http://codefumes.com/api/v1/xml"
+    @authenticated_base_uri = "http://#{@pub_key}:#{@priv_key}@codefumes.com/api/v1/xml/projects"
+    @project = Project.new(:public_key => @pub_key,
+                           :private_key => @priv_key,
+                           :name => @project_name)
+    @authd_project_api_uri = "#{@authenticated_base_uri}/projects/#{@pub_key}"
+    @anon_project_api_uri  = "#{@anonymous_base_uri}/projects/#{@pub_key}"
+    @basic_auth_params = {:username => @pub_key, :password => @priv_key}
+    @identifier = "f3badd5624dfbcf5176f0471261731e1b92ce957"
   end
 
   after(:all) do
@@ -15,7 +27,7 @@ describe "Commit" do
   describe "find" do
     context "with a valid commit identifier" do
       before(:each) do
-        stub_codefumes_uri("commits/#{@identifier}", ["200", "Ok"], single_commit)
+        register_find_uri
         @commit = Commit.find(@identifier)
       end
 
@@ -44,8 +56,7 @@ describe "Commit" do
 
     context "with a non-existant commit identifier" do
       before(:each) do
-        @identifier = "non_existant_commit_identifier"
-        stub_codefumes_uri("commits/#{@identifier}", ["404", "Not Found"], "")
+        register_find_uri(["404", "Not Found"], "")
       end
 
       it "returns nil" do
@@ -55,85 +66,65 @@ describe "Commit" do
   end
 
   describe "calling 'latest'" do
-    before(:each) do
-      @project_public_key = "apk"
-      @request_uri = "projects/#{@project_public_key}/commits/latest"
-    end
-
     context "with valid parameters" do
-      before(:each) do
-        stub_codefumes_uri(@request_uri, ["200", "Ok"], single_commit)
-      end
-
       it "returns a commit object for the latest commit" do
-        Commit.latest(@project_public_key).identifier.should == @identifier
+        register_latest_uri
+        Commit.latest(@pub_key).identifier.should == @identifier
       end
     end
 
     context "with invalid parameters" do
-      before(:each) do
-        stub_codefumes_uri(@request_uri, ["404", "Not Found"], single_commit)
-      end
-
       it "returns nil" do
-        Commit.latest(@project_public_key).should == nil
+        register_latest_uri(["404", "Not Found"], "")
+        Commit.latest(@pub_key).should == nil
       end
     end
   end
 
   describe "calling 'latest_identifier'" do
-    before(:each) do
-      @project_public_key = "apk"
-      @request_uri = "projects/#{@project_public_key}/commits/latest"
-    end
-
     context "with valid parameters" do
       context "when the specified project has commits stored" do
         it "returns the commit identifier of the latest commit" do
-          stub_codefumes_uri(@request_uri, ["200", "Ok"], single_commit)
-          Commit.latest_identifier(@project_public_key).should == @identifier
+          register_latest_uri
+          Commit.latest_identifier(@pub_key).should == @identifier
         end
       end
 
       context "when the specified project does not have any commits stored" do
         it "returns nil" do
-          stub_codefumes_uri(@request_uri, ["404", "Not Found"], single_commit)
-          Commit.latest_identifier(@project_public_key).should == nil
+          register_latest_uri(["404", "Not Found"], "")
+          Commit.latest_identifier(@pub_key).should == nil
         end
       end
     end
 
     context "with invalid parameters" do
       it "returns nil" do
-        stub_codefumes_uri(@request_uri, ["404", "Not Found"], single_commit)
-        Commit.latest(@project_public_key).should == nil
+        register_latest_uri(["404", "Not Found"], "")
+        Commit.latest(@pub_key).should == nil
       end
     end
   end
 
   describe "calling 'all'" do
-    before(:each) do
-      @project_public_key = "apk"
-    end
-
     context "with valid parameters" do
       it "returns an array of commits" do
         register_index_uri
-        Commit.all(@project_public_key).should have(3).items
+        Commit.all(@pub_key).should have(3).items
       end
     end
 
     context "with invalid parameters" do
       it "returns nil" do
-        stub_codefumes_uri("projects/apk/commits", ["404", "Not Found"], single_commit)
-        Commit.all(@project_public_key).should == nil
+        register_index_uri(["404", "Not Found"], "")
+        Commit.all(@pub_key).should == nil
       end
     end
   end
 
   describe "the convenience method" do
     before(:each) do
-      stub_codefumes_uri("commits/f3badd5624dfbcf5176f0471261731e1b92ce957", ["200", "Ok"], single_commit)
+      register_find_uri
       @email = "jdoe@example.com"
       @name  = "John Doe"
       @commit = Commit.find(@identifier)
@@ -155,31 +146,27 @@ describe "Commit" do
   end
 
   describe "accessing custom metrics" do
-    before(:each) do
-      @project_public_key = "apk"
-    end
-
     context "when the commit does not have any custom attributes" do
       before(:each) do
-        stub_codefumes_uri("projects/#{@project_public_key}/commits/latest", ["200", "Ok"], single_commit)
+        register_latest_uri
       end
 
       it "returns an empty Hash" do
-        Commit.latest(@project_public_key).custom_attributes.should == {}
+        Commit.latest(@pub_key).custom_attributes.should == {}
       end
     end
 
     context "when the commit has defined custom attributes" do
       before(:each) do
-        commit_content = single_commit(:include_custom_attributes => true)
-        stub_codefumes_uri("projects/#{@project_public_key}/commits/latest", ["200", "Ok"], commit_content)
+        register_latest_uri(["200", "Ok"], fixtures[:commit_with_custom_attrs])
+        @commit = Commit.latest(@pub_key)
       end
 
       it "returns a Hash of key-value pairs (attribute_name -> attribute_value)" do
-        Commit.latest(@project_public_key).custom_attributes.should be_instance_of(Hash)
-        Commit.latest(@project_public_key).custom_attributes[:coverage].should == "83"
-        Commit.latest(@project_public_key).custom_attributes[:random_attribute].should == "1"
-        Commit.latest(@project_public_key).custom_attributes.size.should == 2
+        @commit.custom_attributes.should be_instance_of(Hash)
+        @commit.custom_attributes[:coverage].should == "83"
+        @commit.custom_attributes[:random_attribute].should == "1"
+        @commit.custom_attributes.size.should == 2
       end
     end
   end

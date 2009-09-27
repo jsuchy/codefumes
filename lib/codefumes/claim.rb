@@ -15,6 +15,7 @@ module CodeFumes
 
       uri = "/projects/#{project.public_key}/claim"
       response = post(uri, :query => {:api_key => api_key}, :basic_auth => auth_args)
+
       case response.code
         when 201 : true
         else false

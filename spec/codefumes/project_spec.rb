@@ -1,29 +1,12 @@
 require File.dirname(__FILE__) + '/../spec_helper.rb'
 
-def register_create_uri
-  FakeWeb.register_uri( :post, "http://www.codefumes.com:80/api/v1/xml/projects?project[name]=&project[public_key]=",
-                        :status => ["201", "Created"],
-                        :string =>  "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<project>\n  <access-secret nil=\"true\"></access-secret>\n  <created-at type=\"datetime\">2009-04-29T23:18:03Z</created-at>\n  <public-key>foofoolerue</public-key>\n <private-key>foobarbaz</private-key>\n  <updated-at type=\"datetime\">2009-04-29T23:18:03Z</updated-at>\n <short_uri>http://www.codefumes.com/p/foofoolerue</short_uri>\n <community_uri>http://www.codefumes.com/community/projects/1</community_uri>\n <api-uri>http://www.codefumes.com/api/v1/xml/projects/1.xml</api-uri>\n</project>")
-end
-
-def register_update_uri(public_key = "public_key_value", project_name = "The Project Name(tm)")
-  response = {:status => ["200", "Ok"], :string =>  "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<project>\n  <access-secret nil=\"true\"></access-secret>\n  <created-at type=\"datetime\">2009-04-29T23:18:03Z</created-at>\n  <public-key>existing_public_key</public-key>\n <private-key>private_key_value</private-key>\n  <updated-at type=\"datetime\">2009-04-29T23:18:03Z</updated-at>\n <short_uri>http://www.codefumes.com/p/#{public_key}</short_uri>\n <community_uri>http://www.codefumes.com/community/projects/#{public_key}</community_uri>\n <api-uri>http://www.codefumes.com/api/v1/xml/projects/#{public_key}.xml</api-uri>\n <name>#{project_name}</name>\n</project>\n"}
-  FakeWeb.register_uri(:put, "http://www.codefumes.com/api/v1/xml/projects/existing_public_key?project[name]=#{project_name}",
-                       response)
-end
-
-def register_show_uri(public_key = "public_key_value", project_name = "The Project Name(tm)", status_code = ["200", "Ok"])
-  FakeWeb.register_uri(:get, "http://www.codefumes.com/api/v1/xml/projects/#{public_key}",
-                       :status => status_code,
-                       :string =>  "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<project>\n  <access-secret nil=\"true\"></access-secret>\n  <created-at type=\"datetime\">2009-04-29T23:18:03Z</created-at>\n  <public-key>#{public_key}</public-key>\n <private-key>private_key_value</private-key>\n  <updated-at type=\"datetime\">2009-04-29T23:18:03Z</updated-at>\n <short_uri>http://www.codefumes.com/p/#{public_key}</short_uri>\n <community_uri>http://www.codefumes.com/community/projects/#{public_key}</community_uri>\n <api-uri>http://www.codefumes.com/api/v1/xml/projects/#{public_key}.xml</api-uri>\n <name>original_name</name>\n</project>\n")
-
-end
-
-
 describe "Project" do
+  include CodeFumesServiceHelpers::Project
+
   before(:each) do
+    setup_fixture_base
   end
-  
+
   after(:all) do
     FakeWeb.allow_net_connect = false
     FakeWeb.clean_registry
@@ -33,7 +16,7 @@ describe "Project" do
     context "with valid parameters" do
       context "when the public key has not been taken yet (or no key provided)" do
         before(:each) do
-          register_create_uri
+          register_no_param_create_uri
         end
 
         [ :public_key,
@@ -44,30 +27,31 @@ describe "Project" do
             it "sets the '#{method_name.to_s}'" do
               project = CodeFumes::Project.new
               project.send(method_name).should be_nil
-              #project.save
-              #project.send(method_name).should_not be_nil
+              project.save
+              project.send(method_name).should_not be_nil
             end
           end
       end
 
       context "when the public key has already been taken" do
-
         context "when response is success" do
           before(:each) do
-            @updated_name = "different_name"
-            @project = CodeFumes::Project.new(:public_key => "existing_public_key", :private_key => 'private_key_value', :name => @updated_name)
-            register_show_uri(@project.public_key, @updated_name)
-            register_update_uri(@project.public_key, @updated_name)
+            @project.name = @updated_name
+            register_show_uri
+            register_update_uri
             @project.stub!(:exists?).and_return(true)
             @project.save.should be_true
           end
-          
+
           it "sets basic auth with the public and private key" do
             Project.should_receive(:put).with("/projects/#{@project.public_key}", :query => {:project => {:name => @updated_name}}, :basic_auth => {:username => @project.public_key, :password => @project.private_key}).and_return(mock("response", :code => 401))
             @project.save
           end
-          
+
           it "updates the value of 'name' for the project associated with the supplied public key" do
+            # This seems like a pointless assertion, since it's being set in the before block, but it
+            # wouldn't be true if request was not successful, as #name is updated w/ the content
+            # returned in the response
             @project.name.should == @updated_name
           end
 
@@ -82,43 +66,41 @@ describe "Project" do
               end
           end
         end
+
         context "respons is Unauthorized" do
           before(:each) do
             @updated_name = "different_name"
-            @project = CodeFumes::Project.new(:public_key => "existing_public_key", :private_key => 'bad_key', :name => @updated_name)
-            FakeWeb.register_uri(:put, "http://www.codefumes.com/api/v1/xml/projects/existing_public_key?project[name]=#{@project.name}",
+            @project = CodeFumes::Project.new(:public_key => 'existing_public_key', :private_key => 'bad_key', :name => @updated_name)
+            FakeWeb.register_uri(:put, "http://#{@project.public_key}:#{@project.private_key}@codefumes.com/api/v1/xml/projects/existing_public_key?project[name]=#{@project.name}",
                                  :status => ["401", "Unauthorized"])
             @project.stub!(:exists?).and_return(true)
           end
           it "returns false" do
             @project.save.should be_false
-          end      
+          end
         end
       end
     end
 
     context "with invalid parameters" do
       before(:each) do
-          FakeWeb.register_uri( :post, "http://www.codefumes.com/api/v1/xml/projects?project[public_key]=&project[name]=",
-                                :status => ["422", "Unprocessable Entity"])
+        register_show_uri(["404", "Not found"], "")
+        register_no_param_create_uri(["422", "Unprocessable Entity"], "")
       end
 
-      [:private_key].each do |method_name|
-        it "does not set the '#{method_name.to_s}'" do
-          project = CodeFumes::Project.new
-          project.save.should be_false
-          project.send(method_name).should be_nil
-        end
+      it "does not set the 'private_key'" do
+        project = Project.new
+        project.save.should be_false
+        project.private_key.should be_nil
       end
     end
   end
 
   context "delete" do
     before(:each) do
-      @project = Project.new(:public_key => 'public_key_value', :private_key => 'private_key_value')
-      FakeWeb.register_uri( :delete, "http://www.codefumes.com/api/v1/xml/projects/#{@project.public_key}",
+      FakeWeb.register_uri( :delete, @authd_project_api_uri,
                             :status => ["200", "Successful"],
-                            :string =>  "")
+                            :body   => "")
     end
 
     it "sets basic auth with the public and private key" do
@@ -133,33 +115,18 @@ describe "Project" do
     end
 
     context "with Unauthorized response" do
-      before(:each) do 
-        @project = Project.new(:public_key => 'public_key_value')
-        FakeWeb.register_uri( :delete, "http://www.codefumes.com/api/v1/xml/projects/#{@project.public_key}",
-                              :status => ["401", "Unauthorized"],
-                              :string =>  "")
-      end
-
       it "returns false when invalid Unauthorized response is received" do
+        register_delete_uri(["401", "Unauthorized"], "")
         @project.delete.should be_false
       end
     end
   end
 
   describe "exists?" do
-    before(:each) do
-      @public_key = "some_public_key"
-    end
-
     context "when the specified public_key has been reserved already" do
-      before(:each) do
-        FakeWeb.register_uri(:get, "http://www.codefumes.com/api/v1/xml/projects/#{@public_key}",
-                             :status => ["200", "Ok"],
-                             :string =>  "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<project>\n  <access-secret nil=\"true\"></access-secret>\n  <created-at type=\"datetime\">2009-04-29T23:18:03Z</created-at>\n  <public-key>foofoolerue</public-key>\n <private-key>foobarbaz</private-key>\n  <updated-at type=\"datetime\">2009-04-29T23:18:03Z</updated-at>\n <short_uri>http://www.codefumes.com/p/foofoolerue</short_uri>\n <community_uri>http://www.codefumes.com/community/projects/1</community_uri>\n <api-uri>http://www.codefumes.com/api/v1/xml/projects/1.xml</api-uri>\n <name>original_name</name>\n")
-      end
-
       it "returns true" do
-        Project.new(:public_key => @public_key).exists?.should be_true
+        register_show_uri
+        Project.new(:public_key => @pub_key).exists?.should be_true
       end
     end
 
@@ -175,25 +142,19 @@ describe "Project" do
 
     context "when the specified public_key is available" do
       before(:each) do
-        FakeWeb.register_uri(:get, "http://www.codefumes.com/api/v1/xml/projects/#{@public_key}",
-                             :status => ["404", "Not Found"],
-                             :string =>  "")
-
+        register_show_uri(["404", "Not Found"], "")
       end
 
       it "returns false" do
-        Project.new(:public_key => @public_key).exists?.should be_false
+        Project.new(:public_key => @pub_key).exists?.should be_false
       end
     end
   end
 
   describe "to_config" do
     before(:each) do
+      register_show_uri(["404", "Not Found"], "")
       register_create_uri
-      FakeWeb.register_uri( :post, "http://www.codefumes.com:80/api/v1/xml/projects?project[name]=&project[public_key]=",
-                            :status => ["201", "Created"],
-                            :string =>  "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<project>\n  <access-secret nil=\"true\"></access-secret>\n  <created-at type=\"datetime\">2009-04-29T23:18:03Z</created-at>\n  <public-key>foofoolerue</public-key>\n <private-key>foobarbaz</private-key>\n  <updated-at type=\"datetime\">2009-04-29T23:18:03Z</updated-at>\n <short_uri>http://www.codefumes.com/p/foofoolerue</short_uri>\n <community_uri>http://www.codefumes.com/community/projects/1</community_uri>\n <api-uri>http://www.codefumes.com/api/v1/xml/projects/1.xml</api-uri>\n</project>")
-      @project = Project.new
       @project.save
     end
 
@@ -209,7 +170,7 @@ describe "Project" do
         end
       end
     end
-    
+
     it "doesn't include the private_key in the hash if it is nil" do
       public_key = "key_to_happiness"
       Project.new(:public_key => public_key).to_config[public_key.to_sym].should_not have_key(:private_key)
@@ -259,32 +220,27 @@ describe "Project" do
   describe "calling the class method" do
     describe "'find'" do
       context "and specifying a public_key which is already associated to a project on the site" do
-        before(:each) do
-          @public_key = "an_existing_public_key"
-          register_show_uri(@public_key)
-        end
-
         it "returns an initialized instance of the Project class" do
+          register_show_uri
           expected_config = {
-                              :an_existing_public_key => 
+                              @pub_key.to_sym =>
                                 {
                                   :private_key=>"private_key_value",
-                                  :api_uri=>"http://www.codefumes.com/api/v1/xml/projects/an_existing_public_key.xml",
-                                  :short_uri=>"http://www.codefumes.com/p/an_existing_public_key"
+                                  :api_uri=>"http://codefumes.com/api/v1/xml/projects/#{@pub_key}.xml",
+                                  :short_uri=>"http://codefumes.com/p/#{@pub_key}"
                                 }
                             }
-          Project.find(@public_key).to_config.should == expected_config
+          Project.find(@pub_key).to_config.should == expected_config
         end
       end
 
       context "and specifying a public_key which is not associated to any project on the site yet" do
         before(:each) do
-          @public_key = "non_existant_public_key"
-          register_show_uri(@public_key, "Some Name", ["404", "Not Found"])
+          register_show_uri(["404", "Not Found"], "")
         end
 
         it "returns nil" do
-          Project.find(@public_key).should == nil
+          Project.find(@pub_key).should == nil
         end
       end
     end

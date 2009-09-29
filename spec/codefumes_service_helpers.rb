@@ -79,9 +79,18 @@ module CodeFumesServiceHelpers
   end
 
   module Claim
-    def register_create_uri(status_code = ["201", "Created"], body_content = "")
-      request_uri = "#{@authd_project_api_uri}/claim?api_key=#{@api_key}"
-      FakeWeb.register_uri(:post, request_uri, :status => status_code, :body =>  body_content)
+    def register_public_create_uri(status_code = ["200", "Ok"], body_content = "")
+      register_create_uri(status_code, body_content, :public)
     end
+
+    def register_private_create_uri(status_code = ["200", "Ok"], body_content = "")
+      register_create_uri(status_code, body_content, :private)
+    end
+
+    private
+      def register_create_uri(status_code, body_content, visibility)
+        request_uri = "#{@authd_project_api_uri}/claim?api_key=#{@api_key}&visibility=#{visibility.to_s}"
+        FakeWeb.register_uri(:put, request_uri, :status => status_code, :body =>  body_content)
+      end
   end
 end

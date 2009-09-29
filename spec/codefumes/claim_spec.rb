@@ -9,21 +9,42 @@ describe Claim do
   end
 
   before(:all) do
+    FakeWeb.clean_registry
+    FakeWeb.allow_net_connect = false
     setup_fixture_base
   end
 
   describe "create" do
-    context "with '201 Created' response" do
+    context "with '200 Ok' response" do
       it "returns true" do
-        register_create_uri
+        register_public_create_uri
         Claim.create(@project, @api_key).should be_true
       end
     end
 
     context "with '401 Unauthorized' response" do
       it "returns false" do
-        register_create_uri(["401", "Unauthorized"])
+        register_public_create_uri(["401", "Unauthorized"])
         Claim.create(@project, @api_key).should be_false
+      end
+    end
+
+    context "setting visibility" do
+      it "supports 'public'" do
+        register_public_create_uri
+        Claim.create(@project, @api_key, :public).should be_true
+        Claim.create(@project, @api_key).should be_true
+      end
+
+      it "supports 'private'" do
+        register_private_create_uri
+        Claim.create(@project, @api_key, :private).should be_true
+      end
+
+      it "raises an ArgumentError if an unsupported visibility type is provided" do
+        lambda {
+          Claim.create(@project, @api_key, :unsupported_visibility)
+        }.should raise_error(ArgumentError)
       end
     end
   end

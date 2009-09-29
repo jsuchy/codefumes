@@ -46,7 +46,7 @@ module CfClaimProject
                   "Attempt to claim all projects in your CodeFumes config file."
                   ) {@attempt_to_claim_all = true}
           opts.on("-p", "--private", String,
-                  "Claims the project as a 'private' project."
+                  "Claims the project(s) as a 'private' project."
                   ) {@private_project = true}
           opts.on("-h", "--help",
                   "Show this help message.") { @stdout.puts opts; exit(1) }

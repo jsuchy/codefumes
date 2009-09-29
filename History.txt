@@ -2,6 +2,7 @@
 
 * Added visibility support to Claim class
 * Updated Claim#create to use PUT request instead of POST
+* Updated cf_claim_project to support -p/--private flag(s)
 
 == 0.1.4 2009-09-26
 

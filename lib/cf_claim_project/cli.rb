@@ -5,6 +5,7 @@ include CodeFumes
 module CfClaimProject
   class CLI
     @attempt_to_claim_all = false
+    @private_project = false
 
     def self.execute(stdout, arguments=[])
       @stdout = stdout
@@ -21,7 +22,7 @@ module CfClaimProject
         end
 
         @stdout.print "Claiming...'#{public_key}': "
-        @stdout.puts Claim.create(project, @users_api_key) ? 'Success!' : 'Denied.'
+        @stdout.puts Claim.create(project, @users_api_key, visibility) ? 'Success!' : 'Denied.'
       end
 
       @stdout.puts ""
@@ -32,7 +33,9 @@ module CfClaimProject
       def self.parse_cli_arguments!(arguments)
         OptionParser.new do |opts|
           opts.banner = <<-BANNER.gsub(/^          /,'')
-            This application is wonderful because...
+            Used to 'claim' a project on CodeFumes.com. The claim request has a
+            "visibility" attribute as well, which defaults to "public", but can
+            be set to "private" using the -p/--private flag.
 
             Usage: #{File.basename($0)} [options]
 
@@ -40,8 +43,11 @@ module CfClaimProject
           BANNER
           opts.separator ""
           opts.on("-a", "--all", String,
-                  "Attempt to claim all projects in your CodeFumes config file"
+                  "Attempt to claim all projects in your CodeFumes config file."
                   ) {@attempt_to_claim_all = true}
+          opts.on("-p", "--private", String,
+                  "Claims the project as a 'private' project."
+                  ) {@private_project = true}
           opts.on("-h", "--help",
                   "Show this help message.") { @stdout.puts opts; exit(1) }
           opts.parse!(arguments)
@@ -57,6 +63,10 @@ module CfClaimProject
 
       def self.claim_all_projects_flag_set?
         @attempt_to_claim_all == true
+      end
+
+      def self.visibility
+        @private_project == true ? :private : :public
       end
 
       def self.print_missing_arguments_message

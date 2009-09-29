@@ -1,5 +1,5 @@
 require 'spec/spec_helper'
-require 'lib/store_codefumes_credentials/cli'
+require 'lib/cf_store_credentials/cli'
 
 def delete_config_file
   unless ConfigFile.path == File.expand_path('~/.codefumes_config')
@@ -7,7 +7,7 @@ def delete_config_file
   end
 end
 
-describe StoreCodefumesCredentials::CLI, "execute" do
+describe CfStoreCredentials::CLI, "execute" do
   after(:all) do
     delete_config_file
   end
@@ -16,7 +16,7 @@ describe StoreCodefumesCredentials::CLI, "execute" do
     delete_config_file
     @api_key_value = "API_KEY#{rand(100)}"
     @stdout_io = StringIO.new
-    StoreCodefumesCredentials::CLI.execute(@stdout_io, [@api_key_value])
+    CfStoreCredentials::CLI.execute(@stdout_io, [@api_key_value])
     @stdout_io.rewind
     @stdout = @stdout_io.read
   end

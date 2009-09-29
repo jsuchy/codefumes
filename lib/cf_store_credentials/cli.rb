@@ -1,6 +1,6 @@
 require 'optparse'
 
-module StoreCodefumesCredentials
+module CfStoreCredentials
   class CLI
     def self.execute(stdout, arguments=[])
       @stdout = stdout

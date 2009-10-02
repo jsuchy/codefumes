@@ -48,4 +48,20 @@ describe Claim do
       end
     end
   end
+
+  describe "destroy" do
+    context "with '200 Ok' response" do
+      it "returns true" do
+        register_destroy_uri
+        Claim.destroy(@project, @api_key).should be_true
+      end
+    end
+
+    context "with '401 Unauthorized' response" do
+      it "returns false" do
+        register_destroy_uri(["401", "Unauthorized"])
+        Claim.destroy(@project, @api_key).should be_false
+      end
+    end
+  end
 end

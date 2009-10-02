@@ -28,5 +28,17 @@ module CodeFumes
         else false
       end
     end
+
+    def self.destroy(project, api_key)
+      auth_args = {:username => project.public_key, :password => project.private_key}
+
+      uri = "/projects/#{project.public_key}/claim"
+      response = delete(uri, :query => {:api_key => api_key}, :basic_auth => auth_args)
+
+      case response.code
+        when 200 : true
+        else false
+      end
+    end
   end
 end

@@ -7,6 +7,8 @@ rescue LoadError
   require 'spec'
 end
 
+# For autospec...there has to be a better solution
+$:.unshift(File.dirname(__FILE__) + '/../lib')
 require 'codefumes'
 
 require 'spec/codefumes_service_helpers'

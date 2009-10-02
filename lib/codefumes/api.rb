@@ -7,7 +7,7 @@ module CodeFumes
     BASE_URIS = {
       :production => 'http://codefumes.com/api/v1/xml',
       :test       => 'http://test.codefumes.com/api/v1/xml',
-      :local      => 'http://localhost:3000/api/v1/xml'
+      :local      => 'http://codefumes.com.local/api/v1/xml'
     }
 
     def self.mode(mode)

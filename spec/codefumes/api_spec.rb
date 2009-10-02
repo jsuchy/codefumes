@@ -33,7 +33,7 @@ describe "API" do
 
     it "changes the base uri to 'localhost:3000' when switched to local mode (for developer testing)" do
       CodeFumes::API.mode(:local)
-      APIClass.base_uri.should == 'http://localhost:3000/api/v1/xml'
+      APIClass.base_uri.should == 'http://codefumes.com.local/api/v1/xml'
     end
   end
   

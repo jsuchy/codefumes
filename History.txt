@@ -4,6 +4,7 @@
 * Updated Claim#create to use PUT request instead of POST
 * Updated cf_claim_project to support -p/--private flag(s)
 * Renamed store_codefumes_credentials to cf_store_credentials
+* Added cf_release_project executable for releasing/deleting project claims
 
 == 0.1.4 2009-09-26
 

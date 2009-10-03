@@ -2,8 +2,8 @@ require 'optparse'
 require 'codefumes/config_file'
 include CodeFumes
 
-module CfClaimProject
-  class CLI
+module CfClaimProject #:nodoc:
+  class CLI #:nodoc:
     @attempt_to_claim_all = false
     @private_project = false
 
@@ -81,7 +81,7 @@ module CfClaimProject
       end
 
       def self.retrieve_users_credentials_or_exit
-        @users_api_key = ConfigFile.credentials[:api_key]
+        @users_api_key = ConfigFile.api_key
         return @users_api_key unless @users_api_key.nil?
         @stdout.puts "No API key saved in your CodeFumes config file!"
         @stdout.puts ""

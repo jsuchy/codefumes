@@ -77,6 +77,10 @@ module CodeFumes
         serialized_projects.nil? ? [] : serialized_projects.keys
       end
 
+      def api_key
+        credentials[:api_key]
+      end
+
       private
         def write(serializable_object)
           File.open(path, 'w') do |f|

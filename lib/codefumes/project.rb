@@ -108,7 +108,7 @@ module CodeFumes
     #
     # Returns +false+ in all other cases.
     def claim
-      Claim.create(self, ConfigFile.credentials[:api_key])
+      Claim.create(self, ConfigFile.api_key)
     end
 
     private

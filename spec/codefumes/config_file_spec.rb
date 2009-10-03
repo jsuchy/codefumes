@@ -226,4 +226,20 @@ describe "ConfigFile" do
       end
     end
   end
+
+  describe "calling 'api_key'" do
+    context "when credentials exist in the file" do
+      it "returns the API key stored in the file" do
+        api_key_value  = "API_KEY"
+        ConfigFile.save_credentials(api_key_value)
+        ConfigFile.api_key.should == api_key_value
+      end
+    end
+
+    context "when no credentials exist in the file" do
+      it "returns an empty Hash" do
+        ConfigFile.api_key.should == nil
+      end
+    end
+  end
 end

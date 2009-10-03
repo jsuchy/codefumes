@@ -1,7 +1,7 @@
 require 'optparse'
 
-module CfStoreCredentials
-  class CLI
+module CfStoreCredentials #:nodoc:
+  class CLI #:nodoc:
     def self.execute(stdout, arguments=[])
       @stdout = stdout
       parse_command_line_options!(arguments)

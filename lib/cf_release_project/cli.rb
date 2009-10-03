@@ -1,11 +1,11 @@
 require 'optparse'
 include CodeFumes
 
-module CfReleaseProject
-  class CLI
+module CfReleaseProject #:nodoc:
+  class CLI #:nodoc:
     def self.execute(stdout, arguments=[])
       @stdout = stdout
-      @users_api_key = ConfigFile.credentials[:api_key]
+      @users_api_key = ConfigFile.api_key
       parse_cli_options(arguments)
 
       @public_keys.each do |public_key|

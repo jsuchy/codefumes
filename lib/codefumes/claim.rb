@@ -6,9 +6,14 @@ module CodeFumes
     # Attempts to claim the specified Project instance using the
     # supplied API key.
     #
+    # +visibility+ defaults to +:public+. Valid options are +public+
+    # and +private+.
+    #
     # Similar to Project#claim, but more explicit.
     #
-    # Returns true if the request is successful.
+    # Returns +true+ if the request is successful, or if the project
+    # was already owned by the user associated with the privided API
+    # key.
     #
     # Returns +false+ in all other cases.
     def self.create(project, api_key, visibility = :public)
@@ -29,6 +34,14 @@ module CodeFumes
       end
     end
 
+    # Removes a claim on the specified Project instance using the
+    # supplied API key, releasing ownership.  If the project was a
+    # "private" project, this method will convert it to "public".
+    #
+    # Returns true if the request was successful or there was not
+    # an existing owner (the action is idempotent).
+    #
+    # Returns +false+ in all other cases.
     def self.destroy(project, api_key)
       auth_args = {:username => project.public_key, :password => project.private_key}
 

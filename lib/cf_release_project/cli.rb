@@ -12,11 +12,11 @@ module CfReleaseProject #:nodoc:
         project = Project.find(public_key)
 
         if project.nil?
-          @stdout.puts "Claiming...'#{public_key}': Not found"
+          @stdout.puts "Releasing...'#{public_key}': Not found"
           next
         end
 
-        @stdout.print "Claiming...'#{public_key}': "
+        @stdout.print "Releasing...'#{public_key}': "
         @stdout.puts Claim.destroy(project, @users_api_key) ? 'Success!' : 'Denied.'
       end
 

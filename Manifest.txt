@@ -10,6 +10,7 @@ lib/cf_release_project/cli.rb
 lib/cf_store_credentials/cli.rb
 lib/codefumes.rb
 lib/codefumes/api.rb
+lib/codefumes/build.rb
 lib/codefumes/claim.rb
 lib/codefumes/commit.rb
 lib/codefumes/config_file.rb
@@ -19,12 +20,14 @@ spec/cf_claim_project/cli_spec.rb
 spec/cf_release_project/cli_spec.rb
 spec/cf_store_credentials/cli_spec.rb
 spec/codefumes/api_spec.rb
+spec/codefumes/build_spec.rb
 spec/codefumes/claim_spec.rb
 spec/codefumes/commit_spec.rb
 spec/codefumes/config_file_spec.rb
 spec/codefumes/payload_spec.rb
 spec/codefumes/project_spec.rb
 spec/codefumes_service_helpers.rb
+spec/fixtures/build.xml
 spec/fixtures/commit.xml
 spec/fixtures/commit_with_custom_attrs.xml
 spec/fixtures/multiple_commits.xml
@@ -34,5 +37,3 @@ spec/fixtures/project_update.xml
 spec/spec.opts
 spec/spec_helper.rb
 tasks/rspec.rake
-website/index.html
-website/stylesheets/screen.css

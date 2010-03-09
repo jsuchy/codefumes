@@ -14,6 +14,8 @@ module CodeFumesServiceHelpers
       @updated_name = @project_name + "_updated"
       @commit_data = "commit_data"
       @api_key = "USERS_API_KEY"
+      @build_name = "IE7"
+      @commit_identifier = "COMMIT_IDENTIFIER"
     end
 
     def fixtures
@@ -97,5 +99,35 @@ module CodeFumesServiceHelpers
         request_uri = "#{@authd_project_api_uri}/claim?api_key=#{@api_key}&visibility=#{visibility.to_s}"
         FakeWeb.register_uri(:put, request_uri, :status => status_code, :body =>  body_content)
       end
+  end
+
+  module Build
+    def setup_build_fixtures
+      @started_at = "2009-09-26 21:18:11 UTC"
+      @esc_started_at = "2009-09-26%2021%3A18%3A11%20UTC"
+      @state = "running"
+      @build_identifier = "BUILD_IDENTIFIER"
+    end
+
+    def register_create_uri(status_code = ["201", "Created"], body_content = fixtures[:build])
+      FakeWeb.register_uri(:post, "#{@authd_project_api_uri}/commits/#{@commit_identifier}/builds?build[state]=#{@state}&build[started_at]=#{@esc_started_at}&build[ended_at]=&build[name]=#{@build_name}",
+                           :status => status_code, :body => body_content)
+    end
+
+    def register_update_uri(status_code = ["200", "Ok"], body_content = fixtures[:build])
+      FakeWeb.register_uri(:put, "#{@authd_project_api_uri}/commits/#{@commit_identifier}/builds/#{@build_identifier}?build[state]=#{@state}&build[started_at]=#{@esc_started_at}&build[ended_at]=&build[name]=#{@build_name}",
+                           :status => status_code, :body => body_content)
+    end
+
+    def register_show_uri(status_code = ["200", "Ok"], body_content = fixtures[:build])
+      FakeWeb.register_uri(:get, "#{@anon_project_api_uri}/commits/#{@commit_identifier}/builds/#{@build_identifier}",
+                           :status => status_code, :body => body_content)
+    end
+
+    def register_delete_uri(status_code = ["200", "Ok"], body_content = fixtures[:project])
+      FakeWeb.register_uri(:delete, "#{@authd_project_api_uri}/commits/#{@commit_identifier}/builds/#{@build_identifier}",
+                           :status => status_code,
+                           :body =>  body_content)
+    end
   end
 end

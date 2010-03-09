@@ -2,6 +2,7 @@ require 'httparty'
 require 'chronic'
 
 require 'codefumes/api'
+require 'codefumes/build'
 require 'codefumes/claim'
 require 'codefumes/commit'
 require 'codefumes/config_file'

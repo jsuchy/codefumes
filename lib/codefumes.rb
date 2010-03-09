@@ -1,4 +1,5 @@
 require 'httparty'
+require 'chronic'
 
 require 'codefumes/api'
 require 'codefumes/claim'

@@ -24,7 +24,7 @@ $hoe = Hoe.spec('codefumes') do
                          ['rubigen', ">= 1.5.2"],
                          ['fakeweb', ">= 1.2.6"]
                         ]
-  self.extra_deps     = [['httparty','>= 0.4.3']]
+  self.extra_deps     = [['httparty','>= 0.4.3'], ['mojombo-chronic', '>= 0.3.0']]
   developer('Tom Kersten', 'tom.kersten@cosyntech.com')
   developer('Joe Banks', 'freemarmoset@gmail.com')
 end

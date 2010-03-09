@@ -42,12 +42,10 @@ describe "Payload" do
         register_create_uri(["401", "Unauthorized"], "")
       end
 
-      [:created_at].each do |method_name|
-        it "sets the '#{method_name.to_s}'" do
-          @payload.send(method_name).should == nil
-          @payload.save.should == false
-          @payload.send(method_name).should == nil
-        end
+      it "does not set 'created_at'" do
+        @payload.created_at.should == nil
+        @payload.save.should == false
+        @payload.created_at.should == nil
       end
     end
 

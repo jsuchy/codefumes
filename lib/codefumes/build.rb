@@ -27,7 +27,7 @@ module CodeFumes
           @ended_at   = response['build']['ended_at']
           @state     = response['build']['state']
           @api_uri    = response['build']['build_api_uri']
-          @commit_identifier = response['build']['commit_identifier']
+          @commit_identifier  = response['build']['commit_identifier']
           true
         else
           false
@@ -78,10 +78,10 @@ module CodeFumes
       # Returns +false+ if the public key of the Project is not available.
       def exists?
         return false if @identifier.nil? || @identifier.empty?
-        !self.class.find(:project_public_key  => @project_public_key,
-                         :commit_identifier   => @commit_identifier,
-                         :identifier          => @identifier,
-                         :project_private_key => @project_private_key).nil?
+        !self.class.find(:public_key         => @project_public_key,
+                         :commit_identifier  => @commit_identifier,
+                         :identifier         => @identifier,
+                         :private_key        => @project_private_key).nil?
       end
 
       def create

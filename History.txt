@@ -1,3 +1,7 @@
+== 0.1.6 09-MAR-2010
+
+* Added simple Build support
+
 == 0.1.5 2009-09-26
 
 * Added visibility support to Claim class

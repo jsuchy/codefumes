@@ -20,7 +20,9 @@ describe "Build" do
 
   describe "save" do
     it "sets basic auth with the public and private key" do
+      @build.stub!(:exists?).and_return(false)
       register_create_uri(["401", "Unauthorized"], "")
+
       basic_auth_params = {:username => @pub_key, :password => @priv_key}
 
       build_query = {:build => {:name => @build_name, :ended_at => nil, :started_at => @started_at, :state => @state}}
@@ -28,8 +30,9 @@ describe "Build" do
       @build.save
     end
 
-    context "with valid parameters" do
+    context "when it's a new build for the specified commit" do
       before(:each) do
+        @build.stub!(:exists?).and_return(false)
         register_create_uri(["201", "Created"])
       end
 
@@ -48,6 +51,7 @@ describe "Build" do
 
     context "with Unauthorized response" do
       before(:each) do
+        @build.stub!(:exists?).and_return(false)
         register_create_uri(["401", "Unauthorized"], "")
       end
 

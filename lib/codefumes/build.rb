@@ -28,6 +28,8 @@ module CodeFumes
           @state     = response['build']['state']
           @api_uri    = response['build']['build_api_uri']
           @commit_identifier  = response['build']['commit_identifier']
+          @project_public_key  = response['build']['public_key']
+          @project_private_key = response['build']['private_key']
           true
         else
           false
@@ -73,14 +75,14 @@ module CodeFumes
     private
       # Verifies existence of Build on website.
       #
-      # Returns +true+ if the public key of Project is available.
+      # Returns +true+ if a build with the specified identifier or name is associated with   
+      # the specified project/commit
       #
       # Returns +false+ if the public key of the Project is not available.
       def exists?
-        return false if @identifier.nil? || @identifier.empty?
         !self.class.find(:public_key         => @project_public_key,
                          :commit_identifier  => @commit_identifier,
-                         :identifier         => @identifier,
+                         :identifier         => @identifier || @name,
                          :private_key        => @project_private_key).nil?
       end
 

@@ -75,7 +75,7 @@ module CodeFumes
     private
       # Verifies existence of Build on website.
       #
-      # Returns +true+ if a build with the specified identifier or name is associated with   
+      # Returns +true+ if a build with the specified identifier or name is associated with
       # the specified project/commit
       #
       # Returns +false+ if the public key of the Project is not available.
@@ -93,7 +93,9 @@ module CodeFumes
 
       def update
         content = standard_content_hash
-        self.class.put("/projects/#{@project_public_key}/commits/#{@commit_identifier}/builds/#{@identifier}", :query => {:build => content}, :basic_auth => {:username => @project_public_key, :password => @project_private_key})
+        # HACK!
+        searchable_identifier = @identifier || @name
+        self.class.put("/projects/#{@project_public_key}/commits/#{@commit_identifier}/builds/#{searchable_identifier}", :query => {:build => content}, :basic_auth => {:username => @project_public_key, :password => @project_private_key})
       end
 
       def standard_content_hash

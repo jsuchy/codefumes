@@ -1,8 +1,27 @@
 module CodeFumes
+  # A Build represents a specific instance of tests running on
+  # a continuous integration server.  Builds have a name and are
+  # associated with # a specific Commit of a Project and can track
+  # the current status (running, failed, success) and the
+  # start & end times of the Build process.
   class Build < CodeFumes::API
     attr_reader   :project_public_key, :project_private_key, :created_at, :api_uri, :identifier, :commit_identifier
     attr_accessor :started_at, :ended_at, :state, :name
 
+    # Initializes new instance of a Build.
+    #
+    # Accepts an +options+ Hash with support for the following keys:
+    #   :public_key (*)
+    #   :private_key (*)
+    #   :commit_identifier (*)
+    #   :identifier
+    #   :name (*)
+    #   :state
+    #   :api_uri
+    #   :started_at (*)
+    #   :ended_at
+    #
+    #   NOTE:  (*) denotes a required key/value pair
     def initialize(options = {})
       @project_public_key  = options[:public_key]        || options['public_key']
       @project_private_key = options[:private_key]       || options['private_key']
@@ -15,6 +34,11 @@ module CodeFumes
       @ended_at            = options[:ended_at]          || options['ended_at']
     end
 
+    # Saves the Build instance to CodeFumes.com
+    #
+    # Returns +true+ if successful
+    #
+    # Returns +false+ if request fails
     def save
       response = exists? ? update : create
 
@@ -86,11 +110,13 @@ module CodeFumes
                          :private_key        => @project_private_key).nil?
       end
 
+      # Saves a new build (makes POST request)
       def create
         content = standard_content_hash
         self.class.post("/projects/#{@project_public_key}/commits/#{@commit_identifier}/builds", :query => {:build => content}, :basic_auth => {:username => @project_public_key, :password => @project_private_key})
       end
 
+      # Updates an existing build (makes PUT request)
       def update
         content = standard_content_hash
         # HACK!

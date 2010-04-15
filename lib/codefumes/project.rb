@@ -4,7 +4,7 @@ module CodeFumes
   # name defined.  Projects are also associated with a collection of
   # commits from a repository.
   class Project < CodeFumes::API
-    attr_reader :private_key, :short_uri, :community_uri, :api_uri
+    attr_reader :private_key, :short_uri, :community_uri, :api_uri, :build_status
     attr_accessor :name,:public_key
 
     # Accepts Hash containing the following keys:
@@ -44,7 +44,7 @@ module CodeFumes
       response = exists? ? update : create
       case response.code
         when 201, 200
-          reinitialize!(response)
+          reinitialize!(response['project'])
           true
         else
           false
@@ -81,7 +81,7 @@ module CodeFumes
       case response.code
         when 200
           project = Project.new
-          project.reinitialize!(response)
+          project.reinitialize!(response['project'])
         else
           nil
       end
@@ -89,11 +89,13 @@ module CodeFumes
 
     # TODO: Make this a private method
     def reinitialize!(options = {}) #:nodoc:
-      @public_key    = options['project']['public_key']
-      @private_key   = options['project']['private_key']
-      @short_uri     = options['project']['short_uri']
-      @community_uri = options['project']['community_uri']
-      @api_uri       = options['project']['api_uri']
+      @public_key    = options['public_key']
+      @private_key   = options['private_key']
+      @short_uri     = options['short_uri']
+      @community_uri = options['community_uri']
+      @api_uri       = options['api_uri']
+      @build_status  = options['build_status'].empty? ? nil : options['build_status']
+      @build_status && @build_status.sub!(/_build/, '')
       self
     end
 

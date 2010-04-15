@@ -5,6 +5,7 @@
   <public-key>public_key_value</public-key>
   <private-key>private_key_value</private-key>
   <name>Project_Name(tm)</name>
+  <build_status>running_build</build_status>
   <updated-at type="datetime">2009-04-29T23:18:03Z</updated-at>
   <short_uri>http://codefumes.com/p/public_key_value</short_uri>
   <community_uri>http://codefumes.com/community/projects/public_key_value</community_uri>

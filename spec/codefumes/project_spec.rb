@@ -245,4 +245,30 @@ describe "Project" do
       end
     end
   end
+
+  describe "reinitialize" do
+    context "when the server has returned a build_status of 'running_build'" do
+      it "returns 'running'" do
+        project = Project.new
+        project.reinitialize!({'build_status' => "running_build"})
+        project.build_status.should == 'running'
+      end
+    end
+
+    context "when the server has returned a build_status of 'nobuilds'" do
+      it "returns 'nobuilds'" do
+        project = Project.new
+        project.reinitialize!({'build_status' => "nobuilds"})
+        project.build_status.should == 'nobuilds'
+      end
+    end
+
+    context "when the server has returned a build_status of ''" do
+      it "returns nil" do
+        project = Project.new
+        project.reinitialize!({'build_status' => ""})
+        project.build_status.should be_nil
+      end
+    end
+  end
 end

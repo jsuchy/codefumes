@@ -17,6 +17,7 @@ rescue LoadError
 end
 
 Hoe.plugin :website
+Hoe.plugin :git
 
 $hoe = Hoe.spec('codefumes') do
   self.summary = "A client-side implementation of the CodeFumes.com API."

@@ -16,7 +16,7 @@ module CodeFumes
     #   :commit_identifier (*)
     #   :identifier
     #   :name (*)
-    #   :state
+    #   :state (*)
     #   :api_uri
     #   :started_at (*)
     #   :ended_at

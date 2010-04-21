@@ -10,5 +10,5 @@ require 'codefumes/payload'
 require 'codefumes/project'
 
 module CodeFumes
-  VERSION = '0.1.8' unless defined?(CodeFumes::VERSION)
+  VERSION = '0.1.9' unless defined?(CodeFumes::VERSION)
 end

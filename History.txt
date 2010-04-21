@@ -1,3 +1,7 @@
+=== 0.1.9 / 20-APR-2010
+
+* Updated gem dependency to use chronic instead of mojombo-chronic
+
 === 0.1.8 / 2010-04-15
 
 * Added Project#build_status

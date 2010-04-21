@@ -1,3 +1,9 @@
+=== 0.1.10 / 21-APR-2010
+
+* Updated all gem dependencies to use only gems released to gemcutter (vs. older
+  Github-friendly declarations)
+* Updated README
+
 === 0.1.9 / 20-APR-2010
 
 * Updated gem dependency to use chronic instead of mojombo-chronic

@@ -72,13 +72,9 @@ gem, you can refer to the
 
 == INSTALL:
 
-From RubyForge:
+From Gemcutter:
 
   sudo gem install codefumes
-
-Or, from Github:
-
-  sudo gem install cosyn-codefumes
 
 == LICENSE:
 

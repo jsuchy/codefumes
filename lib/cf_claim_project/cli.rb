@@ -37,7 +37,7 @@ module CfClaimProject #:nodoc:
             "visibility" attribute as well, which defaults to "public", but can
             be set to "private" using the -p/--private flag.
 
-            Usage: #{File.basename($0)} [options]
+            Usage: #{File.basename($0)} [options] public_key_here
 
             Options are:
           BANNER

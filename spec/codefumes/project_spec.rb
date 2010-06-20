@@ -70,7 +70,7 @@ describe "Project" do
         context "respons is Unauthorized" do
           before(:each) do
             @updated_name = "different_name"
-            @project = CodeFumes::Project.new(:public_key => 'existing_public_key', :private_key => 'bad_key', :name => @updated_name)
+            @project = CodeFumes::Project.new('existing_public_key', :private_key => 'bad_key', :name => @updated_name)
             FakeWeb.register_uri(:put, "http://#{@project.public_key}:#{@project.private_key}@codefumes.com/api/v1/xml/projects/existing_public_key?project[name]=#{@project.name}",
                                  :status => ["401", "Unauthorized"])
             @project.stub!(:exists?).and_return(true)
@@ -98,14 +98,24 @@ describe "Project" do
 
   context "delete" do
     before(:each) do
-      FakeWeb.register_uri( :delete, @authd_project_api_uri,
-                            :status => ["200", "Successful"],
-                            :body   => "")
+      FakeWeb.register_uri(:delete, @authd_project_api_uri, :status => ["200", "Successful"], :body   => "")
     end
 
     it "sets basic auth with the public and private key" do
       Project.should_receive(:delete).with("/projects/#{@project.public_key}", :basic_auth => {:username => @project.public_key, :password => @project.private_key}).and_return(mock("response", :code => 401))
       @project.delete
+    end
+
+    context "without a private key specified" do
+      it "raises an InsufficientCredentials error" do
+        lambda {Project.new('public_key').delete}.should raise_error(Errors::InsufficientCredentials)
+      end
+    end
+
+    context "without a public key specified" do
+      it "raises an InsufficientCredentials error" do
+        lambda {Project.new(nil, :private_key => 'private_key').delete}.should raise_error(Errors::InsufficientCredentials)
+      end
     end
 
     context "with Sucessful response" do
@@ -126,7 +136,7 @@ describe "Project" do
     context "when the specified public_key has been reserved already" do
       it "returns true" do
         register_show_uri
-        Project.new(:public_key => @pub_key).exists?.should be_true
+        Project.new(@pub_key).exists?.should be_true
       end
     end
 
@@ -136,7 +146,7 @@ describe "Project" do
       end
 
       it "returns false when the public key is an empty string" do
-        Project.new(:public_key => "").exists?.should be_false
+        Project.new("").exists?.should be_false
       end
     end
 
@@ -146,7 +156,7 @@ describe "Project" do
       end
 
       it "returns false" do
-        Project.new(:public_key => @pub_key).exists?.should be_false
+        Project.new(@pub_key).exists?.should be_false
       end
     end
   end
@@ -173,13 +183,13 @@ describe "Project" do
 
     it "doesn't include the private_key in the hash if it is nil" do
       public_key = "key_to_happiness"
-      Project.new(:public_key => public_key).to_config[public_key.to_sym].should_not have_key(:private_key)
+      Project.new(public_key).to_config[public_key.to_sym].should_not have_key(:private_key)
     end
   end
 
   describe "claim" do
     before(:each) do
-      @project = Project.new(:public_key => 'public_key_value', :private_key => 'private_key_value')
+      @project = Project.new('public_key_value', :private_key => 'private_key_value')
       @api_key = "USERS_API_KEY"
       ConfigFile.stub!(:credentials).and_return({:api_key => @api_key})
     end
@@ -205,16 +215,12 @@ describe "Project" do
   end
 
   describe "accessible attributes" do
-    before(:each) do
-      @value = 'my_value'
-    end
+    let(:key_specified) {"public_key"}
+    let(:name_specified) {"project_name"}
+    let(:project) {Project.new(key_specified, :name => name_specified)}
 
-    [:public_key, :name].each do |attribute_name|
-      it "values for '#{attribute_name.to_s}' are allowed to be modified by the client" do
-        p = Project.new(attribute_name => @value )
-        p.send(attribute_name).should ==  @value
-      end
-    end
+    specify {project.public_key.should == key_specified}
+    specify {project.name.should == name_specified}
   end
 
   describe "calling the class method" do

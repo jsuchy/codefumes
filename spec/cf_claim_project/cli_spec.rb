@@ -3,7 +3,7 @@ require 'lib/cf_claim_project/cli'
 
 describe CfClaimProject::CLI, "execute" do
   before(:each) do
-    @project = Project.new(:public_key => "pub", :private_key => "prv_key")
+    @project = Project.new("pub", :private_key => "prv_key")
     Project.stub!(:find).and_return(@project)
     ConfigFile.save_credentials("sample_credentials")
     ConfigFile.save_project(@project)

@@ -14,7 +14,7 @@ end
 
 describe "ConfigFile" do
   before(:each) do
-    @project = Project.new(:public_key => 'public_key_value', :private_key => 'private_key_value')
+    @project = Project.new('public_key_value', :private_key => 'private_key_value')
   end
 
   after(:all) do
@@ -53,7 +53,7 @@ describe "ConfigFile" do
     context "when passed an existing project" do
       before(:each) do
         ConfigFile.save_project(@project)
-        @updated_project = Project.new(:public_key => @project.public_key, :private_key => "updated_private_key")
+        @updated_project = Project.new(@project.public_key, :private_key => "updated_private_key")
       end
 
       it "does not create a duplicate entry in the list of projects" do
@@ -67,9 +67,9 @@ describe "ConfigFile" do
 
     context "when several projects exist" do
       before(:each) do
-        @project1 = Project.new(:public_key => :p1_pub_value, :private_key => "p1_private_key")
-        @project2 = Project.new(:public_key => :p2_pub_value, :private_key => "p2_private_key")
-        @project3 = Project.new(:public_key => :p3_pub_value, :private_key => "p3_private_key")
+        @project1 = Project.new(:p1_pub_value, :private_key => "p1_private_key")
+        @project2 = Project.new(:p2_pub_value, :private_key => "p2_private_key")
+        @project3 = Project.new(:p3_pub_value, :private_key => "p3_private_key")
         ConfigFile.save_project(@project1)
         ConfigFile.save_project(@project2)
         ConfigFile.save_project(@project3)
@@ -86,9 +86,9 @@ describe "ConfigFile" do
   describe "calling 'delete_project'" do
     context "when the project entry exists in the file" do
       before(:each) do
-        @project1 = Project.new(:public_key => "p1_pub_value", :private_key => "p1_private_key")
-        @project2 = Project.new(:public_key => "p2_pub_value", :private_key => "p2_private_key")
-        @project3 = Project.new(:public_key => "p3_pub_value", :private_key => "p3_private_key")
+        @project1 = Project.new("p1_pub_value", :private_key => "p1_private_key")
+        @project2 = Project.new("p2_pub_value", :private_key => "p2_private_key")
+        @project3 = Project.new("p3_pub_value", :private_key => "p3_private_key")
         ConfigFile.save_project(@project1)
         ConfigFile.save_project(@project2)
         ConfigFile.save_project(@project3)
@@ -107,7 +107,7 @@ describe "ConfigFile" do
 
     context "when the project entry does not exist in the file" do
       before(:each) do
-        @project = Project.new(:public_key => "p1_pub_nonexist_value", :private_key => "p1_private_key")
+        @project = Project.new("p1_pub_nonexist_value", :private_key => "p1_private_key")
       end
 
       it "does not raise an error" do
@@ -182,7 +182,7 @@ describe "ConfigFile" do
 
     it "does not affect existing project content" do
       public_key = "pub_value"
-      project = Project.new(:public_key => public_key, :private_key => "private_key")
+      project = Project.new(public_key, :private_key => "private_key")
       ConfigFile.save_project(project)
       ConfigFile.save_credentials(@api_key)
       ConfigFile.serialized[:projects][public_key.to_sym].should_not be_nil
@@ -215,7 +215,7 @@ describe "ConfigFile" do
 
     context "when projects exist in the file" do
       before(:each) do
-        create_uniq_project = lambda {|index| Project.new(:public_key => "pub_key_#{index}", :private_key => 'pk')}
+        create_uniq_project = lambda {|index| Project.new("pub_key_#{index}", :private_key => 'pk')}
         @projects = 5.times.map {|i| create_uniq_project.call(i)}
         @projects.each {|project| ConfigFile.save_project(project)}
       end

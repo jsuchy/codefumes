@@ -5,7 +5,7 @@ module CodeFumesServiceHelpers
       @project_name = "Project_Name(tm)"
       @pub_key = 'public_key_value'
       @priv_key = 'private_key_value'
-      @project = CodeFumes::Project.new(:public_key => @pub_key, :private_key => @priv_key, :name => @project_name)
+      @project = CodeFumes::Project.new(@pub_key, :private_key => @priv_key, :name => @project_name)
 
       @anonymous_base_uri = "http://codefumes.com/api/v1/xml"
       @authenticated_base_uri = "http://#{@pub_key}:#{@priv_key}@codefumes.com/api/v1/xml"

@@ -7,22 +7,29 @@ module CodeFumes
     attr_reader :private_key, :short_uri, :community_uri, :api_uri, :build_status
     attr_accessor :name,:public_key
 
-    # Accepts Hash containing the following keys:
-    # * :public_key
+    # Instantiate new instance of Project class.
+    #
+    # +options+ Hash supports the following keys:
     # * :private_key
     # * :name
-    def initialize(options = {})
-      @public_key = options[:public_key]
+    def initialize(public_key = nil, options = {})
+      @public_key = public_key
       @private_key = options[:private_key]
       @name = options[:name]
     end
 
-    # Deletes project from the website.
+    # Deletes project from the website. You must have both the +public_key+
+    # and +private_key+ of a project in order to delete it.
     #
     # Returns +true+ if the request succeeded.
     #
     # Returns +false+ if the request failed.
     def delete
+      if @public_key.nil? || @private_key.nil?
+        msg = "You must have both the private key & public key of a project in order to delete it. (currently: {:private_key => '#{@private_key.to_s}', :public_key => '#{@public_key.to_s}'}"
+        raise Errors::InsufficientCredentials, msg
+      end
+
       response = destroy!
       case response.code
         when 200
@@ -44,7 +51,7 @@ module CodeFumes
       response = exists? ? update : create
       case response.code
         when 201, 200
-          reinitialize!(response['project'])
+          reinitialize!(response['project']) # not awesome
           true
         else
           false

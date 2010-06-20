@@ -18,7 +18,7 @@ end
 describe CfReleaseProject::CLI, "execute" do
   before(:each) do
     @api_key = "my_credentials"
-    @project = Project.new(:public_key => "abc", :private_key => "382")
+    @project = Project.new("abc", :private_key => "382")
     ConfigFile.save_project(@project)
     ConfigFile.save_credentials(@api_key)
     Project.stub!(:find).and_return(@project)

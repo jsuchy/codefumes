@@ -6,6 +6,7 @@ require 'codefumes/build'
 require 'codefumes/claim'
 require 'codefumes/commit'
 require 'codefumes/config_file'
+require 'codefumes/errors'
 require 'codefumes/payload'
 require 'codefumes/project'
 

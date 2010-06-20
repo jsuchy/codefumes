@@ -21,11 +21,14 @@ module CodeFumes
                 :authored_at, :uploaded_at, :api_uri, :parent_identifiers,
                 :line_additions, :line_deletions, :line_total,
                 :affected_file_count, :custom_attributes
+    alias_method :id, :identifier
+    alias_method :sha, :identifier
 
     # Instantiates a new Commit object
     #
+    # * +identifier+ - the revision number of the commit (git commit sha, svn version, etc)
+    #
     # Accepts a Hash of options, including:
-    # * identifier
     # * author_email
     # * author_name
     # * committer_email
@@ -50,8 +53,8 @@ module CodeFumes
     # Technically speaking, you could pass anything you wanted into
     # the fields, but when using with the CodeFumes API, the attribute
     # values will be of the type String, DateTime, or Hash.
-    def initialize(options)
-      @identifier          = options["identifier"]
+    def initialize(identifier, options = {})
+      @identifier          = identifier
       @author_email        = options["author_email"]
       @author_name         = options["author_name"]
       @committer_email     = options["committer_email"]
@@ -94,7 +97,7 @@ module CodeFumes
       case response.code
         when 200
           return nil if response["commit"].empty?
-          new(response["commit"])
+          new(response["commit"].delete("identifier"), response["commit"])
         else
           nil
       end
@@ -102,13 +105,13 @@ module CodeFumes
 
     # Returns a collection of commits associated with the specified
     # Project public key.
-    def self.all(project_public_key)
-      response = get("/projects/#{project_public_key}/commits")
+    def self.all(project)
+      response = get("/projects/#{project.public_key}/commits")
       case response.code
         when 200
           return [] if response["commits"].empty? || response["commits"]["commit"].nil?
           response["commits"]["commit"].map do |commit_data|
-            new(commit_data)
+            new(commit_data.delete("identifier"), commit_data)
           end
         else
           nil
@@ -117,11 +120,11 @@ module CodeFumes
 
     # Returns the most recent commit associated with the specified
     # Project public key.
-    def self.latest(project_public_key)
-      response = get("/projects/#{project_public_key}/commits/latest")
+    def self.latest(project)
+      response = get("/projects/#{project.public_key}/commits/latest")
       case response.code
         when 200
-          new(response["commit"])
+          new(response["commit"].delete("identifier"), response["commit"])
         else
           nil
       end
@@ -129,8 +132,8 @@ module CodeFumes
 
     # Returns the commit identifier of the most recent commit of with
     # the specified Project public key.
-    def self.latest_identifier(project_public_key)
-      latest_commit = latest(project_public_key)
+    def self.latest_identifier(project)
+      latest_commit = latest(project)
       latest_commit.nil? ? nil : latest_commit.identifier
     end
 

@@ -11,9 +11,7 @@ describe "Commit" do
     @priv_key = 'private_key_value'
     @anonymous_base_uri = "http://codefumes.com/api/v1/xml"
     @authenticated_base_uri = "http://#{@pub_key}:#{@priv_key}@codefumes.com/api/v1/xml/projects"
-    @project = Project.new(:public_key => @pub_key,
-                           :private_key => @priv_key,
-                           :name => @project_name)
+    @project = Project.new(@pub_key, :private_key => @priv_key, :name => @project_name)
     @authd_project_api_uri = "#{@authenticated_base_uri}/projects/#{@pub_key}"
     @anon_project_api_uri  = "#{@anonymous_base_uri}/projects/#{@pub_key}"
     @basic_auth_params = {:username => @pub_key, :password => @priv_key}
@@ -24,7 +22,19 @@ describe "Commit" do
     FakeWeb.clean_registry
   end
 
-  describe "find" do
+  describe "#id" do
+    it "returns the value of #identifier" do
+      Commit.new(@identifier).id.should == @identifier
+    end
+  end
+
+  describe "#sha" do
+    it "returns the value of #identifier" do
+      Commit.new(@identifier).sha.should == @identifier
+    end
+  end
+
+  describe "#find" do
     context "with a valid commit identifier" do
       before(:each) do
         register_find_uri
@@ -65,35 +75,35 @@ describe "Commit" do
     end
   end
 
-  describe "calling 'latest'" do
+  describe "#latest" do
     context "with valid parameters" do
       it "returns a commit object for the latest commit" do
         register_latest_uri
-        Commit.latest(@pub_key).identifier.should == @identifier
+        Commit.latest(@project).identifier.should == @identifier
       end
     end
 
     context "with invalid parameters" do
       it "returns nil" do
         register_latest_uri(["404", "Not Found"], "")
-        Commit.latest(@pub_key).should == nil
+        Commit.latest(@project).should == nil
       end
     end
   end
 
-  describe "calling 'latest_identifier'" do
+  describe "#latest_identifier" do
     context "with valid parameters" do
       context "when the specified project has commits stored" do
         it "returns the commit identifier of the latest commit" do
           register_latest_uri
-          Commit.latest_identifier(@pub_key).should == @identifier
+          Commit.latest_identifier(@project).should == @identifier
         end
       end
 
       context "when the specified project does not have any commits stored" do
         it "returns nil" do
           register_latest_uri(["404", "Not Found"], "")
-          Commit.latest_identifier(@pub_key).should == nil
+          Commit.latest_identifier(@project).should == nil
         end
       end
     end
@@ -101,23 +111,23 @@ describe "Commit" do
     context "with invalid parameters" do
       it "returns nil" do
         register_latest_uri(["404", "Not Found"], "")
-        Commit.latest(@pub_key).should == nil
+        Commit.latest(@project).should == nil
       end
     end
   end
 
-  describe "calling 'all'" do
+  describe "#all" do
     context "with valid parameters" do
       it "returns an array of commits" do
         register_index_uri
-        Commit.all(@pub_key).should have(3).items
+        Commit.all(@project).should have(3).items
       end
     end
 
     context "with invalid parameters" do
       it "returns nil" do
         register_index_uri(["404", "Not Found"], "")
-        Commit.all(@pub_key).should == nil
+        Commit.all(@project).should == nil
       end
     end
   end
@@ -130,14 +140,14 @@ describe "Commit" do
       @commit = Commit.find(@identifier)
     end
 
-    describe "author" do
+    describe "#author" do
       it "returns a concatenated string containing the author's name & email" do
         @commit.author.should =~ /#{@name}/
         @commit.author.should =~ /#{@email}/
       end
     end
 
-    describe "committer" do
+    describe "#committer" do
       it "returns a concatenated string containing the author's name & email" do
         @commit.committer.should =~ /#{@name}/
         @commit.committer.should =~ /#{@email}/
@@ -152,14 +162,14 @@ describe "Commit" do
       end
 
       it "returns an empty Hash" do
-        Commit.latest(@pub_key).custom_attributes.should == {}
+        Commit.latest(@project).custom_attributes.should == {}
       end
     end
 
     context "when the commit has defined custom attributes" do
       before(:each) do
         register_latest_uri(["200", "Ok"], fixtures[:commit_with_custom_attrs])
-        @commit = Commit.latest(@pub_key)
+        @commit = Commit.latest(@project)
       end
 
       it "returns a Hash of key-value pairs (attribute_name -> attribute_value)" do

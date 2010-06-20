@@ -8,19 +8,16 @@ module CodeFumes
   class Payload < CodeFumes::API
     PAYLOAD_CHARACTER_LIMIT = 4000 #:nodoc:
 
-    attr_reader :project_public_key, :project_private_key, :created_at
+    attr_reader :project, :created_at
 
-    # Accepts +:public_key+, +:private_key+, and :content keys.
-    # +:content+ should also contain a key named +:commits+, with a list
-    # of commits and associated data.  An example would be:
+    # +:commit_data+ should be a list of commits and associated data.
+    # An example would be:
     #
-    #   {:public_key => "abC3", :private_key => "some-private-key",
-    #   :content => {:commits => [{:identifier => "commit_identifer",
-    #   :files_affected => 3, :custom_attributes => {:any_metric_you_want => "value"}}]}}
-    def initialize(options = {})
-      @project_public_key = options[:public_key]
-      @project_private_key = options[:private_key]
-      @content = options[:content]
+    #   [{:identifier => "commit_identifer", :files_affected => 3,
+    #     :custom_attributes => {:any_metric_you_want => "value"}}]
+    def initialize(project, commit_data)
+      @project = project
+      @content = {:commits => commit_data}
     end
 
     # Saves instance to CodeFumes.com. After a successful save, the
@@ -33,7 +30,7 @@ module CodeFumes
     # Returns +false+ if the request failed.
     def save
       return true if empty_payload?
-      response = self.class.post("/projects/#{@project_public_key}/payloads", :query => {:payload => @content}, :basic_auth => {:username => @project_public_key, :password => @project_private_key})
+      response = self.class.post("/projects/#{@project.public_key}/payloads", :query => {:payload => @content}, :basic_auth => {:username => @project.public_key, :password => @project.private_key})
 
       case response.code
         when 201
@@ -59,18 +56,9 @@ module CodeFumes
     # TODO: Clean up how the size of the request is constrained, this
     # is pretty hackish right now (basically guesses how many
     # characters would be added when HTTParty wraps the content in XML.
-    def self.prepare(data = {})
-      return [] if data.nil? || data.empty?
-      raw_payload = data.dup
-
-      public_key = raw_payload.delete(:public_key)
-      raise ArgumentError, "No public key provided" if public_key.nil?
-
-      private_key = raw_payload.delete(:private_key)
-
-      if raw_payload[:content].nil? || raw_payload[:content][:commits].nil?
-        raise ArgumentError, "No commits key provided"
-      end
+    def self.prepare(project, commit_data = {})
+      return [] if commit_data.nil? || commit_data.empty?
+      raw_payload = commit_data.dup
 
       content = raw_payload[:content][:commits]
       initial_chunks = {:on_deck => [], :prepared => []}
@@ -91,13 +79,13 @@ module CodeFumes
       end
 
       chunked[:prepared].map do |raw_content|
-        Payload.new(:public_key => public_key, :private_key => private_key, :content => {:commits => raw_content})
+        Payload.new(project, raw_content)
       end
     end
 
     private
       def empty_payload?
-        @content.empty? || @content[:commits].nil? || @content[:commits].blank?
+        @content.nil? || @content.empty? || @content[:commits].nil? || @content[:commits].blank?
       end
   end
 end

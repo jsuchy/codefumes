@@ -13,7 +13,7 @@ describe "Payload" do
 
   before(:each) do
     setup_fixture_base
-    @payload = Payload.new(:public_key => @pub_key, :private_key => @priv_key, :content => {:commits => @commit_data})
+    @payload = Payload.new(@project, @commit_data)
     @payload_query = {:payload => {:commits => @commit_data}}
     @basic_auth_params = {:username => @pub_key, :password => @priv_key}
   end
@@ -49,9 +49,9 @@ describe "Payload" do
       end
     end
 
-    context "when the payload does not have any content" do
+    context "when the payload does not have any commit information" do
       before(:each) do
-        @payload = Payload.new(:public_key => @project.public_key, :content => {:commits => ""})
+        @payload = Payload.new(@project, "")
       end
 
       it "returns true without attempting to save to the site" do
@@ -79,27 +79,15 @@ describe "Payload" do
 
   describe "calling the class method" do
     describe "'prepare'" do
-      context "when supplying nil content" do
+      context "when supplying nil commit information" do
         it "returns an empty array" do
-          Payload.prepare(nil).should == []
+          Payload.prepare(@project, nil).should == []
         end
       end
 
       context "when supplying an empty Hash" do
         it "returns an empty array" do
-          Payload.prepare({}).should == []
-        end
-      end
-
-      context "when supplying hash does not contain a :public_key key" do
-        it "raises an ArgumentError exception" do
-          lambda {Payload.prepare({:commits => []})}.should raise_error(ArgumentError)
-        end
-      end
-
-      context "when supplying hash does not contain a :commits key" do
-        it "raises an ArgumentError exception" do
-          lambda {Payload.prepare({:public_key => "pub_key1"})}.should raise_error(ArgumentError)
+          Payload.prepare(@project, {}).should == []
         end
       end
 
@@ -110,7 +98,7 @@ describe "Payload" do
           commits = commit_count.times.map do |index|
             {:identifier => "92dd08477f0ca144ee0f12ba083760dd810760a2_#{index}"}
           end
-          @prepared = Payload.prepare({:public_key => 'fjsk', :private_key => 'something_super_secret', :content => {:commits => commits}})
+          @prepared = Payload.prepare(@project, {:content => {:commits => commits}})
         end
 
         it "returns an Array with a single payload element" do
@@ -119,9 +107,9 @@ describe "Payload" do
           @prepared.first.should be_instance_of(Payload)
         end
 
-        it "sets the private_key on all payloads" do
+        it "associated the specified project with all generated payloads" do
           @prepared.each do |payload|
-            payload.project_private_key.should == 'something_super_secret'
+            payload.project.should == @project
           end
         end
       end
@@ -133,8 +121,8 @@ describe "Payload" do
           commits = commit_count.times.map do |index|
             {:identifier => "92dd08477f0ca144ee0f12ba083760dd810760a2_#{index}"}
           end
-          raw_payload = {:public_key => 'fjsk', :private_key => 'something_super_secret', :content => {:commits => commits}}
-          @prepared = Payload.prepare(raw_payload)
+          raw_payload = {:content => {:commits => commits}}
+          @prepared = Payload.prepare(@project, raw_payload)
         end
 
         it "returns an Array with a four payload elements" do
@@ -144,9 +132,9 @@ describe "Payload" do
           all_are_payloads.should == true
         end
 
-        it "sets the private_key on all payloads" do
+        it "associated the specified project with all generated payloads" do
           @prepared.each do |payload|
-            payload.project_private_key.should == 'something_super_secret'
+            payload.project.should == @project
           end
         end
       end

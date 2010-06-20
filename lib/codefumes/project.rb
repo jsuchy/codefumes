@@ -13,9 +13,20 @@ module CodeFumes
     # * :private_key
     # * :name
     def initialize(public_key = nil, options = {})
-      @public_key = public_key
-      @private_key = options[:private_key]
-      @name = options[:name]
+      @public_key    = public_key
+      @name          = options[:name]
+      @private_key   = options[:private_key]
+    end
+
+    def self.create(name = nil)
+      response = post('/projects', :query => {:project => {:name => name}})
+
+      case response.code
+        when 201
+          Project.new.reinitialize_from_hash!(response['project'])
+        else
+          false
+      end
     end
 
     # Deletes project from the website. You must have both the +public_key+
@@ -25,8 +36,8 @@ module CodeFumes
     #
     # Returns +false+ if the request failed.
     def delete
-      if @public_key.nil? || @private_key.nil?
-        msg = "You must have both the private key & public key of a project in order to delete it. (currently: {:private_key => '#{@private_key.to_s}', :public_key => '#{@public_key.to_s}'}"
+      if public_key.nil? || private_key.nil?
+        msg = "You must have both the private key & public key of a project in order to delete it. (currently: {:private_key => '#{private_key.to_s}', :public_key => '#{public_key.to_s}'}"
         raise Errors::InsufficientCredentials, msg
       end
 
@@ -39,19 +50,18 @@ module CodeFumes
       end
     end
 
-    # Saves project +:public_key+ to the website. If the public key
-    # of the project has not been reserved yet, it will attempt to do
-    # so. If the public key of the project is already in use, it will
-    # attempt to update it with the current values.
+    # Attempts to save current state of project to CodeFumes.
     #
     # Returns +true+ if the request succeeded.
     #
     # Returns +false+ if the request failed.
     def save
-      response = exists? ? update : create
+      response = self.class.put("/projects/#{public_key}", :query => {:project => {:name => name}},
+                                :basic_auth => {:username => public_key, :password => private_key})
+
       case response.code
-        when 201, 200
-          reinitialize!(response['project']) # not awesome
+        when 200
+          reinitialize_from_hash!(response['project'])
           true
         else
           false
@@ -61,9 +71,9 @@ module CodeFumes
     # Serializes a Project instance to a format compatible with the
     # CodeFumes config file.
     def to_config
-      project_attributes = {:api_uri => @api_uri, :short_uri => @short_uri}
-      project_attributes[:private_key] = @private_key if @private_key
-      {@public_key.to_sym => project_attributes}
+      project_attributes = {:api_uri => api_uri, :short_uri => short_uri}
+      project_attributes[:private_key] = private_key unless private_key.nil?
+      {public_key.to_sym => project_attributes}
     end
 
     # Verifies existence of Project on website.
@@ -72,10 +82,9 @@ module CodeFumes
     #
     # Returns +false+ if the public key of the Project is not available.
     def exists?
-      return false if @public_key.nil? || @public_key.empty?
-      !self.class.find(@public_key).nil?
+      return false if public_key.nil? || public_key.empty?
+      !self.class.find(public_key).nil?
     end
-
 
     # Searches website for project with the supplied public key.
     #
@@ -88,21 +97,33 @@ module CodeFumes
       case response.code
         when 200
           project = Project.new
-          project.reinitialize!(response['project'])
+          project.reinitialize_from_hash!(response['project'])
         else
           nil
       end
     end
 
-    # TODO: Make this a private method
-    def reinitialize!(options = {}) #:nodoc:
-      @public_key    = options['public_key']
-      @private_key   = options['private_key']
-      @short_uri     = options['short_uri']
-      @community_uri = options['community_uri']
-      @api_uri       = options['api_uri']
-      @build_status  = options['build_status'].empty? ? nil : options['build_status']
-      @build_status && @build_status.sub!(/_build/, '')
+    # Overrides existing attributes with those supplied in +options+. This
+    # simplifies the process of updating an object's state when given a response
+    # from the CodeFumes API.
+    #
+    # Valid options are:
+    # * public_key
+    # * private_key
+    # * short_uri
+    # * community_uri
+    # * api_uri
+    # * build_status
+    #
+    # Returns +self+
+    def reinitialize_from_hash!(options = {}) #:nodoc:
+      @name          = options['name']          || options[:name]
+      @public_key    = options['public_key']    || options[:public_key]
+      @private_key   = options['private_key']   || options[:private_key]
+      @short_uri     = options['short_uri']     || options[:short_uri]
+      @community_uri = options['community_uri'] || options[:community_uri]
+      @api_uri       = options['api_uri']       || options[:api_uri]
+      @build_status  = options['build_status']  || options[:build_status]
       self
     end
 
@@ -121,14 +142,6 @@ module CodeFumes
     end
 
     private
-      def update
-        self.class.put("/projects/#{@public_key}", :query => {:project => {:name => @name}}, :basic_auth => {:username => @public_key, :password => @private_key})
-      end
-
-      def create
-        self.class.post('/projects', :query => {:project => {:name => @name, :public_key => @public_key}})
-      end
-
       def destroy!
         self.class.delete("/projects/#{@public_key}", :basic_auth => {:username => @public_key, :password => @private_key})
       end

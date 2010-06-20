@@ -24,20 +24,20 @@ module CodeFumesServiceHelpers
   end
 
   module Project
-    def register_no_param_create_uri(status_code = ["200", "Ok"], body_content = fixtures[:project])
-      FakeWeb.register_uri( :post, "#{@anonymous_base_uri}/projects?project[name]=&project[public_key]=",
+    def register_no_param_create_uri(status_code = ["201", "Created"], body_content = fixtures[:project])
+      FakeWeb.register_uri( :post, "#{@anonymous_base_uri}/projects?project[name]=",
                             :status => status_code,
                             :body => body_content)
     end
 
-    def register_create_uri(status_code = ["200", "Ok"], body_content = fixtures[:project])
-      FakeWeb.register_uri( :post, "#{@anonymous_base_uri}/projects?project[name]=#{@project_name}&project[public_key]=#{@pub_key}",
+    def register_create_uri(status_code = ["201", "Created"], body_content = fixtures[:project])
+      FakeWeb.register_uri( :post, "#{@anonymous_base_uri}/projects?project[name]=#{@project_name}",
                             :status => status_code,
                             :body => body_content)
     end
 
     def register_update_uri(status_code = ["200", "Ok"], body_content = fixtures[:project])
-      FakeWeb.register_uri(:put, "#{@authd_project_api_uri}?project[name]=#{@project_name}_updated",
+      FakeWeb.register_uri(:put, "#{@authd_project_api_uri}?project[name]=#{@updated_name}",
                            :status => status_code,
                            :body => body_content)
     end

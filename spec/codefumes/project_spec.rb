@@ -12,72 +12,76 @@ describe "Project" do
     FakeWeb.clean_registry
   end
 
-  describe "save" do
+  describe "#create" do
+    context "when successful" do
+      before(:each) do
+        register_no_param_create_uri
+      end
+
+      it "returns an instance of the Project class" do
+        Project.create.should be_instance_of(Project)
+      end
+
+      [:public_key,
+       :private_key,
+       :short_uri,
+       :community_uri,
+       :api_uri].each do |method_name|
+         it "sets the '#{method_name.to_s}'" do
+           project = Project.create
+           project.send(method_name).should_not be_nil
+         end
+       end
+    end
+
+    context "when unsuccessful" do
+      before(:each) do
+        register_no_param_create_uri(["404", "Not found"])
+      end
+
+      specify {Project.create.should be_false}
+    end
+  end
+
+  describe "#save" do
     context "with valid parameters" do
-      context "when the public key has not been taken yet (or no key provided)" do
+      it "sets basic auth with the public and private key" do
+        @project.name = @updated_name
+        register_update_uri
+        Project.should_receive(:put).with("/projects/#{@project.public_key}", :query => {:project => {:name => @updated_name}}, :basic_auth => {:username => @project.public_key, :password => @project.private_key}).and_return(mock("response", :code => 401))
+        @project.save
+      end
+
+      context "and the response is '200 Ok'" do
         before(:each) do
-          register_no_param_create_uri
+          register_show_uri
+          register_update_uri
+          @project.name = @updated_name
+          @project.save.should be_true
         end
 
         [ :public_key,
           :private_key,
           :short_uri,
           :community_uri,
+          :name,
           :api_uri].each do |method_name|
             it "sets the '#{method_name.to_s}'" do
-              project = CodeFumes::Project.new
-              project.send(method_name).should be_nil
-              project.save
-              project.send(method_name).should_not be_nil
+              @project.send(method_name).should_not be_nil
             end
-          end
+        end
       end
 
-      context "when the public key has already been taken" do
-        context "when response is success" do
-          before(:each) do
-            @project.name = @updated_name
-            register_show_uri
-            register_update_uri
-            @project.stub!(:exists?).and_return(true)
-            @project.save.should be_true
-          end
-
-          it "sets basic auth with the public and private key" do
-            Project.should_receive(:put).with("/projects/#{@project.public_key}", :query => {:project => {:name => @updated_name}}, :basic_auth => {:username => @project.public_key, :password => @project.private_key}).and_return(mock("response", :code => 401))
-            @project.save
-          end
-
-          it "updates the value of 'name' for the project associated with the supplied public key" do
-            # This seems like a pointless assertion, since it's being set in the before block, but it
-            # wouldn't be true if request was not successful, as #name is updated w/ the content
-            # returned in the response
-            @project.name.should == @updated_name
-          end
-
-          [ :public_key,
-            :private_key,
-            :short_uri,
-            :community_uri,
-            :name,
-            :api_uri].each do |method_name|
-              it "sets the '#{method_name.to_s}'" do
-                @project.send(method_name).should_not be_nil
-              end
-          end
+      context "response is Unauthorized" do
+        before(:each) do
+          @updated_name = "different_name"
+          @project = Project.new('existing_public_key', :private_key => 'bad_key', :name => @updated_name)
+          FakeWeb.register_uri(:put, "http://#{@project.public_key}:#{@project.private_key}@codefumes.com/api/v1/xml/projects/existing_public_key?project[name]=#{@project.name}",
+                               :status => ["401", "Unauthorized"])
+          @project.stub!(:exists?).and_return(true)
         end
-
-        context "respons is Unauthorized" do
-          before(:each) do
-            @updated_name = "different_name"
-            @project = CodeFumes::Project.new('existing_public_key', :private_key => 'bad_key', :name => @updated_name)
-            FakeWeb.register_uri(:put, "http://#{@project.public_key}:#{@project.private_key}@codefumes.com/api/v1/xml/projects/existing_public_key?project[name]=#{@project.name}",
-                                 :status => ["401", "Unauthorized"])
-            @project.stub!(:exists?).and_return(true)
-          end
-          it "returns false" do
-            @project.save.should be_false
-          end
+        it "returns false" do
+          @project.save.should be_false
         end
       end
     end
@@ -88,10 +92,8 @@ describe "Project" do
         register_no_param_create_uri(["422", "Unprocessable Entity"], "")
       end
 
-      it "does not set the 'private_key'" do
-        project = Project.new
-        project.save.should be_false
-        project.private_key.should be_nil
+      it "returns false" do
+        Project.create.should be_false
       end
     end
   end
@@ -165,7 +167,7 @@ describe "Project" do
     before(:each) do
       register_show_uri(["404", "Not Found"], "")
       register_create_uri
-      @project.save
+      @project = Project.create(@project_name)
     end
 
     it "returns an object keyed by the project's public_key as a symbol" do
@@ -252,28 +254,22 @@ describe "Project" do
     end
   end
 
-  describe "reinitialize" do
-    context "when the server has returned a build_status of 'running_build'" do
-      it "returns 'running'" do
-        project = Project.new
-        project.reinitialize!({'build_status' => "running_build"})
-        project.build_status.should == 'running'
+  describe "#reinitialize_from_hash!" do
+    let(:option_keys) {[:name, :public_key, :private_key, :short_uri, :community_uri, :api_uri, :build_status]}
+
+    it "supports a Hash with Strings as keys" do
+      params = option_keys.inject({}) {|option_params,key| option_params.merge(key.to_s => key.to_s)}
+      project = Project.new.reinitialize_from_hash!(params)
+      option_keys.each do |attr_name|
+        project.send(attr_name).should == attr_name.to_s
       end
     end
 
-    context "when the server has returned a build_status of 'nobuilds'" do
-      it "returns 'nobuilds'" do
-        project = Project.new
-        project.reinitialize!({'build_status' => "nobuilds"})
-        project.build_status.should == 'nobuilds'
-      end
-    end
-
-    context "when the server has returned a build_status of ''" do
-      it "returns nil" do
-        project = Project.new
-        project.reinitialize!({'build_status' => ""})
-        project.build_status.should be_nil
+    it "supports a Hash with Symbols as keys" do
+      params = option_keys.inject({}) {|option_params,key| option_params.merge(key.to_sym => key.to_s)}
+      project = Project.new.reinitialize_from_hash!(params)
+      option_keys.each do |attr_name|
+        project.send(attr_name.to_sym).should == attr_name.to_s
       end
     end
   end

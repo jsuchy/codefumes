@@ -20,7 +20,7 @@ module CodeFumes
                 :committer_email, :short_message, :message,:committed_at,
                 :authored_at, :uploaded_at, :api_uri, :parent_identifiers,
                 :line_additions, :line_deletions, :line_total,
-                :affected_file_count, :custom_attributes
+                :affected_file_count, :custom_attributes, :project
     alias_method :id, :identifier
     alias_method :sha, :identifier
 
@@ -53,7 +53,8 @@ module CodeFumes
     # Technically speaking, you could pass anything you wanted into
     # the fields, but when using with the CodeFumes API, the attribute
     # values will be of the type String, DateTime, or Hash.
-    def initialize(identifier, options = {})
+    def initialize(project, identifier, options = {})
+      @project             = project
       @identifier          = identifier
       @author_email        = options["author_email"]
       @author_name         = options["author_name"]
@@ -92,12 +93,12 @@ module CodeFumes
 
     # Returns the Commit object associated with the supplied identifier.
     # Returns nil if the identifier is not found.
-    def self.find(identifier)
-      response = get("/commits/#{identifier}")
+    def self.find(project, identifier)
+      response = get("/projects/#{project.public_key}/commits/#{identifier}")
       case response.code
         when 200
           return nil if response["commit"].empty?
-          new(response["commit"].delete("identifier"), response["commit"])
+          new(project, response["commit"].delete("identifier"), response["commit"])
         else
           nil
       end
@@ -124,7 +125,7 @@ module CodeFumes
       response = get("/projects/#{project.public_key}/commits/latest")
       case response.code
         when 200
-          new(response["commit"].delete("identifier"), response["commit"])
+          new(project, response["commit"].delete("identifier"), response["commit"])
         else
           nil
       end

@@ -16,6 +16,7 @@ module CodeFumesServiceHelpers
       @api_key = "USERS_API_KEY"
       @build_name = "IE7"
       @commit_identifier = "COMMIT_IDENTIFIER"
+      @commit = CodeFumes::Commit.new(@project, @commit_identifier)
     end
 
     def fixtures
@@ -68,7 +69,7 @@ module CodeFumesServiceHelpers
     end
 
     def register_find_uri(status_code = ["200", "Ok"], body_content = fixtures[:commit])
-      FakeWeb.register_uri(:get, "#{@anonymous_base_uri}/commits/#{@identifier}",
+      FakeWeb.register_uri(:get, "#{@anon_project_api_uri}/commits/#{@identifier}",
                            :status => status_code, :body => body_content)
     end
   end
@@ -115,17 +116,17 @@ module CodeFumesServiceHelpers
     end
 
     def register_update_uri(status_code = ["200", "Ok"], body_content = fixtures[:build])
-      FakeWeb.register_uri(:put, "#{@authd_project_api_uri}/commits/#{@commit_identifier}/builds/#{@build_identifier}?build[state]=#{@state}&build[started_at]=#{@esc_started_at}&build[ended_at]=&build[name]=#{@build_name}",
+      FakeWeb.register_uri(:put, "#{@authd_project_api_uri}/commits/#{@commit_identifier}/builds/#{@build_name}?build[state]=#{@state}&build[started_at]=#{@esc_started_at}&build[ended_at]=&build[name]=#{@build_name}",
                            :status => status_code, :body => body_content)
     end
 
     def register_show_uri(status_code = ["200", "Ok"], body_content = fixtures[:build])
-      FakeWeb.register_uri(:get, "#{@anon_project_api_uri}/commits/#{@commit_identifier}/builds/#{@build_identifier}",
+      FakeWeb.register_uri(:get, "#{@anon_project_api_uri}/commits/#{@commit_identifier}/builds/#{@build_name}",
                            :status => status_code, :body => body_content)
     end
 
     def register_delete_uri(status_code = ["200", "Ok"], body_content = fixtures[:project])
-      FakeWeb.register_uri(:delete, "#{@authd_project_api_uri}/commits/#{@commit_identifier}/builds/#{@build_identifier}",
+      FakeWeb.register_uri(:delete, "#{@authd_project_api_uri}/commits/#{@commit_identifier}/builds/#{@build_name}",
                            :status => status_code,
                            :body =>  body_content)
     end

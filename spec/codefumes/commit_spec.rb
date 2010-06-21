@@ -24,13 +24,13 @@ describe "Commit" do
 
   describe "#id" do
     it "returns the value of #identifier" do
-      Commit.new(@identifier).id.should == @identifier
+      Commit.new(@project, @identifier).id.should == @identifier
     end
   end
 
   describe "#sha" do
     it "returns the value of #identifier" do
-      Commit.new(@identifier).sha.should == @identifier
+      Commit.new(@project, @identifier).sha.should == @identifier
     end
   end
 
@@ -38,7 +38,7 @@ describe "Commit" do
     context "with a valid commit identifier" do
       before(:each) do
         register_find_uri
-        @commit = Commit.find(@identifier)
+        @commit = Commit.find(@project, @identifier)
       end
 
       [:identifier,
@@ -70,7 +70,7 @@ describe "Commit" do
       end
 
       it "returns nil" do
-        Commit.find(@identifier).should == nil
+        Commit.find(@project, @identifier).should == nil
       end
     end
   end
@@ -137,7 +137,7 @@ describe "Commit" do
       register_find_uri
       @email = "jdoe@example.com"
       @name  = "John Doe"
-      @commit = Commit.find(@identifier)
+      @commit = Commit.find(@project, @identifier)
     end
 
     describe "#author" do

@@ -38,7 +38,23 @@ module CodeFumes
       @ended_at   = options[:ended_at]   || options['ended_at']
     end
 
-    def xml_init(options = {})
+    # Overrides existing attributes with those supplied in +options+. This
+    # simplifies the process of updating an object's state when given a response
+    # from the CodeFumes API.
+    #
+    # Valid options are:
+    # * public_key
+    # * private_key
+    # * commit_identifier
+    # * identifier
+    # * name
+    # * state
+    # * started_at
+    # * ended_at
+    # * api_uri
+    #
+    # Returns +self+
+    def reinitialize_from_hash!(options = {})
       @project_public_key  = options[:public_key]        || options['public_key']
       @project_private_key = options[:private_key]       || options['private_key']
       @commit_identifier   = options[:commit_identifier] || options['commit_identifier']
@@ -62,17 +78,7 @@ module CodeFumes
 
       case response.code
         when 201,200
-          xml_init(response['build'])
-          #@identifier = response['build']['identifier']
-          #@name       = response['build']['name']
-          #@created_at = response['build']['created_at']
-          #@started_at = response['build']['started_at']
-          #@ended_at   = response['build']['ended_at']
-          #@state     = response['build']['state']
-          #@api_uri    = response['build']['build_api_uri']
-          #@commit_identifier  = response['build']['commit_identifier']
-          #@project_public_key  = response['build']['public_key']
-          #@project_private_key = response['build']['private_key']
+          reinitialize_from_hash!(response['build'])
           true
         else
           false
@@ -94,9 +100,10 @@ module CodeFumes
       case response.code
         when 200
           build_params = response["build"] || {}
-          name = build_params.delete("name")
-          state = build_params.delete("state")
+          name = build_params["name"]
+          state = build_params["state"]
           build = Build.new(commit, name, state)
+          build.reinitialize_from_hash!(build_params)
         else
           nil
       end

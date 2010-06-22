@@ -56,22 +56,22 @@ module CodeFumes
     def initialize(project, identifier, options = {})
       @project             = project
       @identifier          = identifier
-      @author_email        = options["author_email"]
-      @author_name         = options["author_name"]
-      @committer_email     = options["committer_email"]
-      @committer_name      = options["committer_name"]
-      @short_message       = options["short_message"]
-      @message             = options["message"]
-      @committed_at        = options["committed_at"]
-      @authored_at         = options["authored_at"]
-      @uploaded_at         = options["uploaded_at"]
-      @api_uri             = options["api_uri"]
-      @parent_identifiers  = options["parent_identifiers"]
-      @line_additions      = options["line_additions"]
-      @line_deletions      = options["line_deletions"]
-      @line_total          = options["line_total"]
-      @affected_file_count = options["affected_file_count"]
-      @custom_attributes   = options["custom_attributes"] || {}
+      @author_email        = options[:author_email]        || options["author_email"]
+      @author_name         = options[:author_name]         || options["author_name"]
+      @committer_email     = options[:committer_email]     || options["committer_email"]
+      @committer_name      = options[:committer_name]      || options["committer_name"]
+      @short_message       = options[:short_message]       || options["short_message"]
+      @message             = options[:message]             || options["message"]
+      @committed_at        = options[:committed_at]        || options["committed_at"]
+      @authored_at         = options[:authored_at]         || options["authored_at"]
+      @uploaded_at         = options[:uploaded_at]         || options["uploaded_at"]
+      @api_uri             = options[:api_uri]             || options["api_uri"]
+      @parent_identifiers  = options[:parent_identifiers]  || options["parent_identifiers"]
+      @line_additions      = options[:line_additions]      || options["line_additions"]
+      @line_deletions      = options[:line_deletions]      || options["line_deletions"]
+      @line_total          = options[:line_total]          || options["line_total"]
+      @affected_file_count = options[:affected_file_count] || options["affected_file_count"]
+      @custom_attributes   = options[:custom_attributes]   || options["custom_attributes"] || {}
       convert_custom_attributes_keys_to_symbols
     end
 

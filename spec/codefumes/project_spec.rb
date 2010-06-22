@@ -46,15 +46,13 @@ describe "Project" do
   describe "#save" do
     context "with valid parameters" do
       it "sets basic auth with the public and private key" do
-        @project.name = @updated_name
         register_update_uri
-        Project.should_receive(:put).with("/projects/#{@project.public_key}", :query => {:project => {:name => @updated_name}}, :basic_auth => {:username => @project.public_key, :password => @project.private_key}).and_return(mock("response", :code => 401))
+        Project.should_receive(:put).with("/projects/#{@project.public_key}", :query => anything(), :basic_auth => {:username => @project.public_key, :password => @project.private_key}).and_return(mock("response", :code => 401))
         @project.save
       end
 
       context "and the response is '200 Ok'" do
         before(:each) do
-          register_show_uri
           register_update_uri
           @project.name = @updated_name
           @project.save.should be_true
@@ -72,15 +70,10 @@ describe "Project" do
         end
       end
 
-      context "response is Unauthorized" do
-        before(:each) do
-          @updated_name = "different_name"
-          @project = Project.new('existing_public_key', :private_key => 'bad_key', :name => @updated_name)
-          FakeWeb.register_uri(:put, "http://#{@project.public_key}:#{@project.private_key}@codefumes.com/api/v1/xml/projects/existing_public_key?project[name]=#{@project.name}",
-                               :status => ["401", "Unauthorized"])
-          @project.stub!(:exists?).and_return(true)
-        end
+      context "and the response is '401 Unauthorized'" do
         it "returns false" do
+          @project.name = @updated_name
+          register_update_uri(["401", "Unauthorized"])
           @project.save.should be_false
         end
       end

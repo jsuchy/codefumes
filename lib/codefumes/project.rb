@@ -18,6 +18,11 @@ module CodeFumes
       @private_key   = options[:private_key]
     end
 
+    # Creates new project with (optionally) specified +name+.
+    #
+    # +name+ (optional) String used for name of project
+    # --
+    # TODO: Merge this in with #save
     def self.create(name = nil)
       response = post('/projects', :query => {:project => {:name => name}})
 

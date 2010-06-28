@@ -1,10 +1,10 @@
-require File.dirname(__FILE__) + '/../spec_helper.rb'
+require File.dirname(__FILE__) + '/../../spec_helper.rb'
 
 module PayloadSpecHelper
 end
 
-describe "Payload" do
-  include CodeFumesServiceHelpers::Payload
+describe "API::Payload" do
+  include CodeFumesServiceHelpers::PayloadHelpers
 
   after(:all) do
     FakeWeb.allow_net_connect = false

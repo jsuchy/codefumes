@@ -1,7 +1,7 @@
-require File.dirname(__FILE__) + '/../spec_helper.rb'
+require File.dirname(__FILE__) + '/../../spec_helper.rb'
 
-describe "Project" do
-  include CodeFumesServiceHelpers::Project
+describe "API::Project" do
+  include CodeFumesServiceHelpers::ProjectHelpers
 
   before(:each) do
     setup_fixture_base

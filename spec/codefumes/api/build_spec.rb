@@ -1,7 +1,7 @@
-require File.dirname(__FILE__) + '/../spec_helper.rb'
+require File.dirname(__FILE__) + '/../../spec_helper.rb'
 
-describe "Build" do
-  include CodeFumesServiceHelpers::Build
+describe "API::Build" do
+  include CodeFumesServiceHelpers::BuildHelpers
 
   after(:all) do
     FakeWeb.allow_net_connect = false

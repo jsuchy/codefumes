@@ -1,7 +1,7 @@
-require File.dirname(__FILE__) + '/../spec_helper.rb'
+require File.dirname(__FILE__) + '/../../spec_helper.rb'
 
-describe "Commit" do
-  include CodeFumesServiceHelpers::Commit
+describe "API::Commit" do
+  include CodeFumesServiceHelpers::CommitHelpers
 
   before(:all) do
     FakeWeb.allow_net_connect = false

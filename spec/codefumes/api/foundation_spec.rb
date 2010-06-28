@@ -1,11 +1,11 @@
-require File.dirname(__FILE__) + '/../spec_helper.rb'
+require File.dirname(__FILE__) + '/../../spec_helper.rb'
 
-class APIClass < CodeFumes::API
+class APIClass < CodeFumes::API::Foundation
 end
 
-describe "API" do
+describe "API::Foundation" do
   after(:all) do
-    CodeFumes::API.mode(:production)
+    CodeFumes::API::Foundation.mode(:production)
   end
 
   it "defaults the base uri to the production site" do

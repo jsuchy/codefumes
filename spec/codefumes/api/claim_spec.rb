@@ -1,7 +1,7 @@
-require File.dirname(__FILE__) + '/../spec_helper.rb'
+require File.dirname(__FILE__) + '/../../spec_helper.rb'
 
-describe Claim do
-  include CodeFumesServiceHelpers::Claim
+describe "API::Claim" do
+  include CodeFumesServiceHelpers::ClaimHelpers
 
   after(:all) do
     FakeWeb.allow_net_connect = false

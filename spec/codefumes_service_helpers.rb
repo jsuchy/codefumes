@@ -5,7 +5,7 @@ module CodeFumesServiceHelpers
       @project_name = "Project_Name(tm)"
       @pub_key = 'public_key_value'
       @priv_key = 'private_key_value'
-      @project = CodeFumes::Project.new(@pub_key, :private_key => @priv_key, :name => @project_name)
+      @project = Project.new(@pub_key, :private_key => @priv_key, :name => @project_name)
 
       @anonymous_base_uri = "http://codefumes.com/api/v1/xml"
       @authenticated_base_uri = "http://#{@pub_key}:#{@priv_key}@codefumes.com/api/v1/xml"
@@ -16,7 +16,7 @@ module CodeFumesServiceHelpers
       @api_key = "USERS_API_KEY"
       @build_name = "IE7"
       @commit_identifier = "COMMIT_IDENTIFIER"
-      @commit = CodeFumes::Commit.new(@project, @commit_identifier)
+      @commit = Commit.new(@project, @commit_identifier)
     end
 
     def fixtures
@@ -24,7 +24,7 @@ module CodeFumesServiceHelpers
     end
   end
 
-  module Project
+  module ProjectHelpers
     def register_no_param_create_uri(status_code = ["201", "Created"], body_content = fixtures[:project])
       FakeWeb.register_uri( :post, "#{@anonymous_base_uri}/projects?project[name]=",
                             :status => status_code,
@@ -56,7 +56,7 @@ module CodeFumesServiceHelpers
     end
   end
 
-  module Commit
+  module CommitHelpers
     def register_latest_uri(status_code = ["200", "Ok"], body_content = fixtures[:commit])
       FakeWeb.register_uri(:get, "#{@anon_project_api_uri}/commits/latest",
                            :status => status_code, :body => body_content)
@@ -74,14 +74,14 @@ module CodeFumesServiceHelpers
     end
   end
 
-  module Payload
+  module PayloadHelpers
     def register_create_uri(status_code = ["200", "Ok"], body_content = fixtures[:payload])
       FakeWeb.register_uri(:post, "#{@authd_project_api_uri}/payloads?payload[commits]=#{@commit_data}",
                            :status => status_code, :body => body_content)
     end
   end
 
-  module Claim
+  module ClaimHelpers
     def register_public_create_uri(status_code = ["200", "Ok"], body_content = "")
       register_create_uri(status_code, body_content, :public)
     end
@@ -102,7 +102,7 @@ module CodeFumesServiceHelpers
       end
   end
 
-  module Build
+  module BuildHelpers
     def setup_build_fixtures
       @started_at = "2009-09-26 21:18:11 UTC"
       @esc_started_at = "2009-09-26%2021%3A18%3A11%20UTC"

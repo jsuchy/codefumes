@@ -5,6 +5,7 @@ Rakefile
 bin/cf_claim_project
 bin/cf_release_project
 bin/cf_store_credentials
+config/website.yml
 lib/cf_claim_project/cli.rb
 lib/cf_release_project/cli.rb
 lib/cf_store_credentials/cli.rb
@@ -16,6 +17,9 @@ lib/codefumes/commit.rb
 lib/codefumes/config_file.rb
 lib/codefumes/payload.rb
 lib/codefumes/project.rb
+script/console
+script/destroy
+script/generate
 spec/cf_claim_project/cli_spec.rb
 spec/cf_release_project/cli_spec.rb
 spec/cf_store_credentials/cli_spec.rb
@@ -37,3 +41,5 @@ spec/fixtures/project_update.xml
 spec/spec.opts
 spec/spec_helper.rb
 tasks/rspec.rake
+website/index.html
+website/stylesheets/screen.css

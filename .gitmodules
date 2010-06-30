@@ -1,0 +1,3 @@
+[submodule "spec/fixtures/sample_project_dirs/git_repository"]
+	path = spec/fixtures/sample_project_dirs/git_repository
+	url = git://github.com/cosyn/git_fixture_repository.git

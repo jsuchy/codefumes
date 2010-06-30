@@ -131,4 +131,11 @@ module CodeFumesServiceHelpers
                            :body =>  body_content)
     end
   end
+
+  module HarvesterHelpers
+    def register_update_uri(status_code = ["200", "Ok"], body_content = fixtures[:build])
+      FakeWeb.register_uri(:put, "#{@authd_project_api_uri}/commits/#{@commit_identifier}/builds/#{@build_name}?build[state]=#{@state}&build[started_at]=#{@esc_started_at}&build[ended_at]=&build[name]=#{@build_name}",
+                           :status => status_code, :body => body_content)
+    end
+  end
 end

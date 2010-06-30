@@ -67,9 +67,10 @@ module CodeFumes
 
       # Returns a Hash representation of a specific project contained in
       # the CodeFumes config file.
-      def options_for_project(project)
+      def options_for_project(project_or_key)
+        public_key = project_or_key.is_a?(Project) ? project_or_key.public_key : project_or_key
         config = serialized
-        project && config[:projects] && config[:projects][project.public_key.to_sym] || {}
+        project_or_key && config[:projects] && config[:projects][public_key.to_sym] || {}
       end
 
       def public_keys

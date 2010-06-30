@@ -17,6 +17,7 @@ include CodeFumesServiceHelpers::Shared
 include CodeFumes
 
 ENV['CODEFUMES_CONFIG_FILE'] = File.expand_path(File.dirname(__FILE__) + '/sample_codefumes_config.tmp')
+GIT_FIXTURE_REPO_PATH = File.expand_path(File.dirname(__FILE__) + "/fixtures/sample_project_dirs/git_repository")
 
 class ResponseFixtureSet
   def [](response_fixture)

@@ -1,0 +1,4 @@
+This is a directory put in place for testing with various
+parts of the CodometerHarvester gem which depend on a
+directory that is not under any sort of source code
+management system.

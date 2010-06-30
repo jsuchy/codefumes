@@ -242,4 +242,60 @@ describe "ConfigFile" do
       end
     end
   end
+
+  describe "#options_for_project" do
+    let(:private_key) {'private_key'}
+    let(:public_key) {'public_key'}
+    let(:project_instance) {Project.new(public_key, :private_key => private_key)}
+
+    context "when passing in an Project instance" do
+      let(:param) {project_instance}
+
+      context "and no projects have been saved before" do
+        it "returns an empty Hash" do
+          delete_config_file
+          ConfigFile.options_for_project(param).should == {}
+        end
+      end
+
+      context "and the specified project has not been saved before" do
+        it "returns an empty Hash" do
+          ConfigFile.save_project(Project.new('public_key1'))
+          ConfigFile.options_for_project(param).should == {}
+        end
+      end
+
+      context "and the specified project has been saved before" do
+        it "returns a Hash of the project information" do
+          ConfigFile.save_project(project_instance)
+          ConfigFile.options_for_project(param).should include(:private_key => private_key)
+        end
+      end
+    end
+
+    context "when passing in the public key" do
+      let(:param) {public_key}
+
+      context "and no projects have been saved before" do
+        it "returns an empty Hash" do
+          delete_config_file
+          ConfigFile.options_for_project(param).should == {}
+        end
+      end
+
+      context "and the specified project has not been saved before" do
+        it "returns an empty Hash" do
+          ConfigFile.save_project(Project.new('public_key1'))
+          ConfigFile.options_for_project(param).should == {}
+        end
+      end
+
+      context "and the specified project has been saved before" do
+        it "returns a Hash of the project information" do
+          ConfigFile.save_project(project_instance)
+          ConfigFile.options_for_project(param).should include(:private_key => private_key)
+        end
+      end
+    end
+  end
 end

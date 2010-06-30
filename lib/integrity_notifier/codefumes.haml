@@ -1,0 +1,11 @@
+%p.normal
+  %label{ :for => "cf_build_name" } Build name
+  %input.text#cf_build_name{ :name => "notifiers[CodeFumes][build_name]", :type => "text", :value => config["build_name"] }
+
+%p.normal
+  %label{ :for => "cf_public_key" } Public key
+  %input.text#cf_public_key{ :name => "notifiers[CodeFumes][public_key]", :type => "text", :value => config["public_key"] }
+
+%p.normal
+  %label{ :for => "cf_private_key" } Private key
+  %input.text#cf_private_key{ :name => "notifiers[CodeFumes][private_key]", :type => "text", :value => config["private_key"] }

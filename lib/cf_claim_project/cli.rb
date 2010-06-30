@@ -49,9 +49,9 @@ module CfClaimProject #:nodoc:
                   "Claims the project(s) as a 'private' project."
                   ) {@private_project = true}
           opts.on("-l", "--local",
-                  "Send requests to localhost. (Testing/Development)") { CodeFumes::API.mode(:local) }
+                  "Send requests to localhost. (Testing/Development)") { CodeFumes::API::Foundation.mode(:local) }
           opts.on("-t", "--test",
-                  "Send requests to test.codefumes.com. (Testing/Development)") { CodeFumes::API.mode(:test) }
+                  "Send requests to test.codefumes.com. (Testing/Development)") { CodeFumes::API::Foundation.mode(:test) }
           opts.on("-h", "--help",
                   "Show this help message.") { @stdout.puts opts; exit(1) }
           opts.parse!(arguments)

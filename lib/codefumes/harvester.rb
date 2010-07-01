@@ -81,16 +81,13 @@ module CodeFumes
 
     private
       def initialize_repository
-        begin
-          SourceControl.new(@path)
-        rescue Grit::InvalidGitRepositoryError
-          raise Errors::UnsupportedScmToolError
-        end
+        SourceControl.new(@path)
       end
 
       def initialize_project(options = {})
-        options = ConfigFile.options_for_project(options[:public_key]).merge(options)
-        Project.new(options)
+        public_key = options[:public_key]
+        options = ConfigFile.options_for_project(public_key).merge(options)
+        Project.new(public_key, options)
       end
 
       def store_public_key_in_repository
@@ -106,7 +103,7 @@ module CodeFumes
         if payload.empty?
           nil
         else
-          payloads = Payload.prepare(@project, :content => payload)
+          payloads = Payload.prepare(@project, payload)
           successful_requests = payloads.select {|payload| payload.save == true}
           {:successful_count => successful_requests.size, :total_count => payloads.size}
         end

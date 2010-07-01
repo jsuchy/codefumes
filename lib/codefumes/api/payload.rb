@@ -57,6 +57,7 @@ module CodeFumes
       # TODO: Clean up how the size of the request is constrained, this
       # is pretty hackish right now (basically guesses how many
       # characters would be added when HTTParty wraps the content in XML.
+      # TODO: Remove :content key from commit_data hash parameter...pointless
       def self.prepare(project, commit_data = {})
         return [] if commit_data.nil? || commit_data.empty?
         raw_payload = commit_data.dup

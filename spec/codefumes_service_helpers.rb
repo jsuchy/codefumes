@@ -25,6 +25,7 @@ module CodeFumesServiceHelpers
   end
 
   module ProjectHelpers
+    extend self
     def register_no_param_create_uri(status_code = ["201", "Created"], body_content = fixtures[:project])
       FakeWeb.register_uri( :post, "#{@anonymous_base_uri}/projects?project[name]=",
                             :status => status_code,
@@ -57,6 +58,7 @@ module CodeFumesServiceHelpers
   end
 
   module CommitHelpers
+    extend self
     def register_latest_uri(status_code = ["200", "Ok"], body_content = fixtures[:commit])
       FakeWeb.register_uri(:get, "#{@anon_project_api_uri}/commits/latest",
                            :status => status_code, :body => body_content)

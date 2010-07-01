@@ -15,13 +15,10 @@ module CodeFumes
       private_key       = options[:private_key] || repo.private_key
       started_at        = options[:started_at]  || Time.now
 
-      build = Build.new(:public_key => public_key,
-                        :private_key => private_key,
-                        :commit_identifier => commit_identifier,
-                        :name => build_name,
-                        :state => "running",
-                        :started_at => started_at,
-                        :ended_at   => "")
+      project = Project.new(public_key, :private_key => private_key)
+      commit = Commit.new(project, commit_identifier)
+      timestamps = {:started_at => started_at, :ended_at => ""}
+      build = Build.new(commit, build_name, :running, timestamps)
       build.save
     end
 
@@ -33,11 +30,10 @@ module CodeFumes
       private_key       = options[:private_key] || repo.private_key
       ended_at          = options[:ended_at]  || Time.now
 
-      build = Build.find(:public_key => public_key,
-                         :private_key => private_key,
-                         :commit_identifier => commit_identifier,
-                         :identifier => build_name
-                        )
+      project = Project.new(public_key, :private_key => private_key)
+      commit = Commit.new(project, commit_identifier)
+
+      build = Build.find(commit, build_name)
       return false if build.nil?
       build.state = success_or_failure.to_s
       build.ended_at = ended_at

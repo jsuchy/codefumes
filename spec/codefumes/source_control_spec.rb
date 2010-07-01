@@ -12,7 +12,7 @@ describe SourceControl do
     context "with a path to a directory that is not a git repository" do
       it "raises an error" do
         invalid_path = File.dirname(__FILE__)
-        lambda {SourceControl.new(invalid_path)}.should raise_error(Grit::InvalidGitRepositoryError)
+        lambda {SourceControl.new(invalid_path)}.should raise_error(Errors::UnsupportedScmToolError)
       end
     end
   end

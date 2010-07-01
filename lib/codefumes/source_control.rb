@@ -10,7 +10,11 @@ module CodeFumes
     # Sets up a SourceControl object to read content from the repository
     # located at +path+.
     def initialize(path)
-      @repository = Grit::Repo.new(path)
+      begin
+        @repository = Grit::Repo.new(path)
+      rescue Grit::InvalidGitRepositoryError
+        raise Errors::UnsupportedScmToolError
+      end
     end
 
     # Returns a serialized Hash containing a single +:commits+ key

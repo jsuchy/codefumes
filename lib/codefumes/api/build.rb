@@ -34,7 +34,7 @@ module CodeFumes
         @commit     = commit
         @project    = commit.project
         @name       = name
-        @state      = state
+        @state      = state.to_s
         @started_at = options[:started_at] || options['started_at'] || Time.now
         @ended_at   = options[:ended_at]   || options['ended_at']
       end

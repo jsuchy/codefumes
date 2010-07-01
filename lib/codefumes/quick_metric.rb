@@ -11,8 +11,9 @@ module CodeFumes
       commit = {:identifier => repo.local_commit_identifier,
                 :custom_attributes => custom_attributes
                }
-      content = {:commits => [commit]}
-      payload_set = Payload.prepare(:public_key => repo.public_key, :private_key => repo.private_key, :content => content)
+      content = {:content => {:commits => [commit]}}
+      project = Project.new(repo.public_key, :private_key => repo.private_key)
+      payload_set = Payload.prepare(project, content)
       payload_set.reject {|payload| payload.save}.empty?
     end
   end

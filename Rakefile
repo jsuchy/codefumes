@@ -30,7 +30,7 @@ $hoe = Hoe.spec('codefumes') do
                          ['activesupport', "2.3.5"],
                          ['rspec', ">= 1.2.6"],
                         ]
-  self.extra_deps     = [['httparty','>= 0.4.3'], ['caleb-chronic', '>= 0.3.0']]
+  self.extra_deps     = [['httparty','>= 0.4.3'], ['caleb-chronic', '>= 0.3.0'], ['gli', '1.1.1']]
   developer('Tom Kersten', 'tom.kersten@cosyntech.com')
   developer('Joe Banks', 'freemarmoset@gmail.com')
 end

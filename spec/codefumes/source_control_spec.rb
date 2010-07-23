@@ -17,13 +17,13 @@ describe SourceControl do
     end
   end
 
-  describe "supported_systems" do
+  describe "#supported_systems" do
     it "includes :git" do
       SourceControl.supported_systems.should include(:git)
     end
   end
 
-  describe "supported_system?" do
+  describe "#supported_system?" do
     SourceControl.supported_systems.each do |scm_tool|
       it "returns true for the string '#{scm_tool.to_s}'" do
         SourceControl.supported_system?(scm_tool.to_s)
@@ -35,7 +35,7 @@ describe SourceControl do
     end
   end
 
-  describe "initial_commit_identifier" do
+  describe "#initial_commit_identifier" do
     before(:each) do
       git_repo_path = File.expand_path(File.dirname(__FILE__) + '/../fixtures/sample_project_dirs/git_repository')
       @repository = SourceControl.new(git_repo_path)
@@ -46,7 +46,7 @@ describe SourceControl do
     end
   end
 
-  describe "payload_between" do
+  describe "#payload_between" do
     before(:each) do
       git_repo_path = File.expand_path(File.dirname(__FILE__) + '/../fixtures/sample_project_dirs/git_repository')
       @repository = SourceControl.new(git_repo_path)
@@ -148,7 +148,7 @@ describe SourceControl do
     end
   end
 
-  describe "public_key=" do
+  describe "#public_key=" do
     before(:each) do
       git_repo_path = File.expand_path(File.dirname(__FILE__) + '/../fixtures/sample_project_dirs/git_repository')
       @public_key = "public_key_specified"
@@ -162,7 +162,7 @@ describe SourceControl do
     end
   end
 
-  describe "public_key" do
+  describe "#public_key" do
     before(:each) do
       @public_key = "original_value"
       git_repo_path = File.expand_path(File.dirname(__FILE__) + '/../fixtures/sample_project_dirs/git_repository')
@@ -175,7 +175,7 @@ describe SourceControl do
     end
   end
 
-  describe "local_commit_identifier" do
+  describe "#local_commit_identifier" do
     before(:each) do
       git_repo_path = File.expand_path(File.dirname(__FILE__) + '/../fixtures/sample_project_dirs/git_repository')
       @repository = SourceControl.new(git_repo_path)
@@ -186,7 +186,7 @@ describe SourceControl do
     end
   end
 
-  describe "path" do
+  describe "#path" do
     before(:each) do
       @git_repo_path = File.expand_path(File.dirname(__FILE__) + '/../fixtures/sample_project_dirs/git_repository')
       @repository = SourceControl.new(@git_repo_path)

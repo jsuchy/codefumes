@@ -1,0 +1,67 @@
+#!/opt/local/bin/ruby
+$: << File.expand_path(File.dirname(__FILE__) + '/../lib')
+
+require 'rubygems'
+require 'codefumes'
+
+gem 'gli'
+require 'gli'
+
+include GLI
+include CodeFumes
+
+
+desc 'Public key of CodeFumes project'
+arg_name 'pub-key-here'
+flag [:p,:public_key]
+
+desc 'API key of CodeFumes project'
+arg_name 'api-key-here'
+flag [:a,:api_key]
+
+desc 'Synchronize local master branch history with a CodeFumes project'
+command :sync do |c|
+  c.action do |global_options,options,args|
+    harvester = Harvester.new
+
+    if (results = harvester.publish_data!) == false
+      puts "Error syncing with CodeFumes project. Please try again."
+      exit(1)
+    else
+      if results.empty?
+        puts "Local repository is in sync with server. No updates posted."
+      else
+        puts "Successfully saved #{results[:successful_count]} of #{results[:total_count]} payloads."
+        puts "Project saved to CodeFumes.com. Visit #{harvester.short_uri}"
+      end
+      puts "Exiting."
+      puts
+    end
+  end
+end
+
+pre do |global,command,options,args|
+  # Pre logic here
+  # Return true to proceed; false to abourt and not call the
+  # chosen command
+  true
+end
+
+post do |global,command,options,args|
+  # Post logic here
+end
+
+on_error do |exception|
+  # Error logic here
+  # return false to skip default error handling
+  case exception
+    when CodeFumes::Errors::UnsupportedScmToolError
+      puts "Unsupported repository type. Exiting..."
+      exit(ExitCodes::UNSUPPORTED_SCM)
+    else
+      exit(ExitCodes::UNKNOWN)
+  end
+  true
+end
+
+GLI.run(ARGV)

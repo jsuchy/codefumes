@@ -6,26 +6,23 @@ module CodeFumes
     # commits from a repository.
     class Project < CodeFumes::API::Foundation
       attr_reader :private_key, :short_uri, :community_uri, :api_uri, :build_status
-      attr_accessor :name,:public_key
+      attr_accessor :name, :public_key
 
-      # Instantiate new instance of Project class.
-      #
-      # +options+ Hash supports the following keys:
-      # * :private_key
-      # * :name
-      def initialize(public_key = nil, options = {})
+      def initialize(public_key=nil, private_key = nil, options = {})
         @public_key    = public_key
-        @name          = options[:name]
-        @private_key   = options[:private_key]
+        @private_key   = private_key
+        @name          = options['name']          || options[:name]
+        @short_uri     = options['short_uri']     || options[:short_uri]
+        @community_uri = options['community_uri'] || options[:community_uri]
+        @api_uri       = options['api_uri']       || options[:api_uri]
+        @build_status  = options['build_status']  || options[:build_status]
       end
 
-      # Creates new project with (optionally) specified +name+.
-      #
-      # +name+ (optional) String used for name of project
+      # Creates new project
       # --
       # TODO: Merge this in with #save
-      def self.create(name = nil)
-        response = post('/projects', :query => {:project => {:name => name}})
+      def self.create
+        response = post('/projects')
 
         case response.code
           when 201
@@ -80,16 +77,6 @@ module CodeFumes
         project_attributes = {:api_uri => api_uri, :short_uri => short_uri}
         project_attributes[:private_key] = private_key unless private_key.nil?
         {public_key.to_sym => project_attributes}
-      end
-
-      # Verifies existence of Project on website.
-      #
-      # Returns +true+ if the public key of Project is available.
-      #
-      # Returns +false+ if the public key of the Project is not available.
-      def exists?
-        return false if public_key.nil? || public_key.empty?
-        !self.class.find(public_key).nil?
       end
 
       # Searches website for project with the supplied public key.

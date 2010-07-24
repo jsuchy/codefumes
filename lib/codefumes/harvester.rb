@@ -27,7 +27,7 @@ module CodeFumes
     #   when creating a new project, but is used when updating an
     #   existing one. This prevents custom public keys from being
     #   created, but allows the user to share the public/private
-    #   keys of aproject with other users, or use them on other
+    #   keys of a project with other users, or use them on other
     #   machines.
     def initialize(passed_in_options = {})
       options = passed_in_options.dup

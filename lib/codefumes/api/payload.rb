@@ -6,7 +6,7 @@ module CodeFumes
     # require a very large number of requests.  Using a Payload object
     # allows larger amounts of content to be saved at one time,
     # significantly reducing the number of requests made.
-    class Payload < CodeFumes::API::Foundation
+    class Payload
       PAYLOAD_CHARACTER_LIMIT = 4000 #:nodoc:
 
       attr_reader :project, :created_at
@@ -31,7 +31,7 @@ module CodeFumes
       # Returns +false+ if the request failed.
       def save
         return true if empty_payload?
-        response = self.class.post("/projects/#{@project.public_key}/payloads", :query => {:payload => @content}, :basic_auth => {:username => @project.public_key, :password => @project.private_key})
+        response = API.post("/projects/#{@project.public_key}/payloads", :query => {:payload => @content}, :basic_auth => {:username => @project.public_key, :password => @project.private_key})
 
         case response.code
           when 201

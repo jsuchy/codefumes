@@ -246,7 +246,7 @@ describe "ConfigFile" do
   describe "#options_for_project" do
     let(:private_key) {'private_key'}
     let(:public_key) {'public_key'}
-    let(:project_instance) {Project.new(public_key, :private_key => private_key)}
+    let(:project_instance) {Project.new(public_key, private_key)}
 
     context "when passing in an Project instance" do
       let(:param) {project_instance}

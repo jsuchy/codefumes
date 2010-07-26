@@ -5,7 +5,7 @@ module CodeFumesServiceHelpers
       @project_name = "Project_Name(tm)"
       @pub_key = 'public_key_value'
       @priv_key = 'private_key_value'
-      @project = Project.new(@pub_key, :private_key => @priv_key, :name => @project_name)
+      @project = Project.new(@pub_key, @priv_key, :name => @project_name)
 
       @anonymous_base_uri = "http://codefumes.com/api/v1/xml"
       @authenticated_base_uri = "http://#{@pub_key}:#{@priv_key}@codefumes.com/api/v1/xml"
@@ -26,14 +26,8 @@ module CodeFumesServiceHelpers
 
   module ProjectHelpers
     extend self
-    def register_no_param_create_uri(status_code = ["201", "Created"], body_content = fixtures[:project])
-      FakeWeb.register_uri( :post, "#{@anonymous_base_uri}/projects?project[name]=",
-                            :status => status_code,
-                            :body => body_content)
-    end
-
     def register_create_uri(status_code = ["201", "Created"], body_content = fixtures[:project])
-      FakeWeb.register_uri( :post, "#{@anonymous_base_uri}/projects?project[name]=#{@project_name}",
+      FakeWeb.register_uri( :post, "#{@anonymous_base_uri}/projects",
                             :status => status_code,
                             :body => body_content)
     end

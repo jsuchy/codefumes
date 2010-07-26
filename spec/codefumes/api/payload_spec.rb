@@ -1,8 +1,5 @@
 require File.dirname(__FILE__) + '/../../spec_helper.rb'
 
-module PayloadSpecHelper
-end
-
 describe "API::Payload" do
   include CodeFumesServiceHelpers::PayloadHelpers
 
@@ -21,7 +18,7 @@ describe "API::Payload" do
   describe "save" do
     it "sets basic auth with the public and private key" do
       register_create_uri(["401", "Unauthorized"], "")
-      Payload.should_receive(:post).with("/projects/#{@project.public_key}/payloads", :query => @payload_query, :basic_auth => @basic_auth_params).and_return(mock("response", :code => 401))
+      API.should_receive(:post).with("/projects/#{@project.public_key}/payloads", :query => @payload_query, :basic_auth => @basic_auth_params).and_return(mock("response", :code => 401))
       @payload.save
     end
 

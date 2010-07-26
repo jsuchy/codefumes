@@ -15,11 +15,7 @@ describe "API::Project" do
   describe "#create" do
     context "when successful" do
       before(:each) do
-        register_no_param_create_uri
-      end
-
-      it "returns an instance of the Project class" do
-        Project.create.should be_instance_of(Project)
+        register_create_uri
       end
 
       [:public_key,
@@ -36,7 +32,7 @@ describe "API::Project" do
 
     context "when unsuccessful" do
       before(:each) do
-        register_no_param_create_uri(["404", "Not found"])
+        register_create_uri(["404", "Not found"])
       end
 
       specify {Project.create.should be_false}
@@ -82,7 +78,7 @@ describe "API::Project" do
     context "with invalid parameters" do
       before(:each) do
         register_show_uri(["404", "Not found"], "")
-        register_no_param_create_uri(["422", "Unprocessable Entity"], "")
+        register_create_uri(["422", "Unprocessable Entity"], "")
       end
 
       it "returns false" do
@@ -127,40 +123,11 @@ describe "API::Project" do
     end
   end
 
-  describe "exists?" do
-    context "when the specified public_key has been reserved already" do
-      it "returns true" do
-        register_show_uri
-        Project.new(@pub_key).exists?.should be_true
-      end
-    end
-
-    context "when the public_key is not set" do
-      it "returns false when the public key is nil" do
-        Project.new.exists?.should be_false
-      end
-
-      it "returns false when the public key is an empty string" do
-        Project.new("").exists?.should be_false
-      end
-    end
-
-    context "when the specified public_key is available" do
-      before(:each) do
-        register_show_uri(["404", "Not Found"], "")
-      end
-
-      it "returns false" do
-        Project.new(@pub_key).exists?.should be_false
-      end
-    end
-  end
-
   describe "to_config" do
     before(:each) do
       register_show_uri(["404", "Not Found"], "")
       register_create_uri
-      @project = Project.create(@project_name)
+      @project = Project.create
     end
 
     it "returns an object keyed by the project's public_key as a symbol" do
@@ -212,7 +179,7 @@ describe "API::Project" do
   describe "accessible attributes" do
     let(:key_specified) {"public_key"}
     let(:name_specified) {"project_name"}
-    let(:project) {Project.new(key_specified, :name => name_specified)}
+    let(:project) {Project.new(key_specified, '', :name => name_specified)}
 
     specify {project.public_key.should == key_specified}
     specify {project.name.should == name_specified}

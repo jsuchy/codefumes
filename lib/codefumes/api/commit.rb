@@ -16,7 +16,7 @@ module CodeFumes
     # To associate metrics with a Commit object, a Payload object should
     # be created and saved.  Refer to the Payload documentation for more
     # information.
-    class Commit < CodeFumes::API::Foundation
+    class Commit
       attr_reader :identifier, :author_name, :author_email, :committer_name,
                   :committer_email, :short_message, :message,:committed_at,
                   :authored_at, :uploaded_at, :api_uri, :parent_identifiers,
@@ -95,7 +95,7 @@ module CodeFumes
       # Returns the Commit object associated with the supplied identifier.
       # Returns nil if the identifier is not found.
       def self.find(project, identifier)
-        response = get("/projects/#{project.public_key}/commits/#{identifier}")
+        response = API.get("/projects/#{project.public_key}/commits/#{identifier}")
         case response.code
           when 200
             return nil if response["commit"].empty?
@@ -108,7 +108,7 @@ module CodeFumes
       # Returns a collection of commits associated with the specified
       # Project public key.
       def self.all(project)
-        response = get("/projects/#{project.public_key}/commits")
+        response = API.get("/projects/#{project.public_key}/commits")
         case response.code
           when 200
             return [] if response["commits"].empty? || response["commits"]["commit"].nil?
@@ -123,7 +123,7 @@ module CodeFumes
       # Returns the most recent commit associated with the specified
       # Project public key.
       def self.latest(project)
-        response = get("/projects/#{project.public_key}/commits/latest")
+        response = API.get("/projects/#{project.public_key}/commits/latest")
         case response.code
           when 200
             new(project, response["commit"].delete("identifier"), response["commit"])

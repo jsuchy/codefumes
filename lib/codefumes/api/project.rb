@@ -4,7 +4,7 @@ module CodeFumes
     # website.  Each project has a public key, private key, and can have a
     # name defined.  Projects are also associated with a collection of
     # commits from a repository.
-    class Project < CodeFumes::API::Foundation
+    class Project
       attr_reader :private_key, :short_uri, :community_uri, :api_uri, :build_status
       attr_accessor :name, :public_key
 
@@ -22,7 +22,7 @@ module CodeFumes
       # --
       # TODO: Merge this in with #save
       def self.create
-        response = post('/projects')
+        response = API.post('/projects')
 
         case response.code
           when 201
@@ -59,7 +59,7 @@ module CodeFumes
       #
       # Returns +false+ if the request failed.
       def save
-        response = self.class.put("/projects/#{public_key}", :query => {:project => {:name => name}},
+        response = API.put("/projects/#{public_key}", :query => {:project => {:name => name}},
                                   :basic_auth => {:username => public_key, :password => private_key})
 
         case response.code
@@ -86,7 +86,7 @@ module CodeFumes
       #
       # Returns +nil+ in all other cases.
       def self.find(public_key)
-        response = get("/projects/#{public_key}")
+        response = API.get("/projects/#{public_key}")
         case response.code
           when 200
             project = Project.new
@@ -136,7 +136,7 @@ module CodeFumes
 
       private
         def destroy!
-          self.class.delete("/projects/#{@public_key}", :basic_auth => {:username => @public_key, :password => @private_key})
+          API.delete("/projects/#{@public_key}", :basic_auth => {:username => @public_key, :password => @private_key})
         end
     end
   end

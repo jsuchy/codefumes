@@ -22,7 +22,7 @@ describe "API::Build" do
       basic_auth_params = {:username => @project.public_key, :password => @project.private_key}
 
       build_query = {:build => {:name => @build_name, :ended_at => nil, :started_at => @started_at, :state => @state}}
-      Build.should_receive(:post).with("/projects/#{@project.public_key}/commits/#{@commit_identifier}/builds", :query => build_query, :basic_auth => basic_auth_params).and_return(mock("response", :code => 401))
+      API.should_receive(:post).with("/projects/#{@project.public_key}/commits/#{@commit_identifier}/builds", :query => build_query, :basic_auth => basic_auth_params).and_return(mock("response", :code => 401))
       @build.save
     end
 

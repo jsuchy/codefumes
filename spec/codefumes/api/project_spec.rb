@@ -43,7 +43,7 @@ describe "API::Project" do
     context "with valid parameters" do
       it "sets basic auth with the public and private key" do
         register_update_uri
-        Project.should_receive(:put).with("/projects/#{@project.public_key}", :query => anything(), :basic_auth => {:username => @project.public_key, :password => @project.private_key}).and_return(mock("response", :code => 401))
+        API.should_receive(:put).with("/projects/#{@project.public_key}", :query => anything(), :basic_auth => {:username => @project.public_key, :password => @project.private_key}).and_return(mock("response", :code => 401))
         @project.save
       end
 
@@ -93,7 +93,7 @@ describe "API::Project" do
     end
 
     it "sets basic auth with the public and private key" do
-      Project.should_receive(:delete).with("/projects/#{@project.public_key}", :basic_auth => {:username => @project.public_key, :password => @project.private_key}).and_return(mock("response", :code => 401))
+      API.should_receive(:delete).with("/projects/#{@project.public_key}", :basic_auth => {:username => @project.public_key, :password => @project.private_key}).and_return(mock("response", :code => 401))
       @project.delete
     end
 

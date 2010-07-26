@@ -5,7 +5,7 @@ module CodeFumes
     # associated with # a specific Commit of a Project and can track
     # the current status (running, failed, success) and the
     # start & end times of the Build process.
-    class Build < CodeFumes::API::Foundation
+    class Build
       attr_reader   :created_at, :api_uri, :identifier, :commit, :project
       attr_accessor :started_at, :ended_at, :state, :name
 
@@ -96,7 +96,7 @@ module CodeFumes
         project = commit.project
         uri = "/projects/#{project.public_key}/commits/#{commit.identifier}/builds/#{build_name}"
 
-        response = get(uri)
+        response = API.get(uri)
 
         case response.code
           when 200
@@ -118,7 +118,7 @@ module CodeFumes
         uri = "/projects/#{@project.public_key}/commits/#{@commit.identifier}/builds/#{@name}"
         auth_args = {:username => @project.public_key, :password => @project.private_key}
 
-        response = self.class.delete(uri, :basic_auth => auth_args)
+        response = API.delete(uri, :basic_auth => auth_args)
 
         case response.code
           when 200 : true
@@ -140,13 +140,13 @@ module CodeFumes
         # Saves a new build (makes POST request)
         def create
           content = standard_content_hash
-          self.class.post("/projects/#{project.public_key}/commits/#{commit.identifier}/builds", :query => {:build => content}, :basic_auth => {:username => project.public_key, :password => project.private_key})
+          API.post("/projects/#{project.public_key}/commits/#{commit.identifier}/builds", :query => {:build => content}, :basic_auth => {:username => project.public_key, :password => project.private_key})
         end
 
         # Updates an existing build (makes PUT request)
         def update
           content = standard_content_hash
-          self.class.put("/projects/#{project.public_key}/commits/#{commit.identifier}/builds/#{name}", :query => {:build => content}, :basic_auth => {:username => project.public_key, :password => project.private_key})
+          API.put("/projects/#{project.public_key}/commits/#{commit.identifier}/builds/#{name}", :query => {:build => content}, :basic_auth => {:username => project.public_key, :password => project.private_key})
         end
 
         def standard_content_hash

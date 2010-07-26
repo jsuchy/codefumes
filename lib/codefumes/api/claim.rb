@@ -1,6 +1,6 @@
 module CodeFumes
   module API
-    class Claim < CodeFumes::API::Foundation
+    class Claim
       attr_accessor :created_at
       SUPPORTED_VISIBILITIES = [:public, :private]
 
@@ -27,7 +27,7 @@ module CodeFumes
         auth_args = {:username => project.public_key, :password => project.private_key}
 
         uri = "/projects/#{project.public_key}/claim"
-        response = put(uri, :query => {:api_key => api_key, :visibility => visibility}, :basic_auth => auth_args)
+        response = API.put(uri, :query => {:api_key => api_key, :visibility => visibility}, :basic_auth => auth_args)
 
         case response.code
           when 200 : true
@@ -47,7 +47,7 @@ module CodeFumes
         auth_args = {:username => project.public_key, :password => project.private_key}
 
         uri = "/projects/#{project.public_key}/claim"
-        response = delete(uri, :query => {:api_key => api_key}, :basic_auth => auth_args)
+        response = API.delete(uri, :query => {:api_key => api_key}, :basic_auth => auth_args)
 
         case response.code
           when 200 : true

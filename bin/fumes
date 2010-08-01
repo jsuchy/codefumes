@@ -44,6 +44,7 @@ pre do |global,command,options,args|
   # Pre logic here
   # Return true to proceed; false to abourt and not call the
   # chosen command
+  print_api_mode_notification unless API.mode?(:production)
   true
 end
 
@@ -58,10 +59,21 @@ on_error do |exception|
     when CodeFumes::Errors::UnsupportedScmToolError
       puts "Unsupported repository type. Exiting..."
       exit(ExitCodes::UNSUPPORTED_SCM)
+    when CodeFumes::Errors::UnknownProjectError
+      msg =  "Could not find specified project on CodeFumes. "
+      msg << "Please verify the key and try again. Exiting..."
+      puts msg
+      exit(ExitCodes::PROJECT_NOT_FOUND)
     else
+      puts "An unknown exception occurred ('#{exception}')."
+      puts "Exiting..."
       exit(ExitCodes::UNKNOWN)
   end
   true
+end
+
+def print_api_mode_notification
+  puts "NOTE: Sending all requests & data to non-production server! (#{API.base_uri})"
 end
 
 GLI.run(ARGV)

@@ -5,16 +5,25 @@ Feature: Synchronizing a repository with CodeFumes
   the users of the site.
 
   Scenario: Unsupported repository type
-    When I run "#{Dir.pwd}/bin/fumes sync"
+    When I run "#{@bin_path}/fumes sync"
     Then it should fail with:
       """
       Unsupported
       """
     And the exit status should be 1
 
-  @announce-stdout @announce-stderr
   Scenario: Successful synchronization
     Given I run "git clone git@github.com:cosyn/git_fixture_repository.git"
     And I cd to "git_fixture_repository/"
-    When I run "#{Dir.pwd}/bin/fumes sync"
+    When I run "#{@bin_path}/fumes sync"
     Then the exit status should be 0
+    And the output should contain "Successfully saved"
+    And the output should contain "Visit http://"
+
+  Scenario: Providing feedback when data is being sent to a non-production server
+    Given I run "git clone git@github.com:cosyn/git_fixture_repository.git"
+    And I cd to "git_fixture_repository/"
+    When I run "#{@bin_path}/fumes sync"
+    Then the output should contain "non-production"
+    And the output should contain "test.codefumes.com"
+    And the exit status should be 0

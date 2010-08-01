@@ -19,9 +19,16 @@ module CodeFumes
       :local      => 'http://codefumes.com.local/api/v1/xml'
     } #:nodoc:
 
-    def self.mode(mode)
-      base_uri(BASE_URIS[mode]) if BASE_URIS[mode]
+    def self.mode=(mode)
+      return if mode.to_s.empty?
+      base_uri(BASE_URIS[mode.to_sym]) if BASE_URIS[mode.to_sym]
     end
 
+    def self.mode?(mode)
+      return false if mode.nil?
+      base_uri == BASE_URIS[mode.to_sym]
+    end
   end
 end
+
+CodeFumes::API.mode= ENV['FUMES_ENV']

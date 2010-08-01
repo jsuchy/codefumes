@@ -5,5 +5,8 @@ module CodeFumes
 
     class UnsupportedScmToolError < StandardError #:nodoc:
     end
+
+    class UnknownProjectError < StandardError #:nodoc:
+    end
   end
 end

@@ -86,6 +86,7 @@ module CodeFumes
       #
       # Returns +nil+ in all other cases.
       def self.find(public_key)
+        return nil if public_key.nil? || public_key.empty?
         response = API.get("/projects/#{public_key}")
         case response.code
           when 200

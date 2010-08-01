@@ -87,7 +87,7 @@ describe "API::Project" do
     end
   end
 
-  context "delete" do
+  context "#delete" do
     before(:each) do
       FakeWeb.register_uri(:delete, @authd_project_api_uri, :status => ["200", "Successful"], :body   => "")
     end
@@ -123,7 +123,7 @@ describe "API::Project" do
     end
   end
 
-  describe "to_config" do
+  describe "#to_config" do
     before(:each) do
       register_show_uri(["404", "Not Found"], "")
       register_create_uri
@@ -149,7 +149,7 @@ describe "API::Project" do
     end
   end
 
-  describe "claim" do
+  describe "#claim" do
     before(:each) do
       @project = Project.new('public_key_value', :private_key => 'private_key_value')
       @api_key = "USERS_API_KEY"
@@ -185,31 +185,50 @@ describe "API::Project" do
     specify {project.name.should == name_specified}
   end
 
-  describe "calling the class method" do
-    describe "'find'" do
-      context "and specifying a public_key which is already associated to a project on the site" do
-        it "returns an initialized instance of the Project class" do
-          register_show_uri
-          expected_config = {
-                              @pub_key.to_sym =>
-                                {
-                                  :private_key=>"private_key_value",
-                                  :api_uri=>"http://codefumes.com/api/v1/xml/projects/#{@pub_key}.xml",
-                                  :short_uri=>"http://codefumes.com/p/#{@pub_key}"
-                                }
-                            }
-          Project.find(@pub_key).to_config.should == expected_config
-        end
+  describe "#find" do
+    context "specifying a public_key which is already associated to a project on the site" do
+      it "returns an initialized instance of the Project class" do
+        register_show_uri
+        expected_config = {
+                            @pub_key.to_sym =>
+                              {
+                                :private_key=>"private_key_value",
+                                :api_uri=>"http://codefumes.com/api/v1/xml/projects/#{@pub_key}.xml",
+                                :short_uri=>"http://codefumes.com/p/#{@pub_key}"
+                              }
+                          }
+        Project.find(@pub_key).to_config.should == expected_config
+      end
+    end
+
+    context "specifying a public_key which is not associated to any project on the site yet" do
+      before(:each) do
+        register_show_uri(["404", "Not Found"], "")
       end
 
-      context "and specifying a public_key which is not associated to any project on the site yet" do
-        before(:each) do
-          register_show_uri(["404", "Not Found"], "")
-        end
+      it "returns nil" do
+        Project.find(@pub_key).should == nil
+      end
+    end
 
-        it "returns nil" do
-          Project.find(@pub_key).should == nil
-        end
+    context "supplying a nil public key" do
+      it "does not hit the CodeFumes server" do
+        API.should_not_receive(:get)
+        Project.find(nil).should == nil
+      end
+      it "returns nil" do
+        Project.find(nil).should == nil
+      end
+    end
+
+    context "supplying an empty string as a public key" do
+      it "does not hit the CodeFumes server" do
+        API.should_not_receive(:get)
+        Project.find('').should == nil
+      end
+
+      it "returns nil" do
+        Project.find('').should == nil
       end
     end
   end

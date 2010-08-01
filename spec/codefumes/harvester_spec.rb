@@ -1,5 +1,8 @@
 require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
+
+#TODO: clean this up
 include CodeFumesServiceHelpers::Shared
+include CodeFumesServiceHelpers::ProjectHelpers
 
 def raise_if_users_config_file
   if ConfigFile.path == File.expand_path('~/.codefumes_config')
@@ -21,8 +24,9 @@ describe Harvester do
   end
 
   before(:each) do
-    raise_if_users_config_file 
+    raise_if_users_config_file
     setup_fixture_base
+    register_create_uri #For project creation
     this_files_dir = File.dirname(__FILE__)
     @no_scm_path  = "#{this_files_dir}/../fixtures/sample_project_dirs/no_scm"
     @git_scm_path = "#{this_files_dir}/../fixtures/sample_project_dirs/git_repository"

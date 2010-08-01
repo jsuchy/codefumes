@@ -31,11 +31,12 @@ module CodeFumes
     #   machines.
     def initialize(passed_in_options = {})
       options = passed_in_options.dup
-      @path = File.expand_path(options.delete(:path) || DEFAULT_PATH)
-      @repository = initialize_repository
-      options.merge!(:public_key => options[:public_key] || @repository.public_key)
-      options.merge!(:private_key => options[:private_key] || @repository.private_key)
-      @project = initialize_project(options)
+      @path       = File.expand_path(options.delete(:path) || DEFAULT_PATH)
+      @repository = SourceControl.new(@path)
+
+      public_key = options[:public_key] || @repository.public_key
+      private_key = options[:private_key] || @repository.private_key
+      @project    = initialize_project(public_key, private_key)
     end
 
     # Creates or updates a project information on the CodeFumes site,
@@ -80,14 +81,12 @@ module CodeFumes
     end
 
     private
-      def initialize_repository
-        SourceControl.new(@path)
-      end
-
-      def initialize_project(options = {})
-        public_key = options[:public_key]
-        options = ConfigFile.options_for_project(public_key).merge(options)
-        Project.new(public_key, options)
+      #TODO: Smarten this up a bit.
+      # - Handle nils more cleanly, etc.
+      # - Don't #create if _something_ was supplied. Verify it was valid or exit.
+      def initialize_project(public_key = nil, private_key = nil)
+        #raise UnknownProjectError, "Project public key provided was not found via the API (supplied '#{public_key}')."
+        Project.find(public_key) || Project.create
       end
 
       def store_public_key_in_repository

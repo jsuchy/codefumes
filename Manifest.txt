@@ -8,7 +8,15 @@ bin/cf_claim_project
 bin/cf_harvest_repo_metrics
 bin/cf_release_project
 bin/cf_store_credentials
+bin/fumes
 config/website.yml
+features/step_definitions/codefumes_service_stubs.rb
+features/step_definitions/common_steps.rb
+features/step_definitions/filesystem_steps.rb
+features/support/common.rb
+features/support/env.rb
+features/support/matchers.rb
+features/synchronizing_repository_with_project.feature
 lib/cf_claim_project/cli.rb
 lib/cf_release_project/cli.rb
 lib/cf_store_credentials/cli.rb
@@ -17,11 +25,11 @@ lib/codefumes/api.rb
 lib/codefumes/api/build.rb
 lib/codefumes/api/claim.rb
 lib/codefumes/api/commit.rb
-lib/codefumes/api/foundation.rb
 lib/codefumes/api/payload.rb
 lib/codefumes/api/project.rb
 lib/codefumes/config_file.rb
 lib/codefumes/errors.rb
+lib/codefumes/exit_codes.rb
 lib/codefumes/harvester.rb
 lib/codefumes/quick_build.rb
 lib/codefumes/quick_metric.rb
@@ -34,9 +42,9 @@ spec/cf_store_credentials/cli_spec.rb
 spec/codefumes/api/build_spec.rb
 spec/codefumes/api/claim_spec.rb
 spec/codefumes/api/commit_spec.rb
-spec/codefumes/api/foundation_spec.rb
 spec/codefumes/api/payload_spec.rb
 spec/codefumes/api/project_spec.rb
+spec/codefumes/api_spec.rb
 spec/codefumes/config_file_spec.rb
 spec/codefumes/harvester_spec.rb
 spec/codefumes/source_control_spec.rb
@@ -51,4 +59,5 @@ spec/fixtures/project_update.xml
 spec/fixtures/sample_project_dirs/no_scm/description
 spec/spec.opts
 spec/spec_helper.rb
+tasks/cucumber.rake
 tasks/rspec.rake

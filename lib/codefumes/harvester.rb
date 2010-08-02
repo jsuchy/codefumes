@@ -85,8 +85,10 @@ module CodeFumes
       # - Handle nils more cleanly, etc.
       # - Don't #create if _something_ was supplied. Verify it was valid or exit.
       def initialize_project(public_key = nil, private_key = nil)
-        #raise UnknownProjectError, "Project public key provided was not found via the API (supplied '#{public_key}')."
-        Project.find(public_key) || Project.create
+        return Project.create if public_key.nil? || public_key.empty?
+
+        msg = "Project public key provided was not found via the API (supplied '#{public_key}')."
+        Project.find(public_key) || raise(Errors::UnknownProjectError, msg)
       end
 
       def store_public_key_in_repository

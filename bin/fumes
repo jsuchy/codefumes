@@ -1,28 +1,34 @@
 #!/usr/bin/env ruby
 $: << File.expand_path(File.dirname(__FILE__) + '/../lib')
 
-require 'rubygems'
 require 'codefumes'
 
-gem 'gli'
-require 'gli'
+begin
+  require 'gli'
+rescue LoadError
+  require 'rubygems'
+  gem 'gli'
+  require 'gli'
+end
 
 include GLI
 include CodeFumes
 
 
-desc 'Public key of CodeFumes project'
-arg_name 'pub-key-here'
-flag [:p,:public_key]
-
-desc 'API key of CodeFumes project'
-arg_name 'api-key-here'
-flag [:a,:api_key]
-
 desc 'Synchronize local master branch history with a CodeFumes project'
 command :sync do |c|
+  c.desc 'Public key of CodeFumes project'
+  c.arg_name 'pub-key-here'
+  c.default_value nil
+  c.flag [:p,:public_key]
+
+  c.desc 'API key of CodeFumes project'
+  c.arg_name 'api-key-here'
+  c.default_value nil
+  c.flag [:a,:api_key]
+
   c.action do |global_options,options,args|
-    harvester = Harvester.new
+    harvester = Harvester.new(:public_key => options[:p], :private_key => options[:a])
 
     if (results = harvester.publish_data!) == false
       puts "Error syncing with CodeFumes project. Please try again."

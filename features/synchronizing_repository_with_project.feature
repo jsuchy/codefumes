@@ -27,3 +27,9 @@ Feature: Synchronizing a repository with CodeFumes
     Then the output should contain "non-production"
     And the output should contain "test.codefumes.com"
     And the exit status should be 0
+
+  Scenario: Specifying a custom, but non-existant public/private key combination
+    Given I run "git clone git@github.com:cosyn/git_fixture_repository.git"
+    And I cd to "git_fixture_repository/"
+    When I run "#{@bin_path}/fumes sync -p non-existant-pubkey -a non-existant-privkey"
+    And the exit status should be 2

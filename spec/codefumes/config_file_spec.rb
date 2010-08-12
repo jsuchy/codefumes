@@ -144,7 +144,7 @@ describe "ConfigFile" do
       end
     end
   end
-  
+
   describe "calling 'save_credentials'" do
     before(:each) do
       @api_key  = "API_KEY"
@@ -237,7 +237,7 @@ describe "ConfigFile" do
     end
 
     context "when no credentials exist in the file" do
-      it "returns an empty Hash" do
+      it "returns nil" do
         ConfigFile.api_key.should == nil
       end
     end

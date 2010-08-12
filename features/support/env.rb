@@ -19,5 +19,6 @@ Before do
   FileUtils.rm_rf   @tmp_root
   FileUtils.mkdir_p @home_path
   ENV['HOME'] = @home_path
+  ENV['CODEFUMES_CONFIG_FILE'] = File.expand_path(File.join(@tmp_root, "codefumes_config_file"))
   ENV['FUMES_ENV'] = ENV['FUMES_ENV'] || "test"
 end

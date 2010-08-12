@@ -47,6 +47,32 @@ describe "API::Claim" do
         }.should raise_error(ArgumentError)
       end
     end
+
+    context "a nil value is passed in for the api_key" do
+      it "should not hit the CodeFumes API" do
+        API.should_not_receive(:put)
+        lambda {Claim.create(@project, nil)}
+      end
+
+      it "raises a NoUserApiKeyError" do
+        lambda {
+          Claim.create(@project, nil)
+        }.should raise_error(Errors::NoUserApiKeyError)
+      end
+    end
+
+    context "an empty string is passed in for the api_key" do
+      it "should not hit the CodeFumes API" do
+        API.should_not_receive(:put)
+        lambda {Claim.create(@project, '')}
+      end
+
+      it "raises a NoUserApiKeyError" do
+        lambda {
+          Claim.create(@project, '')
+        }.should raise_error(Errors::NoUserApiKeyError)
+      end
+    end
   end
 
   describe "destroy" do

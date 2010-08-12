@@ -18,6 +18,11 @@ module CodeFumes
       #
       # Returns +false+ in all other cases.
       def self.create(project, api_key, visibility = :public)
+        if api_key.nil? || api_key.empty?
+          msg = "Invalid user api key provided. (provided: '#{api_key}')"
+          raise(Errors::NoUserApiKeyError, msg)
+        end
+
         unless SUPPORTED_VISIBILITIES.include?(visibility.to_sym)
           msg = "Unsupported visibility supplied (#{visibility.to_s}). "
           msg << "Valid options are: #{SUPPORTED_VISIBILITIES.join(', ')}"

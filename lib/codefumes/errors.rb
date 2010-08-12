@@ -8,5 +8,8 @@ module CodeFumes
 
     class UnknownProjectError < StandardError #:nodoc:
     end
+
+    class NoUserApiKeyError < ArgumentError #:nodoc:
+    end
   end
 end

@@ -46,6 +46,34 @@ command :sync do |c|
   end
 end
 
+desc 'Claim project(s) on CodeFumes.com'
+command :claim do |c|
+  c.desc 'Public key of CodeFumes project'
+  c.arg_name 'pub-key-here'
+  c.default_value nil
+
+  c.action do |global_options, options, args|
+    public_key = args.first || SourceControl.new('./').public_key
+
+    unless project = Project.find(public_key)
+      puts "The specified project was not found on CodeFumes.com (using '#{public_key}' as the public_key)"
+      msg = "Project public key provided was not found via the API (supplied '#{public_key}')."
+      raise Errors::UnknownProjectError, msg
+    end
+
+    print "Claiming...'#{project.public_key}': "
+
+    unless project.claim
+      puts "Denied."
+      raise Errors::InsufficientCredentials
+    end
+
+    puts "Success!"
+    puts ""
+    puts "Done!"
+  end
+end
+
 pre do |global,command,options,args|
   # Pre logic here
   # Return true to proceed; false to abourt and not call the
@@ -70,8 +98,24 @@ on_error do |exception|
       msg << "Please verify the key and try again. Exiting..."
       puts msg
       exit(ExitCodes::PROJECT_NOT_FOUND)
+    when CodeFumes::Errors::NoUserApiKeyError
+      msg =  "Unable to load an account API key from "
+      msg << "your CodeFumes config file.\n"
+      msg << "Log into your CodeFumes account, grab your API key, and run:\n"
+      msg << "\tfumes setup YOUR-API-KEY-HERE\n\n"
+      msg << "Exiting."
+      puts msg
+      exit(ExitCodes::NO_USER_CREDENTIALS)
+    when CodeFumes::Errors::InsufficientCredentials
+      msg =  "The API key in your CodeFumes config file is not "
+      msg << "associated with the specified project. Please verify "
+      msg << "your API key is identical to what is listed on your "
+      msg << "CodeFumes.com account page"
+      msg << "Exiting."
+      puts msg
+      exit(ExitCodes::INCORRECT_USER_CREDENTIALS)
     else
-      puts "An unknown exception occurred ('#{exception}')."
+      puts "An unknown exception occurred ('#{exception.class.to_s}--#{exception}')."
       puts "Exiting..."
       exit(ExitCodes::UNKNOWN)
   end

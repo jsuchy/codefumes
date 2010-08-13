@@ -201,6 +201,22 @@ describe "API::Project" do
       end
     end
 
+    # TODO: clean up duplication w/ non-Symbol test
+    context "specifying a public_key which is already associated to a project on the site as a Symbol" do
+      it "returns an initialized instance of the Project class" do
+        register_show_uri
+        expected_config = {
+                            @pub_key.to_sym =>
+                              {
+                                :private_key=>"private_key_value",
+                                :api_uri=>"http://codefumes.com/api/v1/xml/projects/#{@pub_key}.xml",
+                                :short_uri=>"http://codefumes.com/p/#{@pub_key}"
+                              }
+                          }
+        Project.find(@pub_key.to_sym).to_config.should == expected_config
+      end
+    end
+
     context "specifying a public_key which is not associated to any project on the site yet" do
       before(:each) do
         register_show_uri(["404", "Not Found"], "")

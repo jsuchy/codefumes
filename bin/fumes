@@ -93,6 +93,29 @@ command :release do |c|
   end
 end
 
+desc 'Delete project(s) on CodeFumes.com'
+long_desc <<-DESC
+  Deleting a project will remove the project and all associated data
+  from CodeFumes.com.  If the command is issued inside an existing
+  CodeFumes project, no flags are required.  Note that this action
+  can't be reverted.
+  DESC
+command :delete do |c|
+  c.desc 'Public key of CodeFumes project'
+  c.arg_name 'pub-key-here'
+  c.default_value nil
+  c.flag [:public_key, :p]
+
+  c.desc 'Delete all projects listed in your CodeFumes config file'
+  c.switch [:all, :a]
+
+  c.action do |global_options, options, args|
+    issue_project_commands("Deleting", public_keys_specified(options)) do |project|
+      project.delete
+    end
+  end
+end
+
 pre do |global,command,options,args|
   # Pre logic here
   # Return true to proceed; false to abourt and not call the

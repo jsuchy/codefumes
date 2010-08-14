@@ -19,6 +19,11 @@ Then /^the output should contain (\d+) successful release message[s]?$/ do |coun
   output_message_qty("Releasing").should == count.to_i
 end
 
+# TODO: Get a better way of testing this...output is horrible
+Then /^the output should contain (\d+) successful delete message[s]?$/ do |count|
+  output_message_qty("Deleting").should == count.to_i
+end
+
 Then /^the output should contain instructions about storing your API key$/ do
     Then "the output should contain \"fumes setup\""
 end
@@ -67,6 +72,20 @@ Given /^I (?:have )?release[d]? the (\d+)(?:st|nd|rd|th) project$/ do |index|
   And "I run \"#{@bin_path}/fumes release\""
   And "I cd to \"../\""
 end
+
+# TODO: Refactor w/ other actions
+Given /^I (?:have )?delete[d]? the (\d+)(?:st|nd|rd|th) project$/ do |index|
+  dir_name = "project_#{index}"
+  And "I cd to \"#{dir_name}/\""
+  And "I run \"#{@bin_path}/fumes delete\""
+  And "I cd to \"../\""
+end
+
+# convenience step...assumes only one project
+Given /^I (?:have )?delete(?:ed)? the project$/ do
+  Given "I have deleted the 1st project"
+end
+
 
 # convenience step...assumes only one project
 Given /^I (?:have )?release[d]? the project$/ do

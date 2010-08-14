@@ -80,6 +80,44 @@ command :claim do |c|
   end
 end
 
+desc 'Release project(s) on CodeFumes.com'
+long_desc <<-DESC
+  Releasing a project relinquishes ownership of the project...removing
+  it from your account and making it available for others to claim
+  ownership of (assuming they have the project's private key).
+
+  Only the 'owner' of a project can release it.
+  NOTE: This does NOT delete any data associated with the project.
+    to delete a project entirely, use 'fumes delete'.
+  DESC
+command :release do |c|
+  c.desc 'Public key of CodeFumes project'
+  c.arg_name 'pub-key-here'
+  c.default_value nil
+  c.flag [:public_key, :p]
+
+  c.desc 'Release all projects listed in your CodeFumes config file'
+  c.switch [:all, :a]
+
+  c.action do |global_options, options, args|
+    public_keys_specified(options).each do |public_key|
+      print "Releasing...'#{public_key}': "
+      project = Project.find(public_key.to_s)
+
+      if project.nil?
+        puts "Project Not Found."
+      elsif project.release != true
+        puts "Denied."
+      else
+        puts "Success!"
+      end
+    end
+
+    puts ""
+    puts "Done!"
+  end
+end
+
 pre do |global,command,options,args|
   # Pre logic here
   # Return true to proceed; false to abourt and not call the

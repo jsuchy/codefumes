@@ -62,21 +62,9 @@ command :claim do |c|
   c.switch [:all, :a]
 
   c.action do |global_options, options, args|
-    public_keys_specified(options).each do |public_key|
-      print "Claiming...'#{public_key}': "
-      project = Project.find(public_key.to_s)
-
-      if project.nil?
-        puts "Project Not Found."
-      elsif project.claim != true
-        puts "Denied."
-      else
-        puts "Success!"
-      end
+    issue_project_commands("Claiming", public_keys_specified(options)) do |project|
+      project.claim
     end
-
-    puts ""
-    puts "Done!"
   end
 end
 
@@ -84,11 +72,10 @@ desc 'Release project(s) on CodeFumes.com'
 long_desc <<-DESC
   Releasing a project relinquishes ownership of the project...removing
   it from your account and making it available for others to claim
-  ownership of (assuming they have the project's private key).
-
-  Only the 'owner' of a project can release it.
-  NOTE: This does NOT delete any data associated with the project.
-    to delete a project entirely, use 'fumes delete'.
+  ownership of (assuming they have the project's private key).  Only
+  the 'owner' of a project can release it.  Also note that this does
+  NOT delete any data associated with the project.  To delete a project
+  and all associated data, use 'fumes delete'.
   DESC
 command :release do |c|
   c.desc 'Public key of CodeFumes project'
@@ -100,21 +87,9 @@ command :release do |c|
   c.switch [:all, :a]
 
   c.action do |global_options, options, args|
-    public_keys_specified(options).each do |public_key|
-      print "Releasing...'#{public_key}': "
-      project = Project.find(public_key.to_s)
-
-      if project.nil?
-        puts "Project Not Found."
-      elsif project.release != true
-        puts "Denied."
-      else
-        puts "Success!"
-      end
+    issue_project_commands("Releasing", public_keys_specified(options)) do |project|
+      project.release
     end
-
-    puts ""
-    puts "Done!"
   end
 end
 
@@ -173,6 +148,24 @@ end
 
 def print_api_mode_notification
   puts "NOTE: Sending all requests & data to non-production server! (#{API.base_uri})"
+end
+
+def issue_project_commands(message, public_keys, &block)
+  public_keys.each do |public_key|
+    print "#{message}...'#{public_key}': "
+    project = Project.find(public_key.to_s)
+
+    if project.nil?
+      puts "Project Not Found."
+    elsif yield(project) != true
+      puts "Denied."
+    else
+      puts "Success!"
+    end
+  end
+
+  puts ""
+  puts "Done!"
 end
 
 GLI.run(ARGV)

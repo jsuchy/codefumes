@@ -1,9 +1,0 @@
-#!/usr/bin/env ruby
-#
-#  Created on 2009-9-2.
-#  Copyright (c) 2009. All rights reserved.
-
-require File.expand_path(File.dirname(__FILE__) + "/../lib/codefumes_harvester")
-require File.expand_path(File.dirname(__FILE__) + "/../lib/cf_harvest_repo_metrics/cli")
-
-CfHarvestRepoMetrics::CLI.execute(STDOUT, ARGV)

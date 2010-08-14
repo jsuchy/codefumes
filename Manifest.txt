@@ -4,8 +4,6 @@ History.txt
 Manifest.txt
 README.txt
 Rakefile
-bin/cf_harvest_repo_metrics
-bin/cf_release_project
 bin/cf_store_credentials
 bin/fumes
 config/website.yml
@@ -21,7 +19,6 @@ features/support/common.rb
 features/support/env.rb
 features/support/matchers.rb
 features/synchronizing_repository_with_project.feature
-lib/cf_release_project/cli.rb
 lib/cf_store_credentials/cli.rb
 lib/codefumes.rb
 lib/codefumes/api.rb
@@ -39,7 +36,6 @@ lib/codefumes/quick_metric.rb
 lib/codefumes/source_control.rb
 lib/integrity_notifier/codefumes.haml
 lib/integrity_notifier/codefumes.rb
-spec/cf_release_project/cli_spec.rb
 spec/cf_store_credentials/cli_spec.rb
 spec/codefumes/api/build_spec.rb
 spec/codefumes/api/claim_spec.rb

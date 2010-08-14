@@ -105,7 +105,7 @@ describe "API::Project" do
 
     context "without a public key specified" do
       it "raises an InsufficientCredentials error" do
-        lambda {Project.new(nil, :private_key => 'private_key').delete}.should raise_error(Errors::InsufficientCredentials)
+        lambda {Project.new(nil, 'private_key').delete}.should raise_error(Errors::InsufficientCredentials)
       end
     end
 
@@ -150,15 +150,30 @@ describe "API::Project" do
   end
 
   describe "#claim" do
+    let(:project) {Project.new('public_key_value', 'private_key_value')}
+    let(:api_key) {"USERS_API_KEY"}
+
     before(:each) do
-      @project = Project.new('public_key_value', :private_key => 'private_key_value')
-      @api_key = "USERS_API_KEY"
-      ConfigFile.stub!(:credentials).and_return({:api_key => @api_key})
+      ConfigFile.stub!(:credentials).and_return({:api_key => api_key})
     end
 
     it "delegates the request to the Claim class" do
-      Claim.should_receive(:create).with(@project, @api_key)
-      @project.claim
+      Claim.should_receive(:create).with(project, api_key)
+      project.claim
+    end
+  end
+
+  describe "#release" do
+    let(:project) {Project.new('public_key_value', 'private_key_value')}
+    let(:api_key) {"USERS_API_KEY"}
+
+    before(:each) do
+      ConfigFile.stub!(:credentials).and_return({:api_key => api_key})
+    end
+
+    it "delegates the request to the Claim class" do
+      Claim.should_receive(:destroy).with(project, api_key)
+      project.release
     end
   end
 

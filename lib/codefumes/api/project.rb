@@ -135,6 +135,21 @@ module CodeFumes
         Claim.create(self, ConfigFile.api_key)
       end
 
+      # Attempts to relinquish "ownership" of the project using the API key
+      # defined in the "credentials" section of your CodeFumes config
+      # file.
+      #
+      # If you need to relinquish ownership of a project for a key that is
+      # not defined in your config file, refer to Claim#delete.
+      #
+      # Returns true if the request is successful.
+      #
+      # Returns +false+ in all other cases.
+      def release
+        Claim.destroy(self, ConfigFile.api_key)
+      end
+
+
       private
         def destroy!
           API.delete("/projects/#{@public_key}", :basic_auth => {:username => @public_key, :password => @private_key})

@@ -47,28 +47,34 @@ command :sync do |c|
 end
 
 desc 'Claim project(s) on CodeFumes.com'
+long_desc <<-DESC
+  Claiming a project links the specified key stored in the project
+  repository (or the key specified as an argument) with the account
+  credentials stored in your CodeFumes config file.
+  DESC
 command :claim do |c|
   c.desc 'Public key of CodeFumes project'
   c.arg_name 'pub-key-here'
   c.default_value nil
+  c.flag [:public_key, :p]
+
+  c.desc 'Claim all projects listed in your CodeFumes config file'
+  c.switch [:all, :a]
 
   c.action do |global_options, options, args|
-    public_key = args.first || SourceControl.new('./').public_key
+    public_keys_specified(options).each do |public_key|
+      print "Claiming...'#{public_key}': "
+      project = Project.find(public_key.to_s)
 
-    unless project = Project.find(public_key)
-      puts "The specified project was not found on CodeFumes.com (using '#{public_key}' as the public_key)"
-      msg = "Project public key provided was not found via the API (supplied '#{public_key}')."
-      raise Errors::UnknownProjectError, msg
+      if project.nil?
+        puts "Project Not Found."
+      elsif project.claim != true
+        puts "Denied."
+      else
+        puts "Success!"
+      end
     end
 
-    print "Claiming...'#{project.public_key}': "
-
-    unless project.claim
-      puts "Denied."
-      raise Errors::InsufficientCredentials
-    end
-
-    puts "Success!"
     puts ""
     puts "Done!"
   end
@@ -120,6 +126,11 @@ on_error do |exception|
       exit(ExitCodes::UNKNOWN)
   end
   true
+end
+
+def public_keys_specified(options)
+  return ConfigFile.public_keys if options[:all]
+  [options[:public_key] || SourceControl.new('./').public_key]
 end
 
 def print_api_mode_notification

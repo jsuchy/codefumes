@@ -13,23 +13,21 @@ Feature: Synchronizing a repository with CodeFumes
     And the exit status should be 1
 
   Scenario: Successful synchronization
-    Given I run "git clone git@github.com:cosyn/git_fixture_repository.git"
-    And I cd to "git_fixture_repository/"
-    When I run "#{@bin_path}/fumes sync"
+    Given I have cloned 1 project
+    When I synchronize the project
     Then the exit status should be 0
     And the output should contain "Successfully saved"
     And the output should contain "Visit http://"
 
   Scenario: Providing feedback when data is being sent to a non-production server
-    Given I run "git clone git@github.com:cosyn/git_fixture_repository.git"
-    And I cd to "git_fixture_repository/"
-    When I run "#{@bin_path}/fumes sync"
+    Given I have cloned 1 project
+    When I synchronize the project
     Then the output should contain "non-production"
     And the output should contain "test.codefumes.com"
     And the exit status should be 0
 
   Scenario: Specifying a custom, but non-existant public/private key combination
-    Given I run "git clone git@github.com:cosyn/git_fixture_repository.git"
-    And I cd to "git_fixture_repository/"
+    Given I have cloned 1 project
+    And I cd to "project_1/"
     When I run "#{@bin_path}/fumes sync -p non-existant-pubkey -a non-existant-privkey"
     And the exit status should be 2

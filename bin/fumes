@@ -116,21 +116,39 @@ command :delete do |c|
   end
 end
 
+desc 'Store (or clear) your api-key in the CodeFumes config file'
+command :'api-key'do |c|
+  c.desc 'Clear the API key currently stored in your CodeFumes config file'
+  c.default_value false
+  c.switch [:clear, :c]
+
+  c.action do |global_options, options, args|
+    if !options[:clear] && args.empty?
+      raise Errors::NoApiKeySpecified
+    end
+
+    api_key = options[:clear] ? nil : args.first
+    ConfigFile.save_credentials(api_key)
+
+    if options[:clear]
+      puts "Your API key has been removed from your CodeFumes config file."
+    else
+      puts "Your API key has been saved to your CodeFumes config file."
+    end
+  end
+end
+
 pre do |global,command,options,args|
-  # Pre logic here
-  # Return true to proceed; false to abourt and not call the
-  # chosen command
-  print_api_mode_notification unless API.mode?(:production)
+  unless API.mode?(:production) || command_doesnt_use_api?(command)
+    print_api_mode_notification
+  end
   true
 end
 
 post do |global,command,options,args|
-  # Post logic here
 end
 
 on_error do |exception|
-  # Error logic here
-  # return false to skip default error handling
   case exception
     when CodeFumes::Errors::UnsupportedScmToolError
       puts "Unsupported repository type. Exiting..."
@@ -156,6 +174,9 @@ on_error do |exception|
       msg << "Exiting."
       puts msg
       exit(ExitCodes::INCORRECT_USER_CREDENTIALS)
+    when Errors::NoApiKeySpecified
+      puts "No API key specified.\nExiting."
+      exit(ExitCodes::NO_API_KEY_SPECIFIED)
     else
       puts "An unknown exception occurred ('#{exception.class.to_s}--#{exception}')."
       puts "Exiting..."
@@ -189,6 +210,10 @@ def issue_project_commands(message, public_keys, &block)
 
   puts ""
   puts "Done!"
+end
+
+def command_doesnt_use_api?(command)
+  [:'api-key'].include?(command.name)
 end
 
 GLI.run(ARGV)

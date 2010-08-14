@@ -11,5 +11,8 @@ module CodeFumes
 
     class NoUserApiKeyError < ArgumentError #:nodoc:
     end
+
+    class NoApiKeySpecified < ArgumentError #:nodoc:
+    end
   end
 end

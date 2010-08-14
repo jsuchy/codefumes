@@ -91,3 +91,8 @@ end
 Given /^I (?:have )?release[d]? the project$/ do
   Given "I have released the 1st project"
 end
+
+Then /^the API key in the config file should be ("[^"]*"|cleared)$/ do |api_key_value|
+  expected_value = api_key_value == 'cleared' ? nil : api_key_value.gsub(/"/,'')
+  ConfigFile.api_key.should == expected_value
+end

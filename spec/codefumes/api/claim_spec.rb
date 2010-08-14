@@ -89,5 +89,18 @@ describe "API::Claim" do
         Claim.destroy(@project, @api_key).should be_false
       end
     end
+
+    context "a nil value is passed in for the api_key" do
+      it "should not hit the CodeFumes API" do
+        API.should_not_receive(:delete)
+        lambda {Claim.destroy(@project, nil)}
+      end
+
+      it "raises a NoUserApiKeyError" do
+        lambda {
+          Claim.destroy(@project, nil)
+        }.should raise_error(Errors::NoUserApiKeyError)
+      end
+    end
   end
 end

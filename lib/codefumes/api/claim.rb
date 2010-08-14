@@ -18,16 +18,8 @@ module CodeFumes
       #
       # Returns +false+ in all other cases.
       def self.create(project, api_key, visibility = :public)
-        if api_key.nil? || api_key.empty?
-          msg = "Invalid user api key provided. (provided: '#{api_key}')"
-          raise(Errors::NoUserApiKeyError, msg)
-        end
-
-        unless SUPPORTED_VISIBILITIES.include?(visibility.to_sym)
-          msg = "Unsupported visibility supplied (#{visibility.to_s}). "
-          msg << "Valid options are: #{SUPPORTED_VISIBILITIES.join(', ')}"
-          raise ArgumentError, msg
-        end
+        validate_api_key(api_key)
+        validate_visibility(visibility)
 
         auth_args = {:username => project.public_key, :password => project.private_key}
 
@@ -49,6 +41,8 @@ module CodeFumes
       #
       # Returns +false+ in all other cases.
       def self.destroy(project, api_key)
+        validate_api_key(api_key)
+
         auth_args = {:username => project.public_key, :password => project.private_key}
 
         uri = "/projects/#{project.public_key}/claim"
@@ -59,6 +53,22 @@ module CodeFumes
           else false
         end
       end
+
+      private
+        def self.validate_api_key(api_key)
+          if api_key.nil? || api_key.empty?
+            msg = "Invalid user api key provided. (provided: '#{api_key}')"
+            raise(Errors::NoUserApiKeyError, msg)
+          end
+        end
+
+        def self.validate_visibility(visibility)
+          unless SUPPORTED_VISIBILITIES.include?(visibility.to_sym)
+            msg = "Unsupported visibility supplied (#{visibility.to_s}). "
+            msg << "Valid options are: #{SUPPORTED_VISIBILITIES.join(', ')}"
+            raise ArgumentError, msg
+          end
+        end
     end
   end
 end

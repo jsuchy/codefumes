@@ -25,6 +25,7 @@ lib/codefumes/api/claim.rb
 lib/codefumes/api/commit.rb
 lib/codefumes/api/payload.rb
 lib/codefumes/api/project.rb
+lib/codefumes/cli_helpers.rb
 lib/codefumes/config_file.rb
 lib/codefumes/errors.rb
 lib/codefumes/exit_codes.rb

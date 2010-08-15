@@ -14,5 +14,8 @@ module CodeFumes
 
     class NoApiKeySpecified < ArgumentError #:nodoc:
     end
+
+    class MissingLaunchyGem < Gem::LoadError #:nodoc:
+    end
   end
 end

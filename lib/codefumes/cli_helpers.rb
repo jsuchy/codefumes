@@ -42,7 +42,7 @@ module CodeFumes
         require 'launchy'
         block.call
       rescue Gem::LoadError
-        STDERR.puts "Sorry, you need to install launchy: `gem install launchy`"
+        raise Errors::MissingLaunchyGem, "'launchy' gem required, but missing"
       end
     end
 

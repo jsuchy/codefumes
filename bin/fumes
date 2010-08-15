@@ -2,6 +2,7 @@
 $: << File.expand_path(File.dirname(__FILE__) + '/../lib')
 
 require 'codefumes'
+require 'codefumes/cli_helpers'
 
 begin
   require 'gli'
@@ -13,6 +14,7 @@ end
 
 include GLI
 include CodeFumes
+include CodeFumes::CLIHelpers
 
 
 desc 'Synchronize local master branch history with a CodeFumes project'
@@ -63,7 +65,7 @@ command :claim do |c|
 
   c.action do |global_options, options, args|
     issue_project_commands("Claiming", public_keys_specified(options)) do |project|
-      project.claim
+      wrap_with_standard_feedback(project) {project.claim}
     end
   end
 end
@@ -88,7 +90,7 @@ command :release do |c|
 
   c.action do |global_options, options, args|
     issue_project_commands("Releasing", public_keys_specified(options)) do |project|
-      project.release
+      wrap_with_standard_feedback(project) {project.release}
     end
   end
 end
@@ -111,7 +113,7 @@ command :delete do |c|
 
   c.action do |global_options, options, args|
     issue_project_commands("Deleting", public_keys_specified(options)) do |project|
-      project.delete
+      wrap_with_standard_feedback(project) {project.delete}
     end
   end
 end
@@ -134,6 +136,21 @@ command :'api-key'do |c|
       puts "Your API key has been removed from your CodeFumes config file."
     else
       puts "Your API key has been saved to your CodeFumes config file."
+    end
+  end
+end
+
+desc "Open a project in your default browser (requires 'launchy' gem)"
+command :open do |c|
+  c.desc 'Public key of CodeFumes project to open'
+  c.arg_name 'pub-key-here'
+  c.default_value nil
+  c.flag [:public_key, :p]
+
+  c.action do |global_options, options, args|
+    msg = 'Opening CodeFumes project page'
+    issue_project_commands(msg, public_keys_specified(options)) do |project|
+      open_in_browser project.short_uri
     end
   end
 end
@@ -175,45 +192,17 @@ on_error do |exception|
       puts msg
       exit(ExitCodes::INCORRECT_USER_CREDENTIALS)
     when Errors::NoApiKeySpecified
-      puts "No API key specified.\nExiting."
+      puts "No API key specified. To clear your api-key, use the '-c/--clear' flag.\nExiting."
       exit(ExitCodes::NO_API_KEY_SPECIFIED)
+    when RuntimeError
+      # allow default handler to take over when invalid arguments are passed in
     else
       puts "An unknown exception occurred ('#{exception.class.to_s}--#{exception}')."
+      puts "Backtrace:\n#{exception.backtrace}')."
       puts "Exiting..."
       exit(ExitCodes::UNKNOWN)
   end
   true
-end
-
-def public_keys_specified(options)
-  return ConfigFile.public_keys if options[:all]
-  [options[:public_key] || SourceControl.new('./').public_key]
-end
-
-def print_api_mode_notification
-  puts "NOTE: Sending all requests & data to non-production server! (#{API.base_uri})"
-end
-
-def issue_project_commands(message, public_keys, &block)
-  public_keys.each do |public_key|
-    print "#{message}...'#{public_key}': "
-    project = Project.find(public_key.to_s)
-
-    if project.nil?
-      puts "Project Not Found."
-    elsif yield(project) != true
-      puts "Denied."
-    else
-      puts "Success!"
-    end
-  end
-
-  puts ""
-  puts "Done!"
-end
-
-def command_doesnt_use_api?(command)
-  [:'api-key'].include?(command.name)
 end
 
 GLI.run(ARGV)

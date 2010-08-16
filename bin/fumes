@@ -48,7 +48,7 @@ command :sync do |c|
   end
 end
 
-desc 'Claim project(s) on CodeFumes.com'
+desc 'Associate project(s) with your CodeFumes.com user account'
 long_desc <<-DESC
   Claiming a project links the specified key stored in the project
   repository (or the key specified as an argument) with the account
@@ -70,7 +70,7 @@ command :claim do |c|
   end
 end
 
-desc 'Release project(s) on CodeFumes.com'
+desc "'Unclaim' project(s) on CodeFumes.com...relinquishing ownership"
 long_desc <<-DESC
   Releasing a project relinquishes ownership of the project...removing
   it from your account and making it available for others to claim
@@ -140,7 +140,7 @@ command :'api-key'do |c|
   end
 end
 
-desc "Open a project in your default browser (requires 'launchy' gem)"
+desc "Open project page in your default browser (requires 'launchy' gem)"
 command :open do |c|
   c.desc 'Public key of CodeFumes project to open'
   c.arg_name 'pub-key-here'

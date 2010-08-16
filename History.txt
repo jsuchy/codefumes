@@ -1,3 +1,16 @@
+=== 0.2.0 / 2010-08-15
+
+* Merged CodeFumesHarvester gem content into this gem...the
+  CodeFumesHarvester gem will go away now...
+* Removed cf-based executables and replaced with single git-style
+  'fumes' executable (using gli gem...you should check it out)
+* Refactored all classes to expect objects as arguments where it made
+  sense and was missing  NOTE: Completely breaks previous API
+* Added in cucumber for testing...mostly on 'fumes' executable
+  at this point
+* Migrated to bundler for gem support
+* Migrated to YARD for gem documentation
+
 === 0.1.10 / 21-APR-2010
 
 * Updated all gem dependencies to use only gems released to gemcutter (vs. older

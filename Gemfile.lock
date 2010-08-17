@@ -20,30 +20,30 @@ dependencies:
     group: 
     - :default
     version: = 1.3.0
-  gli: 
-    group: 
-    - :default
-    version: = 1.1.1
-  crack: 
-    group: 
-    - :default
-    version: = 0.1.8
   grit: 
     group: 
     - :default
     version: = 2.0
+  crack: 
+    group: 
+    - :default
+    version: = 0.1.8
+  gli: 
+    group: 
+    - :default
+    version: = 1.1.1
   aruba: 
     group: 
     - :default
     version: = 0.2.1
-  caleb-chronic: 
-    group: 
-    - :default
-    version: = 0.3.0
   gherkin: 
     group: 
     - :default
     version: = 2.1.5
+  caleb-chronic: 
+    group: 
+    - :default
+    version: = 0.3.0
   hoe-git: 
     group: 
     - :default
@@ -60,6 +60,10 @@ dependencies:
     group: 
     - :default
     version: = 2.3.5
+  hanna: 
+    group: 
+    - :default
+    version: = 0.1.12
   rubigen: 
     group: 
     - :default
@@ -86,7 +90,7 @@ specs:
 - gherkin: 
     version: 2.1.5
 - json_pure: 
-    version: 1.4.3
+    version: 1.4.6
 - term-ansicolor: 
     version: 1.0.5
 - cucumber: 
@@ -101,6 +105,12 @@ specs:
     version: "1.16"
 - grit: 
     version: 2.0.0
+- haml: 
+    version: 2.2.24
+- rdoc: 
+    version: 2.3.0
+- hanna: 
+    version: 0.1.12
 - rubyforge: 
     version: 2.0.4
 - hoe: 
@@ -119,7 +129,7 @@ specs:
     version: 0.10.3
 - ruby-debug: 
     version: 0.10.3
-hash: b61ccdf9bbfb66bceff6132c371fbdc4cee7ad1a
+hash: 3b81c08f31e7b6fea59ef7782384b348c7d2609a
 sources: 
 - Rubygems: 
     uri: http://gemcutter.org

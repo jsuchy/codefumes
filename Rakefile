@@ -1,7 +1,7 @@
 require 'bundler'
 Bundler.setup
 
-%w[hoe rake rake/clean fileutils rubigen].each { |f| require f }
+%w[hoe rake rake/clean fileutils].each { |f| require f }
 
 $LOAD_PATH.unshift('lib') unless $LOAD_PATH.include?('lib')
 require 'lib/codefumes'
@@ -19,7 +19,6 @@ begin
 rescue LoadError
 end
 
-Hoe.plugin :website
 Hoe.plugin :git
 
 $hoe = Hoe.spec('codefumes') do

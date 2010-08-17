@@ -12,7 +12,8 @@ CodeFumes.com[http://codefumes.com] is a service intended to help people
 involved with software projects who are interested in tracking, sharing,
 and reviewing metrics/information about a project in relation to the
 commits of said project's repository.  The site supports a small set of
-'standard' metrics, but also provides a simple method of supplying
+'standard' metrics (# lines changed/commit, build status, build duration,
+etc).  Additionally, the service provides a simple method of supplying
 and retrieving custom metrics, allowing users to gather any metric they
 are interested in tracking.
 
@@ -20,10 +21,6 @@ The 'codefumes' gem is an implementation of the
 CodeFumes.com[http://codefumes.com] API. The intention of the
 gem is to simplify integration with CodeFumes.com for developers of
 other libraries & and applications.
-
-For an example of another library using the current features of this
-gem, you can refer to the
-'codefumes_harvester[http://codefumes.rubyforge.org/codefumes_harvester]'  gem.
 
 == FEATURES/PROBLEMS:
 
@@ -38,6 +35,8 @@ gem, you can refer to the
   using.
 * Interfaces with the CodeFumes config file (used to track projects a
   user has created on the site)
+* Tracking & retrieving information about continuous integration server
+  builds (duration, status, etc).
 
 === Problems / Things to Note
 
@@ -48,7 +47,7 @@ gem, you can refer to the
   require 'codefumes'
 
   # Creating & finding a CodeFumes project
-  p = Project.save  # optionally providing a custom public key: :public_key => 'Abc3'
+  p = Project.create
   found_p = Project.find(p.public_key)
   p.public_key # => 'Abc3'
   p.api_uri    # => 'http://codefumes.com/api/v1/xml/Abc3'
@@ -61,7 +60,6 @@ gem, you can refer to the
   # Custom attributes associated with a commit
   c.custom_attributes[:coverage] # => "80"
 
-
   # Payloads, used to break up large HTTP requests
   content = Payload.prepare(payload_content)
   content.each {|chunk| chunk.save}
@@ -69,34 +67,15 @@ gem, you can refer to the
 == REQUIREMENTS:
 
 * httparty (0.4.3)
+* caleb-chronic (0.3.0)
+* gli (1.1.1)
 
 == INSTALL:
 
 From Gemcutter:
 
-  sudo gem install codefumes
+  gem install codefumes
 
 == LICENSE:
 
-(The MIT License)
-
-Copyright (c) 2009 Cosyn Technologies, Inc.
-
-Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files (the
-'Software'), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
-
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
-CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
-TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
-SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+Refer to the LICENSE file

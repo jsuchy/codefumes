@@ -1,6 +1,6 @@
 module CodeFumes
   module API
-    # A Build represents a specific instance of tests running on
+    # Represents a specific instance of tests running on
     # a continuous integration server.  Builds have a name and are
     # associated with # a specific Commit of a Project and can track
     # the current status (running, failed, success) and the
@@ -13,23 +13,11 @@ module CodeFumes
       #
       # * commit - Instance of CodeFumes::Commit to associate the Build with
       # * name   - A name for the build ('ie7', 'specs', etc.)
-      # * state  - Current state of the build (valid values: 'running', 'failed', 'successful', defaults to 'running')
+      # * state  - Current state of the build (defaults: 'running')
+      #   * valid values: 'running', 'failed', 'successful'
       # * options - Hash of additional options. Accepts the following:
-      #   * :started_at - Time the build started (defaults to Time.now)
+      #   * :started_at - Time the build started
       #   * :ended_at   - Time the build completed (defaults to nil)
-      #
-      # Accepts an +options+ Hash with support for the following keys:
-      #   :public_key (*)
-      #   :private_key (*)
-      #   :commit_identifier (*)
-      #   :identifier
-      #   :name (*)
-      #   :state (*)
-      #   :api_uri
-      #   :started_at (*)
-      #   :ended_at
-      #
-      #   NOTE:  (*) denotes a required key/value pair
       def initialize(commit, name, state = 'running', options = {})
         @commit     = commit
         @project    = commit.project
@@ -44,9 +32,6 @@ module CodeFumes
       # from the CodeFumes API.
       #
       # Valid options are:
-      # * public_key
-      # * private_key
-      # * commit_identifier
       # * identifier
       # * name
       # * state
@@ -56,9 +41,6 @@ module CodeFumes
       #
       # Returns +self+
       def reinitialize_from_hash!(options = {})
-        @project_public_key  = options[:public_key]        || options['public_key']
-        @project_private_key = options[:private_key]       || options['private_key']
-        @commit_identifier   = options[:commit_identifier] || options['commit_identifier']
         @identifier          = options[:identifier]        || options['identifier']
         @name                = options[:name]              || options['name']
         @state               = options[:state]             || options['state']
@@ -74,6 +56,8 @@ module CodeFumes
       # Returns +true+ if successful
       #
       # Returns +false+ if request fails
+      # ---
+      # TODO: Make this consistent w/ other class' create/update handling
       def save
         response = exists? ? update : create
 
@@ -139,14 +123,12 @@ module CodeFumes
 
         # Saves a new build (makes POST request)
         def create
-          content = standard_content_hash
-          API.post("/projects/#{project.public_key}/commits/#{commit.identifier}/builds", :query => {:build => content}, :basic_auth => {:username => project.public_key, :password => project.private_key})
+          API.post("/projects/#{project.public_key}/commits/#{commit.identifier}/builds", :query => {:build => standard_content_hash}, :basic_auth => {:username => project.public_key, :password => project.private_key})
         end
 
         # Updates an existing build (makes PUT request)
         def update
-          content = standard_content_hash
-          API.put("/projects/#{project.public_key}/commits/#{commit.identifier}/builds/#{name}", :query => {:build => content}, :basic_auth => {:username => project.public_key, :password => project.private_key})
+          API.put("/projects/#{project.public_key}/commits/#{commit.identifier}/builds/#{name}", :query => {:build => standard_content_hash}, :basic_auth => {:username => project.public_key, :password => project.private_key})
         end
 
         def standard_content_hash

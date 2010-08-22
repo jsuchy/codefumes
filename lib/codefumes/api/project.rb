@@ -19,14 +19,12 @@ module CodeFumes
       end
 
       # Creates new project
-      # --
-      # TODO: Merge this in with #save
       def self.create
         response = API.post('/projects')
 
         case response.code
           when 201
-            Project.new.reinitialize_from_hash!(response['project'])
+            new.reinitialize_from_hash!(response['project'])
           else
             false
         end
@@ -97,30 +95,6 @@ module CodeFumes
         end
       end
 
-      # Overrides existing attributes with those supplied in +options+. This
-      # simplifies the process of updating an object's state when given a response
-      # from the CodeFumes API.
-      #
-      # Valid options are:
-      # * public_key
-      # * private_key
-      # * short_uri
-      # * community_uri
-      # * api_uri
-      # * build_status
-      #
-      # Returns +self+
-      def reinitialize_from_hash!(options = {}) #:nodoc:
-        @name          = options['name']          || options[:name]
-        @public_key    = options['public_key']    || options[:public_key]
-        @private_key   = options['private_key']   || options[:private_key]
-        @short_uri     = options['short_uri']     || options[:short_uri]
-        @community_uri = options['community_uri'] || options[:community_uri]
-        @api_uri       = options['api_uri']       || options[:api_uri]
-        @build_status  = options['build_status']  || options[:build_status]
-        self
-      end
-
       # Attempts to claim "ownership" of the project using the API key
       # defined in the "credentials" section of your CodeFumes config
       # file.
@@ -147,6 +121,31 @@ module CodeFumes
       # Returns +false+ in all other cases.
       def release
         Claim.destroy(self, ConfigFile.api_key)
+      end
+
+      # Overrides existing attributes with those supplied in +options+. This
+      # simplifies the process of updating an object's state when given a response
+      # from the CodeFumes API.
+      #
+      # Valid options are:
+      # * name
+      # * public_key
+      # * private_key
+      # * short_uri
+      # * community_uri
+      # * api_uri
+      # * build_status
+      #
+      # Returns +self+
+      def reinitialize_from_hash!(options = {}) #:nodoc:
+        @name          = options['name']          || options[:name]
+        @public_key    = options['public_key']    || options[:public_key]
+        @private_key   = options['private_key']   || options[:private_key]
+        @short_uri     = options['short_uri']     || options[:short_uri]
+        @community_uri = options['community_uri'] || options[:community_uri]
+        @api_uri       = options['api_uri']       || options[:api_uri]
+        @build_status  = options['build_status']  || options[:build_status]
+        self
       end
 
 

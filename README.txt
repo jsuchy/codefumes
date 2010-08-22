@@ -79,3 +79,6 @@ From Gemcutter:
 == LICENSE:
 
 Refer to the LICENSE file
+
+== Contributors
+* Joe Banks

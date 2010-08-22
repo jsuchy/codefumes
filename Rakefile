@@ -12,10 +12,9 @@ rescue LoadError
   require 'rake/rdoctask'
 end
 
-# Load in the harvester ane metric_fu gems if available so we can collect metrics
+# Load in the metric_fu gem if available so we can collect metrics
 begin
   require "metric_fu"
-  require "codefumes_harvester"
 rescue LoadError
 end
 
@@ -32,8 +31,7 @@ $hoe = Hoe.spec('codefumes') do
                          ['aruba', "0.2.1"]
                         ]
   self.extra_deps     = [['httparty','>= 0.6.1'], ['caleb-chronic', '>= 0.3.0'], ['gli', '1.1.1']]
-  developer('Tom Kersten', 'tom.kersten@cosyntech.com')
-  developer('Joe Banks', 'freemarmoset@gmail.com')
+  developer('Tom Kersten', 'tom.kersten@codefumes.com')
 end
 
 Dir['tasks/**/*.rake'].each { |t| load t}

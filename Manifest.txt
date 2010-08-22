@@ -1,6 +1,7 @@
 Gemfile
 Gemfile.lock
 History.txt
+LICENSE
 Manifest.txt
 README.txt
 Rakefile

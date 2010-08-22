@@ -9,7 +9,6 @@
 * Added in cucumber for testing...mostly on 'fumes' executable
   at this point
 * Migrated to bundler for gem support
-* Migrated to YARD for gem documentation
 
 === 0.1.10 / 21-APR-2010
 

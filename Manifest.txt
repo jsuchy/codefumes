@@ -31,11 +31,11 @@ lib/codefumes/config_file.rb
 lib/codefumes/errors.rb
 lib/codefumes/exit_codes.rb
 lib/codefumes/harvester.rb
+lib/codefumes/integrity_notifier/codefumes.haml
+lib/codefumes/integrity_notifier/codefumes.rb
 lib/codefumes/quick_build.rb
 lib/codefumes/quick_metric.rb
 lib/codefumes/source_control.rb
-lib/integrity_notifier/codefumes.haml
-lib/integrity_notifier/codefumes.rb
 spec/codefumes/api/build_spec.rb
 spec/codefumes/api/claim_spec.rb
 spec/codefumes/api/commit_spec.rb

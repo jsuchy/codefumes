@@ -1,4 +1,10 @@
-=== 0.2.0 / 2010-08-15
+=== 0.2.1 / 2010-08-22
+
+* Moved integrity_notifier into codefumes directory & removed
+  references to CodeFumesHarvester gem
+* Updated QuickBuild & QuickMetric to use new API for Project
+
+=== 0.2.0 / 2010-08-21
 
 * Merged CodeFumesHarvester gem content into this gem...the
   CodeFumesHarvester gem will go away now...

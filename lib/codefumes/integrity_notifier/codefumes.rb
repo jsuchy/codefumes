@@ -1,10 +1,10 @@
 begin
-  require 'codefumes_harvester'
+  require 'codefumes'
 rescue LoadError
-  abort "Install codefumes_harvester to use the CodeFumes notifier"
+  abort "Install 'codefumes' gem to use the CodeFumes notifier"
 end
 
-module CodeFumesHarvester
+module CodeFumes
   class IntegrityNotifier
     class CodeFumes < ::Integrity::Notifier::Base
       attr_reader :private_key, :public_key
@@ -30,7 +30,7 @@ module CodeFumesHarvester
                       :ended_at    => @build.completed_at,
                       :repository_path => @repo_path}
 
-        CodeFumesHarvester::QuickBuild.finish(@build_name, build_state, qb_options)
+        CodeFumes::QuickBuild.finish(@build_name, build_state, qb_options)
       end
 
       def deliver_started_notification!
@@ -40,7 +40,7 @@ module CodeFumesHarvester
                       :started_at  => @build.started_at,
                       :repository_path => @repo_path}
 
-        CodeFumesHarvester::QuickBuild.start(@build_name, qb_options)
+        CodeFumes::QuickBuild.start(@build_name, qb_options)
       end
 
       private
@@ -57,6 +57,6 @@ end
 
 module Integrity
   class Notifier
-    register CodeFumesHarvester::IntegrityNotifier::CodeFumes
+    register CodeFumes::IntegrityNotifier::CodeFumes
   end
 end

@@ -1,3 +1,8 @@
+=== 0.2.2 / 2010-08-23
+
+* Fixed integrity notifier namespacing issue
+* Added grit gem to list of dependencies
+
 === 0.2.1 / 2010-08-22
 
 * Moved integrity_notifier into codefumes directory & removed

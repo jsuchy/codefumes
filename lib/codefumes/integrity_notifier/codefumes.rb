@@ -30,7 +30,7 @@ module CodeFumes
                       :ended_at    => @build.completed_at,
                       :repository_path => @repo_path}
 
-        CodeFumes::QuickBuild.finish(@build_name, build_state, qb_options)
+        ::CodeFumes::QuickBuild.finish(@build_name, build_state, qb_options)
       end
 
       def deliver_started_notification!
@@ -40,7 +40,7 @@ module CodeFumes
                       :started_at  => @build.started_at,
                       :repository_path => @repo_path}
 
-        CodeFumes::QuickBuild.start(@build_name, qb_options)
+        ::CodeFumes::QuickBuild.start(@build_name, qb_options)
       end
 
       private

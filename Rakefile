@@ -30,7 +30,7 @@ $hoe = Hoe.spec('codefumes') do
                          ['cucumber', "0.8.5"],
                          ['aruba', "0.2.1"]
                         ]
-  self.extra_deps     = [['httparty','>= 0.6.1'], ['caleb-chronic', '>= 0.3.0'], ['gli', '1.1.1']]
+  self.extra_deps     = [['httparty','>= 0.6.1'], ['caleb-chronic', '>= 0.3.0'], ['gli', '1.1.1'], ['grit', '2.0']]
   self.extra_rdoc_files = ['LICENSE']
   developer('Tom Kersten', 'tom.kersten@codefumes.com')
 end

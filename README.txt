@@ -69,6 +69,7 @@ other libraries & and applications.
 * httparty (0.4.3)
 * caleb-chronic (0.3.0)
 * gli (1.1.1)
+* grit (2.0)
 
 == INSTALL:
 

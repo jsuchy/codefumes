@@ -155,6 +155,23 @@ command :open do |c|
   end
 end
 
+desc "Set/read the build status of a project"
+command :build do |c|
+  c.desc 'Start the specified build'
+  c.default_value false
+  c.switch [:start]
+
+  c.action do |global_options, options, args|
+    build_name = args.first
+    msg = "Attempting to start '#{build_name}' build"
+    issue_project_commands(msg, public_keys_specified(options)) do |project|
+      if QuickBuild.start(build_name)
+        puts "'#{build_name}' build successfully marked as 'started'"
+      end
+    end
+  end
+end
+
 pre do |global,command,options,args|
   unless API.mode?(:production) || command_doesnt_use_api?(command)
     print_api_mode_notification

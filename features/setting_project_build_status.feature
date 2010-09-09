@@ -8,6 +8,16 @@ Feature: Setting a project's build status
     Given I have cloned and synchronized 1 project
     And I cd to "project_1/"
     When I run "#{@bin_path}/fumes build --start ie7"
-    Then the output should contain "Attempting to start 'ie7' build"
+    Then the output should contain "Setting 'ie7' build status to 'started'"
     And the output should contain "'ie7' build successfully marked as 'started'"
+    And the exit status should be 0
+
+  @wip
+  Scenario: Setting a project build status to 'failure'
+    Given I have cloned and synchronized 1 project
+    And I cd to "project_1/"
+    And I run "#{@bin_path}/fumes build --start ie7"
+    When I run "#{@bin_path}/fumes build --finished=failed ie7"
+    Then the output should contain "Setting 'ie7' build status to 'failed'"
+    And the output should contain "'ie7' build successfully marked as 'failed'"
     And the exit status should be 0

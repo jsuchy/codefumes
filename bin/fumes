@@ -161,12 +161,21 @@ command :build do |c|
   c.default_value false
   c.switch [:start]
 
+  c.desc 'Mark the specified build with the supplied result'
+  c.arg_name "successful-or-failure"
+  c.default_value nil
+  c.flag [:finished]
+
   c.action do |global_options, options, args|
     build_name = args.first
-    msg = "Attempting to start '#{build_name}' build"
+    new_status = options[:finished] ? options[:finished] : "started"
+
+    msg = "Setting '#{build_name}' build status to '#{new_status}'"
     issue_project_commands(msg, public_keys_specified(options)) do |project|
-      if QuickBuild.start(build_name)
-        puts "'#{build_name}' build successfully marked as 'started'"
+      if options[:start] && QuickBuild.start(build_name)
+        puts "'#{build_name}' build successfully marked as '#{new_status}'"
+      elsif options[:finished] && QuickBuild.finish(build_name, options[:finished])
+        puts "'#{build_name}' build successfully marked as '#{new_status}'"
       end
     end
   end

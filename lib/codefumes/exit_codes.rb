@@ -6,5 +6,6 @@ module ExitCodes
   INCORRECT_USER_CREDENTIALS = 4
   NO_API_KEY_SPECIFIED       = 5
   MISSING_DEPENDENCY         = 6
+  INVALID_BUILD_STATE        = 7
   UNKNOWN                    = 100
 end

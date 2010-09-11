@@ -226,6 +226,10 @@ on_error do |exception|
       puts "Sorry, you need to install launchy: `gem install launchy`"
       puts "Exiting."
       exit(ExitCodes::MISSING_DEPENDENCY)
+    when Errors::InvalidBuildState
+      puts "Invalid build state specified."
+      puts "Valid --finished values are: #{API::Build::VALID_BUILD_RESULT_STATES.join(",")}"
+      exit(ExitCodes::INVALID_BUILD_STATE)
     when RuntimeError
       # allow default handler to take over when invalid arguments are passed in
     else

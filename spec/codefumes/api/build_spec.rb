@@ -14,7 +14,7 @@ describe "API::Build" do
     @build = Build.new(@commit, @build_name, @state, {:started_at => @started_at})
   end
 
-  describe "save" do
+  describe "#save" do
     it "sets basic auth with the public and private key" do
       @build.stub!(:exists?).and_return(false)
       register_create_uri(["401", "Unauthorized"], "")
@@ -24,6 +24,22 @@ describe "API::Build" do
       build_query = {:build => {:name => @build_name, :ended_at => nil, :started_at => @started_at, :state => @state}}
       API.should_receive(:post).with("/projects/#{@project.public_key}/commits/#{@commit_identifier}/builds", :query => build_query, :basic_auth => basic_auth_params).and_return(mock("response", :code => 401))
       @build.save
+    end
+
+    it "raises an exception when an invalid state is specified" do
+      lambda {
+        setup_fixture_base
+        @build.state = 'invalid_state'
+        @build.save
+      }.should raise_error(Errors::InvalidBuildState)
+    end
+
+    it "does not raise an InvalidBuildState exception when a valid state is specified" do
+      lambda {
+        setup_fixture_base
+        @build.state = Build::VALID_BUILD_RESULT_STATES.first
+        @build.save
+      }.should_not raise_error(Errors::InvalidBuildState)
     end
 
     context "when it's a new build for the specified commit" do
@@ -70,7 +86,7 @@ describe "API::Build" do
     end
   end
 
-  describe "find" do
+  describe "#find" do
     before(:each) do
       setup_fixture_base
       setup_build_fixtures
@@ -89,7 +105,7 @@ describe "API::Build" do
     end
   end
 
-  describe "destroy" do
+  describe "#destroy" do
     before(:each) do
       setup_fixture_base
       setup_build_fixtures
@@ -104,6 +120,22 @@ describe "API::Build" do
     it "returns false if the status is not '200 Ok'" do
       register_delete_uri(["500", "Internal Server Error"], "")
       @build.destroy.should be_false
+    end
+  end
+
+  describe "#new" do
+    it "raises an exception when an invalid state is specified" do
+      lambda {
+        setup_fixture_base
+        Build.new(@commit, @build_name, 'invalid_state')
+      }.should raise_error(Errors::InvalidBuildState)
+    end
+
+    it "does not raise an InvalidBuildState exception when a valid state is specified" do
+      lambda {
+        setup_fixture_base
+        Build.new(@commit, @build_name, Build::VALID_BUILD_RESULT_STATES.first)
+      }.should_not raise_error(Errors::InvalidBuildState)
     end
   end
 end

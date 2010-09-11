@@ -6,6 +6,7 @@ module CodeFumes
     # the current status (running, failed, success) and the
     # start & end times of the Build process.
     class Build
+      VALID_BUILD_RESULT_STATES = [:running,:failed,:successful]
       attr_reader   :created_at, :api_uri, :identifier, :commit, :project
       attr_accessor :started_at, :ended_at, :state, :name
 
@@ -25,6 +26,7 @@ module CodeFumes
         @state      = state.to_s
         @started_at = options[:started_at] || options['started_at'] || Time.now
         @ended_at   = options[:ended_at]   || options['ended_at']
+        raise(Errors::InvalidBuildState) unless valid_build_state?
       end
 
       # Overrides existing attributes with those supplied in +options+. This
@@ -59,6 +61,7 @@ module CodeFumes
       # ---
       # TODO: Make this consistent w/ other class' create/update handling
       def save
+        raise(Errors::InvalidBuildState) unless valid_build_state?
         response = exists? ? update : create
 
         case response.code
@@ -133,6 +136,10 @@ module CodeFumes
 
         def standard_content_hash
           {:name => name,:started_at => started_at, :ended_at => ended_at, :state => state}
+        end
+
+        def valid_build_state?
+          VALID_BUILD_RESULT_STATES.include?(@state.to_sym)
         end
     end
   end

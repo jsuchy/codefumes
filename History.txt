@@ -1,3 +1,30 @@
+=== 0.3.0 / 2010-09-12
+
+NEW FEATURES:
+* Added Commit#builds, which returns all associated builds of a commit
+* Implemented initial form of 'fumes build' command
+  * Allows you to manage the state of builds associated with a project
+    [thanks Roy Kolak]
+    Examples:
+      # starts a build named 'specs' with the latest commit on the
+      # CodeFumes project (sets state to 'running' & start time to 'now')
+      fumes build --start specs
+
+      # Set the resulting build status of 'specs' build (end time is set to 'now')
+      fumes build --finished=successful specs
+      fumes build --finished=failure    specs
+
+      # Retrieve the status of a specific build associated with latest commit
+      fumes build --status specs
+
+      # Retrieve the status of all builds associated with latest commit
+      fumes build --status --all
+
+BUG FIXES/UPDATES:
+* Moved away from hard-coded exit codes in features
+* Slight refactoring of build state validation
+* Added rvmrc/cucumber:wip task [thanks Roy Kolak]
+
 === 0.2.2 / 2010-08-23
 
 * Fixed integrity notifier namespacing issue

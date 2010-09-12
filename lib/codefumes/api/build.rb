@@ -26,7 +26,7 @@ module CodeFumes
         @state      = state.to_s
         @started_at = options[:started_at] || options['started_at'] || Time.now
         @ended_at   = options[:ended_at]   || options['ended_at']
-        raise(Errors::InvalidBuildState) unless valid_build_state?
+        validate_build_state
       end
 
       # Overrides existing attributes with those supplied in +options+. This
@@ -61,7 +61,7 @@ module CodeFumes
       # ---
       # TODO: Make this consistent w/ other class' create/update handling
       def save
-        raise(Errors::InvalidBuildState) unless valid_build_state?
+        validate_build_state
         response = exists? ? update : create
 
         case response.code
@@ -138,8 +138,8 @@ module CodeFumes
           {:name => name,:started_at => started_at, :ended_at => ended_at, :state => state}
         end
 
-        def valid_build_state?
-          VALID_BUILD_RESULT_STATES.include?(@state.to_sym)
+        def validate_build_state
+          raise(Errors::InvalidBuildState) unless VALID_BUILD_RESULT_STATES.include?(@state.to_sym)
         end
     end
   end

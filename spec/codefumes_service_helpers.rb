@@ -68,6 +68,12 @@ module CodeFumesServiceHelpers
       FakeWeb.register_uri(:get, "#{@anon_project_api_uri}/commits/#{@identifier}",
                            :status => status_code, :body => body_content)
     end
+
+    def register_builds_uri(status_code = ["200", "Ok"], body_content = fixtures[:builds])
+      FakeWeb.register_uri( :get, "#{@anon_project_api_uri}/commits/#{@identifier}/builds",
+                            :status => status_code,
+                            :body =>  body_content)
+    end
   end
 
   module PayloadHelpers

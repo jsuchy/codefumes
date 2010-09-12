@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<builds>
+  <build>
+    <identifier>BUILD_ID</identifier>
+    <name>IE7</name>
+    <state>running</state>
+    <ended_at></ended_at>
+    <started_at>2009-09-26 21:18:11 UTC</started_at>
+    <created_at>2009-09-26 21:19:11 UTC</created_at>
+    <api_uri>http://codefumes.com/api/v1/xml/projects/public_key_value/commits/COMMIT_IDENTIFIER/builds/BUILD_ID.xml</api_uri>
+  </build>
+  <build>
+    <identifier>BUILD_ID2</identifier>
+    <name>SPECS</name>
+    <state>running</state>
+    <ended_at></ended_at>
+    <started_at>2009-09-26 21:18:11 UTC</started_at>
+    <created_at>2009-09-26 21:19:11 UTC</created_at>
+    <api_uri>http://codefumes.com/api/v1/xml/projects/public_key_value/commits/COMMIT_IDENTIFIER/builds/BUILD_ID2.xml</api_uri>
+  </build>
+</builds>

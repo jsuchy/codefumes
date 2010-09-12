@@ -180,4 +180,27 @@ describe "API::Commit" do
       end
     end
   end
+
+  describe "builds" do
+    let(:project) {@project}
+    let(:commit) {Commit.latest(project)}
+
+    before(:each) do
+      register_latest_uri
+    end
+
+    context "when no builds are associated with the commit" do
+      it "returns an empty array" do
+        register_builds_uri(["200", "Ok"], fixtures[:no_builds])
+        commit.builds.should == []
+      end
+    end
+
+    context "when builds are associated with the commit" do
+      it "returns an array of Build objects" do
+        register_builds_uri
+        commit.builds.each {|b| b.should be_instance_of(Build)}
+      end
+    end
+  end
 end

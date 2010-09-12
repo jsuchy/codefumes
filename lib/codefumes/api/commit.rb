@@ -139,11 +139,33 @@ module CodeFumes
         latest_commit.nil? ? nil : latest_commit.identifier
       end
 
+      # Returns the all associated builds
+      def builds
+        response = API.get("/projects/#{project.public_key}/commits/#{identifier}/builds")
+
+        case response.code
+          when 200
+            builds_returned(response).map do |build_data|
+              build_name = build_data.delete("name")
+              build_state = build_data.delete("state")
+              Build.new(self, build_name, build_state, build_data)
+            end
+          else
+            nil
+        end
+      end
+
       private
         def convert_custom_attributes_keys_to_symbols
           @custom_attributes = @custom_attributes.inject({}) do |results, key_and_value|
             results.merge! key_and_value.first.to_sym => key_and_value.last
           end
+        end
+
+        def builds_returned(response)
+          return [] if response["builds"].nil? || response["builds"].empty?
+          return [] if response["builds"]["build"].nil? || response["builds"]["build"].empty?
+          [response["builds"]["build"]].flatten
         end
     end
   end

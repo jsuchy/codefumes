@@ -1,3 +1,4 @@
+.rvmrc
 Gemfile
 Gemfile.lock
 History.txt
@@ -10,6 +11,7 @@ config/website.yml
 cucumber.yml
 features/claiming_a_project.feature
 features/deleting_a_project.feature
+features/managing_project_build_status.feature
 features/releasing_a_project.feature
 features/step_definitions/cli_steps.rb
 features/step_definitions/common_steps.rb
@@ -47,9 +49,11 @@ spec/codefumes/harvester_spec.rb
 spec/codefumes/source_control_spec.rb
 spec/codefumes_service_helpers.rb
 spec/fixtures/build.xml
+spec/fixtures/builds.xml
 spec/fixtures/commit.xml
 spec/fixtures/commit_with_custom_attrs.xml
 spec/fixtures/multiple_commits.xml
+spec/fixtures/no_builds.xml
 spec/fixtures/payload.xml
 spec/fixtures/project.xml
 spec/fixtures/project_update.xml

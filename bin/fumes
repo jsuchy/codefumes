@@ -166,16 +166,36 @@ command :build do |c|
   c.default_value nil
   c.flag [:finished]
 
+  c.desc 'Retrieve the build status of the specified build'
+  c.default_value false
+  c.switch [:status, :s]
+
   c.action do |global_options, options, args|
     build_name = args.first
-    new_status = options[:finished] ? options[:finished] : "started"
 
-    msg = "Setting '#{build_name}' build status to '#{new_status}'"
-    issue_project_commands(msg, public_keys_specified(options)) do |project|
-      if options[:start] && QuickBuild.start(build_name)
-        puts "'#{build_name}' build successfully marked as '#{new_status}'"
-      elsif options[:finished] && QuickBuild.finish(build_name, options[:finished])
-        puts "'#{build_name}' build successfully marked as '#{new_status}'"
+    if build_name.nil?
+      puts "You must specify a build name."
+      raise Errors::InvalidCommandSyntax
+    end
+
+    if options[:status]
+      public_keys_specified(options).each do |public_key|
+        puts "Retrieving build status for '#{public_key}' project:"
+        project = Project.find(public_key.to_s)
+        commit = Commit.latest(project)
+        build = Build.find(commit, build_name)
+        puts "\t'#{build.name}': #{build.state}"
+      end
+    else
+      new_status = options[:finished] ? options[:finished] : "started"
+      msg = "Setting '#{build_name}' build status to '#{new_status}'"
+
+      issue_project_commands(msg, public_keys_specified(options)) do |project|
+        if options[:start] && QuickBuild.start(build_name)
+          puts "'#{build_name}' build successfully marked as '#{new_status}'"
+        elsif options[:finished] && QuickBuild.finish(build_name, options[:finished])
+          puts "'#{build_name}' build successfully marked as '#{new_status}'"
+        end
       end
     end
   end
@@ -186,7 +206,7 @@ pre do |global,command,options,args|
     print_api_mode_notification
   end
 
-  if command.name.to_sym == :build && multiple_build_states?(options)
+  if command && command.name.to_sym == :build && multiple_build_states?(options)
     puts "Specifying multiple states in the same command is not allowed"
     raise CodeFumes::Errors::InvalidCommandSyntax
   end
@@ -199,11 +219,13 @@ end
 on_error do |exception|
   case exception
     when CodeFumes::Errors::UnsupportedScmToolError
-      puts "Unsupported repository type. Exiting..."
+      puts "Unsupported repository type."
+      puts "Exiting..."
       exit(ExitCodes::UNSUPPORTED_SCM)
     when CodeFumes::Errors::UnknownProjectError
-      msg =  "Could not find specified project on CodeFumes. "
-      msg << "Please verify the key and try again. Exiting..."
+      msg =  "Could not find specified project on CodeFumes.\n"
+      msg << "Please verify the key and try again.\n"
+      msg << "Exiting..."
       puts msg
       exit(ExitCodes::PROJECT_NOT_FOUND)
     when CodeFumes::Errors::NoUserApiKeyError
@@ -211,7 +233,7 @@ on_error do |exception|
       msg << "your CodeFumes config file.\n"
       msg << "Log into your CodeFumes account, grab your API key, and run:\n"
       msg << "\tfumes setup YOUR-API-KEY-HERE\n\n"
-      msg << "Exiting."
+      msg << "Exiting..."
       puts msg
       exit(ExitCodes::NO_USER_CREDENTIALS)
     when CodeFumes::Errors::InsufficientCredentials
@@ -219,23 +241,26 @@ on_error do |exception|
       msg << "associated with the specified project. Please verify "
       msg << "your API key is identical to what is listed on your "
       msg << "CodeFumes.com account page"
-      msg << "Exiting."
+      msg << "Exiting..."
       puts msg
       exit(ExitCodes::INCORRECT_USER_CREDENTIALS)
     when Errors::NoApiKeySpecified
-      puts "No API key specified. To clear your api-key, use the '-c/--clear' flag.\nExiting."
+      puts "No API key specified. To clear your api-key, use the '-c/--clear' flag."
+      puts "Exiting..."
       exit(ExitCodes::NO_API_KEY_SPECIFIED)
     when Errors::MissingLaunchyGem
       puts ""
       puts ""
       puts "Sorry, you need to install launchy: `gem install launchy`"
-      puts "Exiting."
+      puts "Exiting..."
       exit(ExitCodes::MISSING_DEPENDENCY)
     when Errors::InvalidBuildState
       puts "Invalid build state specified."
       puts "Valid --finished values are: #{API::Build::VALID_BUILD_RESULT_STATES.join(",")}"
+      puts "Exiting..."
       exit(ExitCodes::INVALID_BUILD_STATE)
     when Errors::InvalidCommandSyntax
+      puts "Exiting..."
       exit(ExitCodes::INVALID_COMMAND_SYNTAX)
     when RuntimeError
       # allow default handler to take over when invalid arguments are passed in

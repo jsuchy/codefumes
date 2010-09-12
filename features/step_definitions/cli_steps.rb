@@ -1,8 +1,8 @@
 # still a super-hack...but at least it's not duplicated, right?
 # ...
 # ...right?
-def output_message_qty(action)
-  combined_output.scan(/#{action}\.\.\.'.*': Success/).count
+def output_message_qty(action, result = "Success")
+  combined_output.scan(/#{action}\.\.\.'.*': #{result}/).count
 end
 
 def clone_fixture_repo_into(dir_name)
@@ -22,6 +22,11 @@ end
 # TODO: Get a better way of testing this...output is horrible
 Then /^the output should contain (\d+) successful delete message[s]?$/ do |count|
   output_message_qty("Deleting").should == count.to_i
+end
+
+# TODO: Get a better way of testing this...output is horrible
+Then /^the output should contain (\d+) running build status message[s]?$/ do |count|
+  output_message_qty("status", "running").should == count.to_i
 end
 
 Then /^the output should contain instructions about storing your API key$/ do

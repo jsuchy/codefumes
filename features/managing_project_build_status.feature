@@ -36,3 +36,11 @@ Feature: Managing a project's build status
     When I run "#{@bin_path}/fumes build --finished=failed --start ie7"
     Then the output should contain "multiple states"
     And the exit status should be "INVALID_COMMAND_SYNTAX"
+
+  Scenario: Retrieving the current build state of a specific build
+    Given I have cloned and synchronized 1 project
+    And I cd to "project_1/"
+    And I run "#{@bin_path}/fumes build --start ie7"
+    When I run "#{@bin_path}/fumes build --status ie7"
+    Then the output should contain "running"
+    And the exit status should be "SUCCESS"

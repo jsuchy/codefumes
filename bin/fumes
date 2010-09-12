@@ -185,6 +185,11 @@ pre do |global,command,options,args|
   unless API.mode?(:production) || command_doesnt_use_api?(command)
     print_api_mode_notification
   end
+
+  if command.name.to_sym == :build && multiple_build_states?(options)
+    puts "Specifying multiple states in the same command is not allowed"
+    raise CodeFumes::Errors::InvalidCommandSyntax
+  end
   true
 end
 
@@ -230,6 +235,8 @@ on_error do |exception|
       puts "Invalid build state specified."
       puts "Valid --finished values are: #{API::Build::VALID_BUILD_RESULT_STATES.join(",")}"
       exit(ExitCodes::INVALID_BUILD_STATE)
+    when Errors::InvalidCommandSyntax
+      exit(ExitCodes::INVALID_COMMAND_SYNTAX)
     when RuntimeError
       # allow default handler to take over when invalid arguments are passed in
     else

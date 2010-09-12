@@ -28,3 +28,11 @@ Feature: Setting a project's build status
     When I run "#{@bin_path}/fumes build --finished=badstate ie7"
     Then the output should contain "Invalid build state"
     And the exit status should be 7
+
+  Scenario: Attempting to set multiple build states in same command
+    Given I have cloned and synchronized 1 project
+    And I cd to "project_1/"
+    And I run "#{@bin_path}/fumes build --start ie7"
+    When I run "#{@bin_path}/fumes build --finished=failed --start ie7"
+    Then the output should contain "multiple states"
+    And the exit status should be 8

@@ -50,5 +50,9 @@ module CodeFumes
     def open_in_browser(url, &block)
       has_launchy? {Launchy::Browser.new.visit url}
     end
+
+    def multiple_build_states?(options)
+      options[:start] && options[:finished]
+    end
   end
 end

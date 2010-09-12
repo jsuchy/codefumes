@@ -1,4 +1,4 @@
-Feature: Setting a project's build status
+Feature: Managing a project's build status
   Tracking the build status of a project is one of, if not
   THE primary purpose of CodeFumes.com. As the owner of a project
   I want to be able to easily manage and the state of an read

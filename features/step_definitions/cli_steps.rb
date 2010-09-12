@@ -26,7 +26,8 @@ end
 
 # TODO: Get a better way of testing this...output is horrible
 Then /^the output should contain (\d+) running build status message[s]?$/ do |count|
-  output_message_qty("status", "running").should == count.to_i
+  running_status_count = combined_output.scan(/'.*' build: running/).count
+  running_status_count.should == count.to_i
 end
 
 Then /^the output should contain instructions about storing your API key$/ do

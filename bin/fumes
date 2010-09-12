@@ -170,27 +170,40 @@ command :build do |c|
   c.default_value false
   c.switch [:status, :s]
 
+  c.desc 'Retrieve the the status of all builds associated with the latest commit'
+  c.default_value false
+  c.switch [:all, :a]
+
   c.action do |global_options, options, args|
+    project_public_key = [options[:public_key] || SourceControl.new('./').public_key]
     build_name = args.first
 
-    if build_name.nil?
-      puts "You must specify a build name."
+    if build_name.nil? && !options[:all]
+      puts "You must specify a build name or the --all/-a switch."
       raise Errors::InvalidCommandSyntax
     end
 
     if options[:status]
-      public_keys_specified(options).each do |public_key|
-        puts "Retrieving build status for '#{public_key}' project:"
-        project = Project.find(public_key.to_s)
-        commit = Commit.latest(project)
-        build = Build.find(commit, build_name)
-        puts "\t'#{build.name}': #{build.state}"
+      puts "Retrieving build status for '#{project_public_key}' project..."
+      project = Project.find(project_public_key)
+      commit = Commit.latest(project)
+
+      puts "Commit: #{commit.id[0..8]} (#{commit.short_message[0..49]})"
+      builds = options[:all] ? commit.builds : [Build.find(commit, build_name)].compact
+
+      if builds.empty?
+        puts "No builds found!"
+        puts "Exiting..."
+      else
+        builds.each do |build|
+          puts "\t'#{build.name}' build: #{build.state}"
+        end
       end
     else
       new_status = options[:finished] ? options[:finished] : "started"
       msg = "Setting '#{build_name}' build status to '#{new_status}'"
 
-      issue_project_commands(msg, public_keys_specified(options)) do |project|
+      issue_project_commands(msg, [project_public_key]) do |project|
         if options[:start] && QuickBuild.start(build_name)
           puts "'#{build_name}' build successfully marked as '#{new_status}'"
         elsif options[:finished] && QuickBuild.finish(build_name, options[:finished])

@@ -44,3 +44,12 @@ Feature: Managing a project's build status
     When I run "#{@bin_path}/fumes build --status ie7"
     Then the output should contain "running"
     And the exit status should be "SUCCESS"
+
+  Scenario: Retrieving the current build state of a all builds of the latest commit
+    Given I have cloned and synchronized 1 project
+    And I cd to "project_1/"
+    And I run "#{@bin_path}/fumes build --start ie7"
+    And I run "#{@bin_path}/fumes build --start specs"
+    When I run "#{@bin_path}/fumes build --status --all"
+    Then the output should contain 2 running build status messages
+    And the exit status should be "SUCCESS"

@@ -139,7 +139,8 @@ module CodeFumes
         end
 
         def validate_build_state
-          raise(Errors::InvalidBuildState) unless VALID_BUILD_RESULT_STATES.include?(@state.to_sym)
+          raise(Errors::InvalidBuildState) if state.nil? || state.empty?
+          raise(Errors::InvalidBuildState) unless VALID_BUILD_RESULT_STATES.include?(state.to_sym)
         end
     end
   end

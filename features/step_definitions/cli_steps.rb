@@ -96,3 +96,7 @@ Then /^the API key in the config file should be ("[^"]*"|cleared)$/ do |api_key_
   expected_value = api_key_value == 'cleared' ? nil : api_key_value.gsub(/"/,'')
   ConfigFile.api_key.should == expected_value
 end
+
+Then /^the exit status should be "([^"]*)"$/ do |exit_code_name|
+  Then "the exit status should be #{instance_eval("CodeFumes::ExitCodes::#{exit_code_name}")}"
+end

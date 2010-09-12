@@ -10,7 +10,7 @@ Feature: Storing a User's API key
       """
       No API key specified
       """
-    And the exit status should be 5
+    And the exit status should be "NO_API_KEY_SPECIFIED"
 
   Scenario: Issuing 'api-key' with an argument
     When I run "#{@bin_path}/fumes api-key userkey"
@@ -19,7 +19,7 @@ Feature: Storing a User's API key
       Your API key has been saved to your CodeFumes config file
       """
     And the API key in the config file should be "userkey"
-    And the exit status should be 0
+    And the exit status should be "SUCCESS"
 
   Scenario: Issuing 'api-key' with the --clear flag
     When I run "#{@bin_path}/fumes api-key --clear"
@@ -28,7 +28,7 @@ Feature: Storing a User's API key
       Your API key has been removed from your CodeFumes config file
       """
     And the API key in the config file should be cleared
-    And the exit status should be 0
+    And the exit status should be "SUCCESS"
 
   Scenario: Issuing 'api-key' with the --clear flag and an argument
     When I run "#{@bin_path}/fumes api-key userkey1"
@@ -38,4 +38,4 @@ Feature: Storing a User's API key
       Your API key has been removed from your CodeFumes config file
       """
     And the API key in the config file should be cleared
-    And the exit status should be 0
+    And the exit status should be "SUCCESS"

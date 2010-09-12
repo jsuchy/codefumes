@@ -10,7 +10,7 @@ Feature: Setting a project's build status
     When I run "#{@bin_path}/fumes build --start ie7"
     Then the output should contain "Setting 'ie7' build status to 'started'"
     And the output should contain "'ie7' build successfully marked as 'started'"
-    And the exit status should be 0
+    And the exit status should be "SUCCESS"
 
   Scenario: Setting a project build status to 'failure'
     Given I have cloned and synchronized 1 project
@@ -19,7 +19,7 @@ Feature: Setting a project's build status
     When I run "#{@bin_path}/fumes build --finished=failed ie7"
     Then the output should contain "Setting 'ie7' build status to 'failed'"
     And the output should contain "'ie7' build successfully marked as 'failed'"
-    And the exit status should be 0
+    And the exit status should be "SUCCESS"
 
   Scenario: Setting a project build status to an invalid state
     Given I have cloned and synchronized 1 project
@@ -27,7 +27,7 @@ Feature: Setting a project's build status
     And I run "#{@bin_path}/fumes build --start ie7"
     When I run "#{@bin_path}/fumes build --finished=badstate ie7"
     Then the output should contain "Invalid build state"
-    And the exit status should be 7
+    And the exit status should be "INVALID_BUILD_STATE"
 
   Scenario: Attempting to set multiple build states in same command
     Given I have cloned and synchronized 1 project
@@ -35,4 +35,4 @@ Feature: Setting a project's build status
     And I run "#{@bin_path}/fumes build --start ie7"
     When I run "#{@bin_path}/fumes build --finished=failed --start ie7"
     Then the output should contain "multiple states"
-    And the exit status should be 8
+    And the exit status should be "INVALID_COMMAND_SYNTAX"

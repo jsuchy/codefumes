@@ -10,12 +10,12 @@ Feature: Synchronizing a repository with CodeFumes
       """
       Unsupported
       """
-    And the exit status should be 1
+    And the exit status should be "UNSUPPORTED_SCM"
 
   Scenario: Successful synchronization
     Given I have cloned 1 project
     When I synchronize the project
-    Then the exit status should be 0
+    Then the exit status should be "SUCCESS"
     And the output should contain "Successfully saved"
     And the output should contain "Visit http://"
 
@@ -24,10 +24,10 @@ Feature: Synchronizing a repository with CodeFumes
     When I synchronize the project
     Then the output should contain "non-production"
     And the output should contain "test.codefumes.com"
-    And the exit status should be 0
+    And the exit status should be "SUCCESS"
 
   Scenario: Specifying a custom, but non-existant public/private key combination
     Given I have cloned 1 project
     And I cd to "project_1/"
     When I run "#{@bin_path}/fumes sync -p non-existant-pubkey -a non-existant-privkey"
-    And the exit status should be 2
+    And the exit status should be "PROJECT_NOT_FOUND"

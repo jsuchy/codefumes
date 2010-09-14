@@ -12,5 +12,5 @@ require 'codefumes/source_control.rb'
 include CodeFumes::API
 
 module CodeFumes
-  VERSION = '0.2.2' unless defined?(CodeFumes::VERSION)
+  VERSION = '0.3.0' unless defined?(CodeFumes::VERSION)
 end

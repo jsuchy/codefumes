@@ -1,6 +1,6 @@
 = codefumes
 
-* http://cosyn.rubyforge.org/codefumes
+* http://cosyn.github.org/codefumes
 * Wiki: https://github.com/cosyn/codefumes/wikis
 * Repository: https://github.com/cosyn/codefumes
 * Website: http://www.codefumes.com

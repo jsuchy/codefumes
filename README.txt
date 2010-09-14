@@ -1,9 +1,8 @@
 = codefumes
 
-* http://codefumes.rubyforge.org/codefumes
+* http://cosyn.rubyforge.org/codefumes
 * Wiki: https://github.com/cosyn/codefumes/wikis
 * Repository: https://github.com/cosyn/codefumes
-* Official CodeFumes.com gems: http://codefumes.rubyforge.org/
 * Website: http://www.codefumes.com
 
 == DESCRIPTION:
@@ -44,6 +43,8 @@ other libraries & and applications.
 
 == SYNOPSIS:
 
+=== In your own Ruby code:
+
   require 'codefumes'
 
   # Creating & finding a CodeFumes project
@@ -57,12 +58,39 @@ other libraries & and applications.
   c.identifier    # => git commit SHA (svn support coming soon)
   c.short_message # => commit message
 
+  # Build Management
+  # QuickBuild grabs local commit head & current time to start build
+  QuickBuild.start('build-name-here')
+
+  # QuickBuild grabs local commit head & current time to finish build
+  QuickBuild.finish('build-name-here', 'successful')
+
   # Custom attributes associated with a commit
   c.custom_attributes[:coverage] # => "80"
 
   # Payloads, used to break up large HTTP requests
   content = Payload.prepare(payload_content)
   content.each {|chunk| chunk.save}
+
+
+=== From the command line:
+
+  $ fumes sync  # <- synchronizes local repository with CodeFumes.com
+  $ fumes build --start ie7
+  $ fumes build --finish=successful ie7
+  $ fumes build --status --all
+
+  # Link to your CodeFumes account
+  $ fumes api-key [your-api-key]
+  $ fumes claim
+
+  # Release the project (unlink from your account)
+  $ fumes release
+
+  # Delete the project entirely from CodeFumes.com
+  $ fumes delete
+
+See 'fumes --help' for more information on available commands and options.
 
 == REQUIREMENTS:
 
@@ -81,5 +109,6 @@ From Gemcutter:
 
 Refer to the LICENSE file
 
-== Contributors
+== Contributors (alphabetical)
 * Joe Banks
+* Roy Kolak

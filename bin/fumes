@@ -175,10 +175,10 @@ command :build do |c|
   c.switch [:all, :a]
 
   c.action do |global_options, options, args|
-    project_public_key = [options[:public_key] || SourceControl.new('./').public_key]
+    project_public_key = options[:public_key] || SourceControl.new('./').public_key
     build_name = args.first
 
-    if build_name.nil? && !options[:all]
+    if build_name.nil? && options[:status] && !options[:all]
       puts "You must specify a build name or the --all/-a switch."
       raise Errors::InvalidCommandSyntax
     end
@@ -199,7 +199,7 @@ command :build do |c|
           puts "\t'#{build.name}' build: #{build.state}"
         end
       end
-    else
+    elsif options[:start] || options[:finished]
       new_status = options[:finished] ? options[:finished] : "started"
       msg = "Setting '#{build_name}' build status to '#{new_status}'"
 
@@ -210,6 +210,8 @@ command :build do |c|
           puts "'#{build_name}' build successfully marked as '#{new_status}'"
         end
       end
+    else
+      commands[:help].execute(global_options, options, ['build'])
     end
   end
 end
@@ -219,7 +221,7 @@ pre do |global,command,options,args|
     print_api_mode_notification
   end
 
-  if command && command.name.to_sym == :build && multiple_build_states?(options)
+  if issuing_build_command?(command) && multiple_build_states?(options)
     puts "Specifying multiple states in the same command is not allowed"
     raise CodeFumes::Errors::InvalidCommandSyntax
   end

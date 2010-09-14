@@ -10,6 +10,10 @@ module CodeFumes
       puts "NOTE: Sending all requests & data to non-production server! (#{API.base_uri})"
     end
 
+    def issuing_build_command?(command)
+      command && command.name.to_sym == :build
+    end
+
     def issue_project_commands(message, public_keys, &block)
       public_keys.each do |public_key|
         print "#{message}...'#{public_key}': "

@@ -53,3 +53,11 @@ Feature: Managing a project's build status
     When I run "#{@bin_path}/fumes build --status --all"
     Then the output should contain 2 running build status messages
     And the exit status should be "SUCCESS"
+
+  Scenario: Running the build command without any arguments
+    Given I have cloned and synchronized 1 project
+    And I cd to "project_1/"
+    When I run "#{@bin_path}/fumes build"
+    Then the output should contain "build [options]"
+    Then the output should contain "Options:"
+    And the exit status should be "SUCCESS"

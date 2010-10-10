@@ -1,7 +1,7 @@
 require 'bundler'
 Bundler.setup
 
-%w[hoe rake rake/clean fileutils].each { |f| require f }
+%w[hoe rake rake/clean fileutils tasks/contributor_tasks].each { |f| require f }
 
 $LOAD_PATH.unshift('lib') unless $LOAD_PATH.include?('lib')
 require 'lib/codefumes'
@@ -34,6 +34,8 @@ $hoe = Hoe.spec('codefumes') do
   self.extra_rdoc_files = ['LICENSE']
   developer('Tom Kersten', 'tom.kersten@codefumes.com')
 end
+
+ContributorTasks.new
 
 Dir['tasks/**/*.rake'].each { |t| load t}
 

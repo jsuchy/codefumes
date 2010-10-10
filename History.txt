@@ -21,6 +21,8 @@ NEW FEATURES:
 BUG FIXES/UPDATES:
 * Fixed error when no build name was specified with the '--start',
   '--finished', or '--exec' options to 'fumes build'
+* Corrected output from "fumes help build" to be in sync with expected usage
+* Updated links in README
 
 === 0.3.0 / 2010-09-12
 

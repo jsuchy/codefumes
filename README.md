@@ -1,25 +1,24 @@
 # codefumes
 
-* [Project site]:(http://cosyn.github.com/codefumes)
-* [Wiki]:(https://github.com/cosyn/codefumes/wikis)
-* [Repository]:(https://github.com/cosyn/codefumes)
-* [Website]:(http://www.codefumes.com)
+* [Project site](http://cosyn.github.com/codefumes)
+* [Wiki](https//github.com/cosyn/codefumes/wikis)
+* [Repository](https://github.com/cosyn/codefumes)
+* [Website](http://www.codefumes.com)
 
 ## DESCRIPTION:
 
-[CodeFumes.com](http://codefumes.com) is a service intended to help people
-involved with software projects who are interested in tracking, sharing,
-and reviewing metrics/information about a project in relation to the
-commits of said project's repository.  The site supports a small set of
-'standard' metrics (# lines changed/commit, build status, build duration,
-etc).  Additionally, the service provides a simple method of supplying
-and retrieving custom metrics, allowing users to gather any metric they
-are interested in tracking.
-
 The 'codefumes' gem is an implementation of the
 [CodeFumes.com](http://codefumes.com) API. The intention of the
-gem is to simplify integration with CodeFumes.com for developers of
-other libraries & and applications.
+gem is to simplify use of and integration with the site for
+users of the site.
+
+[CodeFumes.com](http://codefumes.com) is a service intended to help
+people who are interested in tracking, sharing, and reviewing metrics
+associated with a repository of code.  The site supports a small set of
+'standard' metrics (# lines changed/commit, build status, build duration,
+etc).  Additionally, the service provides a simple method of supplying
+and retrieving custom metrics, allowing users to gather any metric you
+are interested in tracking.
 
 ## FEATURES/PROBLEMS:
 

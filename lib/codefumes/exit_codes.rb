@@ -9,6 +9,7 @@ module CodeFumes
     MISSING_DEPENDENCY         = 6
     INVALID_BUILD_STATE        = 7
     INVALID_COMMAND_SYNTAX     = 8
+    STANDARD_BUILD_FAILURE     = 9
     UNKNOWN                    = 100
   end
 end

@@ -12,6 +12,9 @@ module CodeFumes
     class InvalidCommandSyntax < StandardError #:nodoc:
     end
 
+    class RetainFailedBuildState < StandardError #:nodoc:
+    end
+
     class NoUserApiKeyError < ArgumentError #:nodoc:
     end
 

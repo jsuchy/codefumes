@@ -60,5 +60,6 @@ spec/fixtures/project_update.xml
 spec/fixtures/sample_project_dirs/no_scm/description
 spec/spec.opts
 spec/spec_helper.rb
+tasks/contributor_tasks.rb
 tasks/cucumber.rake
 tasks/rspec.rake

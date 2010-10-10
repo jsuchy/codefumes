@@ -109,6 +109,10 @@ From Gemcutter:
 
 Refer to the LICENSE file
 
-== Contributors (alphabetical)
+== Contributors (sorted alphabetically)
+
+* Dan Nawara
 * Joe Banks
+* Joseph Leddy
+* Leah Welty-Rieger
 * Roy Kolak

@@ -155,14 +155,15 @@ command :open do |c|
   end
 end
 
-desc "Set/read the build status of a project"
+arg_name "(build_name | -a/--all)"
+desc "Set & retrieve the build status of a project"
 command :build do |c|
   c.desc 'Start the specified build'
   c.default_value false
   c.switch [:start]
 
   c.desc 'Mark the specified build with the supplied result'
-  c.arg_name "successful-or-failure"
+  c.arg_name "successful-or-failed"
   c.default_value nil
   c.flag [:finished]
 
@@ -216,19 +217,13 @@ command :build do |c|
         end
       end
     elsif options[:exec]
-      #TODO: refactor
-      puts "Setting '#{build_name}' build status to 'started'"
-      if QuickBuild.start(build_name)
-        puts "'#{build_name}' build state has been set to 'started' on CodeFumes.com"
-      end
+      commands[:build].execute(global_options, {:start => true}, build_name)
 
       puts "Executing: '#{options[:exec]}'..."
       build_result = system(options[:exec]) ? "successful" : "failed"
 
-      if QuickBuild.finish(build_name, build_result)
-        puts "'#{build_name}' build state has been set to '#{build_result}' on CodeFumes.com"
-        raise(Errors::RetainFailedBuildState) if build_result == "failed"
-      end
+      commands[:build].execute(global_options, {:finished => build_result}, build_name)
+      raise(Errors::RetainFailedBuildState) if build_result == "failed"
     else
       commands[:help].execute(global_options, options, ['build'])
     end

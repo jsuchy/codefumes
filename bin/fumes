@@ -183,12 +183,7 @@ command :build do |c|
     project_public_key = options[:public_key] || SourceControl.new('./').public_key
     build_name = args.first
 
-    if build_name.nil? && options[:status] && !options[:all]
-      puts "You must specify a build name or the --all/-a switch."
-      raise Errors::InvalidCommandSyntax
-    end
-
-    if options[:status]
+    if checking_build_status?(options)
       puts "Retrieving build status for '#{project_public_key}' project..."
       project = Project.find(project_public_key)
       commit = Commit.latest(project)
@@ -204,7 +199,7 @@ command :build do |c|
           puts "\t'#{build.name}' build: #{build.state}"
         end
       end
-    elsif options[:start] || options[:finished]
+    elsif updating_build_state?(options)
       new_status = options[:finished] ? options[:finished] : "started"
       msg = "Setting '#{build_name}' build status to '#{new_status}'"
 
@@ -236,10 +231,39 @@ pre do |global,command,options,args|
     print_api_mode_notification
   end
 
-  if issuing_build_command?(command) && multiple_build_states?(options)
-    puts "Specifying multiple states in the same command is not allowed"
-    raise CodeFumes::Errors::InvalidCommandSyntax
+  if issuing_build_command?(command)
+    unless actionable_flag_specified?(options)
+      commands[:help].execute(global, options, ['build'])
+      raise Errors::InvalidCommandSyntax
+    end
+
+    if !options[:status] && !build_name_specified?(args)
+      puts options.inspect
+      puts "You must include a build name with the '--start', '--finished', and '--exec' flags."
+      raise Errors::InvalidCommandSyntax
+    end
+
+    if options[:status] && (!build_name_specified?(args) && !scoped_to_all_builds?(options))
+      puts "You must specify a build name or the --all/-a switch."
+      raise Errors::InvalidCommandSyntax
+    end
+
+    if options[:exec] && (options[:start] || options[:finished])
+      option_specified = options[:start] ? "start" : "finished"
+      puts "Specifying both the '--exec' and the '--#{option_specified}' flags in the same command"
+      puts "is neither necessary nor supported."
+      puts ""
+      puts "If you use the same command but omit the '--#{option_specified}' flag, you should be "
+      puts "set ('--exec' takes care of '--#{option_specified}' for you)."
+      raise Errors::InvalidCommandSyntax
+    end
+
+    if multiple_build_states?(options)
+      puts "Specifying multiple states in the same command is not allowed"
+      raise CodeFumes::Errors::InvalidCommandSyntax
+    end
   end
+
   true
 end
 

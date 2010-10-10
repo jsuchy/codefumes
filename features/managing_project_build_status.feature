@@ -58,7 +58,7 @@ Feature: Managing a project's build status
     When I run "#{@bin_path}/fumes build"
     Then the output should contain "build [options]"
     Then the output should contain "Options:"
-    And the exit status should be "SUCCESS"
+    And the exit status should be "INVALID_COMMAND_SYNTAX"
 
   Scenario: Wrapping a successful build command with build start & stop information
     Given I have cloned and synchronized 1 project
@@ -75,3 +75,29 @@ Feature: Managing a project's build status
     Then the output should contain "Executing: 'lr ./'"
     And the output should contain "Setting 'ie7' build status to 'started'"
     And the exit status should be "STANDARD_BUILD_FAILURE"
+
+  Scenario: Specifying --start AND --exec in the same command
+    Given I have cloned and synchronized 1 project
+    And I cd to "project_1/"
+    And I run "#{@bin_path}/fumes build --start --exec='lr ./' ie7"
+    Then the output should contain "'--exec' and the '--start' flags"
+    And the output should not contain "Executing: 'lr ./'"
+    And the output should not contain "Setting 'ie7' build status to 'started'"
+    And the exit status should be "INVALID_COMMAND_SYNTAX"
+
+  Scenario: Specifying --finished AND --exec in the same command
+    Given I have cloned and synchronized 1 project
+    And I cd to "project_1/"
+    And I run "#{@bin_path}/fumes build --finished='failed' --exec='lr ./' ie7"
+    Then the output should contain "'--exec' and the '--finished' flags"
+    And the output should not contain "Executing: 'lr ./'"
+    And the output should not contain "Setting 'ie7' build status to 'started'"
+    And the exit status should be "INVALID_COMMAND_SYNTAX"
+
+  Scenario: Starting a build for a project without specifying a build name
+    Given I have cloned and synchronized 1 project
+    And I cd to "project_1/"
+    When I run "#{@bin_path}/fumes build --start"
+    Then the output should contain "include a build name"
+    And the output should not contain "build status to 'started'"
+    And the exit status should be "INVALID_COMMAND_SYNTAX"

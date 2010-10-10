@@ -1,3 +1,27 @@
+=== NEXT
+
+NEW FEATURES:
+* Added --exec flag to 'fumes build' command to simplify incorporating
+  into an existing build server setup
+  * Expects your build command an argument to --exec and wraps that
+    command with the 'start' and (appropriate) 'finished' commands for
+    the specified build (assumes your build command uses an exit status
+    of '0' as a successful build, and anything else as a failure)
+    Example:
+      $ fumes build --exec="bundle install && rake db:migrate && rake spec" build-name
+      # Issues 'fumes build --start build-name'
+      # Issues "bundle install && rake db:migrate && rake spec"
+
+      # ...if the command exited with a status of '0'
+      # Issues 'fumes build --finished="successful" build-name'
+
+      # ...if the command exited with a non-zero status
+      # Issues 'fumes build --finished="failed" build-name'
+
+BUG FIXES/UPDATES:
+* Fixed error when no build name was specified with the '--start',
+  '--finished', or '--exec' options to 'fumes build'
+
 === 0.3.0 / 2010-09-12
 
 NEW FEATURES:

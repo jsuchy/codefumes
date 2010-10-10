@@ -14,6 +14,27 @@ module CodeFumes
       command && command.name.to_sym == :build
     end
 
+    def build_name_specified?(args)
+      !args.first.nil?
+    end
+
+    def actionable_flag_specified?(options)
+      actionable_flags = [:finished, :status, :start, :exec]
+      !actionable_flags.select {|flag| options[flag]}.empty?
+    end
+
+    def updating_build_state?(options)
+      !!(options[:start] || options[:finished])
+    end
+
+    def checking_build_status?(options)
+      !!(options[:status])
+    end
+
+    def scoped_to_all_builds?(options)
+      options[:all]
+    end
+
     def issue_project_commands(message, public_keys, &block)
       public_keys.each do |public_key|
         print "#{message}...'#{public_key}': "

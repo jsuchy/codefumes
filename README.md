@@ -1,11 +1,11 @@
-= codefumes
+# codefumes
 
 * http://cosyn.github.com/codefumes
 * Wiki: https://github.com/cosyn/codefumes/wikis
 * Repository: https://github.com/cosyn/codefumes
 * Website: http://www.codefumes.com
 
-== DESCRIPTION:
+## DESCRIPTION:
 
 CodeFumes.com[http://codefumes.com] is a service intended to help people
 involved with software projects who are interested in tracking, sharing,
@@ -21,9 +21,10 @@ CodeFumes.com[http://codefumes.com] API. The intention of the
 gem is to simplify integration with CodeFumes.com for developers of
 other libraries & and applications.
 
-== FEATURES/PROBLEMS:
+## FEATURES/PROBLEMS:
 
-=== Features
+### Features
+
 * Saving, finding, marshalling, and destroying CodeFumes
   projects
 * Associating and retrieving a repository's history of commits for a
@@ -37,13 +38,13 @@ other libraries & and applications.
 * Tracking & retrieving information about continuous integration server
   builds (duration, status, etc).
 
-=== Problems / Things to Note
+### Problems / Things to Note
 
 * CodeFumes 'projects' are repository-specific, not branch-specific.
 
-== SYNOPSIS:
+## SYNOPSIS:
 
-=== In your own Ruby code:
+### In your own Ruby code:
 
   require 'codefumes'
 
@@ -73,7 +74,7 @@ other libraries & and applications.
   content.each {|chunk| chunk.save}
 
 
-=== From the command line:
+### From the command line:
 
   $ fumes sync  # <- synchronizes local repository with CodeFumes.com
   $ fumes build --start ie7
@@ -92,24 +93,24 @@ other libraries & and applications.
 
 See 'fumes --help' for more information on available commands and options.
 
-== REQUIREMENTS:
+## REQUIREMENTS:
 
 * httparty (0.4.3)
 * caleb-chronic (0.3.0)
 * gli (1.1.1)
 * grit (2.0)
 
-== INSTALL:
+## INSTALL:
 
 From Gemcutter:
 
   gem install codefumes
 
-== LICENSE:
+## LICENSE:
 
 Refer to the LICENSE file
 
-== Contributors (sorted alphabetically)
+## Contributors (sorted alphabetically)
 
 * Dan Nawara
 * Joe Banks

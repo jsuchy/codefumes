@@ -31,7 +31,8 @@ $hoe = Hoe.spec('codefumes') do
                          ['aruba', "0.2.1"]
                         ]
   self.extra_deps     = [['httparty','>= 0.6.1'], ['caleb-chronic', '>= 0.3.0'], ['gli', '1.1.1'], ['grit', '2.0']]
-  self.extra_rdoc_files = ['LICENSE']
+  self.readme_file      = 'README.md'
+  self.extra_rdoc_files = FileList['README.md', 'LICENSE']
   developer('Tom Kersten', 'tom.kersten@codefumes.com')
 end
 

@@ -9,7 +9,6 @@ Feature: Managing a project's build status
     And I cd to "project_1/"
     When I run "#{@bin_path}/fumes build --start ie7"
     Then the output should contain "Setting 'ie7' build status to 'started'"
-    And the output should contain "'ie7' build state has been set to 'started'"
     And the exit status should be "SUCCESS"
 
   Scenario: Setting a project build status to 'failure'
@@ -18,7 +17,6 @@ Feature: Managing a project's build status
     And I run "#{@bin_path}/fumes build --start ie7"
     When I run "#{@bin_path}/fumes build --finished=failed ie7"
     Then the output should contain "Setting 'ie7' build status to 'failed'"
-    And the output should contain "'ie7' build state has been set to 'failed'"
     And the exit status should be "SUCCESS"
 
   Scenario: Setting a project build status to an invalid state
@@ -68,7 +66,6 @@ Feature: Managing a project's build status
     And I run "#{@bin_path}/fumes build --exec='ls ./' ie7"
     Then the output should contain "Executing: 'ls ./'"
     And the output should contain "Setting 'ie7' build status to 'started'"
-    And the output should contain "'ie7' build state has been set to 'successful'"
     And the exit status should be "SUCCESS"
 
   Scenario: Wrapping a failing build command with build start & stop information
@@ -77,5 +74,4 @@ Feature: Managing a project's build status
     And I run "#{@bin_path}/fumes build --exec='lr ./' ie7"
     Then the output should contain "Executing: 'lr ./'"
     And the output should contain "Setting 'ie7' build status to 'started'"
-    And the output should contain "'ie7' build state has been set to 'failed'"
     And the exit status should be "STANDARD_BUILD_FAILURE"

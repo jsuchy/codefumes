@@ -159,7 +159,6 @@ arg_name "(build_name | -a/--all)"
 desc "Set & retrieve the build status of a project"
 command :build do |c|
   c.desc 'Start the specified build'
-  c.default_value false
   c.switch [:start]
 
   c.desc 'Mark the specified build with the supplied result'
@@ -168,7 +167,6 @@ command :build do |c|
   c.flag [:finished]
 
   c.desc 'Retrieve the build status of the specified build'
-  c.default_value false
   c.switch [:status, :s]
 
   c.desc 'Retrieve the the status of all builds associated with the latest commit'
@@ -180,6 +178,7 @@ command :build do |c|
   c.default_value nil
   c.flag [:exec]
 
+  # TODO: refactor this...some smelly stuff here
   c.action do |global_options, options, args|
     project_public_key = options[:public_key] || SourceControl.new('./').public_key
     build_name = args.first
@@ -211,9 +210,11 @@ command :build do |c|
 
       issue_project_commands(msg, [project_public_key]) do |project|
         if options[:start] && QuickBuild.start(build_name)
-          puts "'#{build_name}' build state has been set to '#{new_status}' on CodeFumes.com"
+          puts "Success!"
         elsif options[:finished] && QuickBuild.finish(build_name, options[:finished])
-          puts "'#{build_name}' build state has been set to '#{new_status}' on CodeFumes.com"
+          puts "Success!"
+        else
+          puts "BUILD STATUS UPDATE REQUEST FAILED!"
         end
       end
     elsif options[:exec]

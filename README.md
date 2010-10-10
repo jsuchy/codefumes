@@ -1,9 +1,9 @@
 # codefumes
 
-* [Project site](http://cosyn.github.com/codefumes)
-* [Wiki](https//github.com/cosyn/codefumes/wikis)
-* [Repository](https://github.com/cosyn/codefumes)
-* [Website](http://www.codefumes.com)
+* [Project site](http://cosyn.github.com/codefumes http://cosyn.github.com/codefumes)
+* [Wiki](http://github.com/cosyn/codefumes/wikis http://github.com/cosyn/codefumes/wikis)
+* [Repository](http://github.com/cosyn/codefumes http://github.com/cosyn/codefumes)
+* [Website](http://www.codefumes.com http://www.codefumes.com)
 
 ## DESCRIPTION:
 
@@ -45,50 +45,49 @@ are interested in tracking.
 
 ### In your own Ruby code:
 
-  require 'codefumes'
+    require 'codefumes'
 
-  # Creating & finding a CodeFumes project
-  p = Project.create
-  found_p = Project.find(p.public_key)
-  p.public_key # => 'Abc3'
-  p.api_uri    # => 'http://codefumes.com/api/v1/xml/Abc3'
+    # Creating & finding a CodeFumes project
+    p = Project.create
+    found_p = Project.find(p.public_key)
+    p.public_key # => 'Abc3'
+    p.api_uri    # => 'http://codefumes.com/api/v1/xml/Abc3'
 
-  # Commits
-  c = Commit.find(<commit identifier>)
-  c.identifier    # => git commit SHA (svn support coming soon)
-  c.short_message # => commit message
+    # Commits
+    c = Commit.find(<commit identifier>)
+    c.identifier    # => git commit SHA (svn support coming soon)
+    c.short_message # => commit message
 
-  # Build Management
-  # QuickBuild grabs local commit head & current time to start build
-  QuickBuild.start('build-name-here')
+    # Build Management
+    # QuickBuild grabs local commit head & current time to start build
+    QuickBuild.start('build-name-here')
 
-  # QuickBuild grabs local commit head & current time to finish build
-  QuickBuild.finish('build-name-here', 'successful')
+    # QuickBuild grabs local commit head & current time to finish build
+    QuickBuild.finish('build-name-here', 'successful')
 
-  # Custom attributes associated with a commit
-  c.custom_attributes[:coverage] # => "80"
+    # Custom attributes associated with a commit
+    c.custom_attributes[:coverage] # => "80"
 
-  # Payloads, used to break up large HTTP requests
-  content = Payload.prepare(payload_content)
-  content.each {|chunk| chunk.save}
-
+    # Payloads, used to break up large HTTP requests
+    content = Payload.prepare(payload_content)
+    content.each {|chunk| chunk.save}
 
 ### From the command line:
 
-  $ fumes sync  # <- synchronizes local repository with CodeFumes.com
-  $ fumes build --start ie7
-  $ fumes build --finish=successful ie7
-  $ fumes build --status --all
+    $ fumes sync  # <- synchronizes local repository with CodeFumes.com
+    $ fumes build --start ie7
+    $ fumes build --finish=successful ie7
+    $ fumes build --status --all
 
-  # Link to your CodeFumes account
-  $ fumes api-key [your-api-key]
-  $ fumes claim
+    # Link to your CodeFumes account
+    $ fumes api-key [your-api-key]
+    $ fumes claim
 
-  # Release the project (unlink from your account)
-  $ fumes release
+    # Release the project (unlink from your account)
+    $ fumes release
 
-  # Delete the project entirely from CodeFumes.com
-  $ fumes delete
+    # Delete the project entirely from CodeFumes.com
+    $ fumes delete
 
 See 'fumes --help' for more information on available commands and options.
 
@@ -101,9 +100,7 @@ See 'fumes --help' for more information on available commands and options.
 
 ## INSTALL:
 
-From Gemcutter:
-
-  gem install codefumes
+    gem install codefumes
 
 ## LICENSE:
 

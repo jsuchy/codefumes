@@ -18,7 +18,7 @@ class ContributorTasks < Rake::TaskLib
 
         File.open("README.txt", "w+") do |file|
           file.puts readme_without_contributors_section
-          file.puts "== Contributors (sorted alphabetically)"
+          file.puts "## Contributors (sorted alphabetically)"
           file.puts ""
           committers.each {|name| file.puts "* #{name}"}
         end

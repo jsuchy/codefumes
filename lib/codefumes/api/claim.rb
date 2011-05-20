@@ -26,10 +26,7 @@ module CodeFumes
         uri = "/projects/#{project.public_key}/claim"
         response = API.put(uri, :query => {:api_key => api_key, :visibility => visibility}, :basic_auth => auth_args)
 
-        case response.code
-          when 200 : true
-          else false
-        end
+        response.code == 200
       end
 
       # Removes a claim on the specified Project instance using the
@@ -48,10 +45,7 @@ module CodeFumes
         uri = "/projects/#{project.public_key}/claim"
         response = API.delete(uri, :query => {:api_key => api_key}, :basic_auth => auth_args)
 
-        case response.code
-          when 200 : true
-          else false
-        end
+        response.code == 200
       end
 
       private

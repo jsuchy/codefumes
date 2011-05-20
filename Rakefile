@@ -1,9 +1,12 @@
 require 'bundler'
 Bundler.setup
 
+$LOAD_PATH.unshift('.') unless $LOAD_PATH.include?('.')
+
 %w[hoe rake rake/clean fileutils tasks/contributor_tasks].each { |f| require f }
 
 $LOAD_PATH.unshift('lib') unless $LOAD_PATH.include?('lib')
+
 require 'lib/codefumes'
 
 begin

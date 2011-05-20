@@ -17,5 +17,6 @@ gem 'launchy', '0.3.7'
 gem 'rake', '0.8.7'
 gem 'rspec', '1.3.0'
 gem 'rubigen', '1.5.5'
-gem 'ruby-debug'
+gem 'ruby-debug', :platforms => :ruby_18
+gem 'ruby-debug19', :platforms => :ruby_19
 gem 'ZenTest'

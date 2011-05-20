@@ -107,10 +107,7 @@ module CodeFumes
 
         response = API.delete(uri, :basic_auth => auth_args)
 
-        case response.code
-          when 200 : true
-          else false
-        end
+        response.code == 200
       end
 
       private

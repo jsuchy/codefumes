@@ -1,3 +1,5 @@
+$LOAD_PATH.unshift('.') unless $LOAD_PATH.include?('.')
+
 require 'ruby-debug'
 require 'fakeweb'
 

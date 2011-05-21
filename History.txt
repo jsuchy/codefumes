@@ -1,4 +1,8 @@
-=== NEXT
+=== 0.4.1 / 2011-May-21
+
+* Added support for Ruby 1.9.2 [thanks Jim Suchy! (@jsuchy)]
+
+=== 0.4.0 / 2010-Oct-10
 
 NEW FEATURES:
 * Added --exec flag to 'fumes build' command to simplify incorporating

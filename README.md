@@ -1,9 +1,6 @@
 # codefumes
 
-* [Project site](http://cosyn.github.com/codefumes http://cosyn.github.com/codefumes)
-* [Wiki](http://github.com/cosyn/codefumes/wikis http://github.com/cosyn/codefumes/wikis)
-* [Repository](http://github.com/cosyn/codefumes http://github.com/cosyn/codefumes)
-* [Website](http://www.codefumes.com http://www.codefumes.com)
+* http://github.com/tomkersten/codefumes
 
 ## DESCRIPTION:
 

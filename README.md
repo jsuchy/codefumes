@@ -106,6 +106,7 @@ Refer to the LICENSE file
 ## Contributors (sorted alphabetically)
 
 * Dan Nawara
+* Jim Suchy
 * Joe Banks
 * Joseph Leddy
 * Leah Welty-Rieger

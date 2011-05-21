@@ -27,6 +27,15 @@ class ContributorTasks < Rake::TaskLib
         puts "No new contributors."
       end
     end
+
+    task :release do
+      puts "#####################"
+      puts "For the twitters"
+      puts "#####################"
+      puts "[ANN] codefumes v#{CodeFumes::VERSION} released. Changes: http://bit.ly/jzzdMU, Repo: http://bit.ly/codefumes"
+      puts "#####################"
+
+    end
   end
 
   private
